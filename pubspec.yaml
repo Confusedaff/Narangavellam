@@ -1,0 +1,43 @@
+name: narangavellam
+description: A Very Good Project created by Very Good CLI.
+version: 1.0.0+1
+publish_to: none
+
+environment:
+  sdk: ^3.5.0
+
+dependencies:
+  api_repository:
+    path: packages/api_repository
+  bloc: ^8.1.4
+  env:
+    path: packages/env
+  envied: ^1.1.1
+  firebase_core: ^3.14.0
+  flutter:
+    sdk: flutter
+  flutter_bloc: ^8.1.6
+  flutter_gen: ^5.10.0
+  flutter_localizations:
+    sdk: flutter
+  gen_l10n_utils: ^1.7.8
+  get: ^4.7.2
+  get_it: ^8.0.3
+  intl: ^0.20.2
+  mocktail: ^1.0.4
+  powersync_repository:
+    path: packages/powersync_repository
+  shared:
+    path: packages/shared
+
+dev_dependencies:
+  bloc_test: ^9.1.7
+  build_runner: ^2.5.1
+  envied_generator: ^1.1.1
+  flutter_test:
+    sdk: flutter
+  very_good_analysis: ^6.0.0
+
+flutter:
+  uses-material-design: true
+  generate: true

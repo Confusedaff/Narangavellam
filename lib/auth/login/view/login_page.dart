@@ -49,9 +49,13 @@ class LoginView extends StatelessWidget {
         
                   const PasswordFromField(),
         
-                  const Align(
-                    alignment: Alignment.bottomRight,
-                    child: ForgotPasswordButton(),
+                  const Padding(
+                    padding: EdgeInsets.only
+                    (top:AppSpacing.sm,bottom: AppSpacing.sm),
+                    child: Align(
+                      alignment: Alignment.bottomRight,
+                      child: ForgotPasswordButton(),
+                    ),
                   ),
         
                   const Align(
@@ -89,6 +93,12 @@ class LoginView extends StatelessWidget {
                   padding: EdgeInsets.only(bottom: AppSpacing.xxlg),
                   child: SignUpNewAccountButton(),
                 ),
+
+                ElevatedButton(
+                      onPressed: () => context.read<UserRepository>().logOut(),
+                      child: const Text('Log out'),
+                      ),
+
             ],
           ),
       ),

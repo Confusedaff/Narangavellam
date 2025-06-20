@@ -47,7 +47,7 @@ class _PasswordTextFieldState extends State<PasswordTextField> {
       textInputAction: TextInputAction.done,
       textInputType: TextInputType.visiblePassword,
       autofillHints: const [AutofillHints.password],
-      onFieldSubmitted: (_) => context.read<SignUpCubit>().onSubmit(),
+      onFieldSubmitted: (_) => context.read<SignUpCubit>().onSubmit(null),
       hintText: context.l10n.passwordText,
       enabled: !isLoading,
       obscureText: !showPassword,

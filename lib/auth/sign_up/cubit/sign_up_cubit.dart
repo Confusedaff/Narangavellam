@@ -39,7 +39,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         ? Email.dirty(
             newValue,
           )
-        : Email.pure(
+        : Email.dirty(
             newValue,
           );
 
@@ -77,7 +77,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         ? Password.dirty(
             newValue,
           )
-        : Password.pure(
+        : Password.dirty(
             newValue,
           );
 
@@ -113,7 +113,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         ? FullName.dirty(
             newValue,
           )
-        : FullName.pure(
+        : FullName.dirty(
             newValue,
           );
 
@@ -151,7 +151,7 @@ class SignUpCubit extends Cubit<SignUpState> {
         ? Username.dirty(
             newValue,
           )
-        : Username.pure(
+        : Username.dirty(
             newValue,
           );
 
@@ -178,27 +178,27 @@ class SignUpCubit extends Cubit<SignUpState> {
 
   /// Defines method to submit form. It is used to check if all inputs are valid
   /// and if so, it is used to signup user.
-  Future<void> onSubmit({
-    File? avatarFile,
-  }) async {
-    final email = Email.dirty(state.email.value);
-    final password = Password.dirty(state.password.value);
-    final fullName = FullName.dirty(state.fullName.value);
-    final username = Username.dirty(state.username.value);
-    final isFormValid =
-        FormzValid([email, password, fullName, username]).isFormValid;
+  // Future<void> onSubmit({
+  //   File? avatarFile,
+  // }) async {
+  //   final email = Email.dirty(state.email.value);
+  //   final password = Password.dirty(state.password.value);
+  //   final fullName = FullName.dirty(state.fullName.value);
+  //   final username = Username.dirty(state.username.value);
+  //   final isFormValid =
+  //       FormzValid([email, password, fullName, username]).isFormValid;
 
-    final newState = state.copyWith(
-      email: email,
-      password: password,
-      fullName: fullName,
-      username: username,
-      submissionStatus: isFormValid ? SignUpSubmissionStatus.inProgress : null,
-    );
+  //   final newState = state.copyWith(
+  //     email: email,
+  //     password: password,
+  //     fullName: fullName,
+  //     username: username,
+  //     submissionStatus: isFormValid ? SignUpSubmissionStatus.inProgress : null,
+  //   );
 
-    emit(newState);
+  //   emit(newState);
 
-    if (!isFormValid) return;
+  //   if (!isFormValid) return;
 
     // try {
     //   String? imageUrlResponse;
@@ -256,12 +256,12 @@ class SignUpCubit extends Cubit<SignUpState> {
     );
     emit(newState);
   }
-  
+
   Future<void> onSubmit(File? avatarFile) async {
-  final email = Email.pure(state.email.value);
-  final fullName = FullName.pure(state.email.value);
-  final username = Username.pure(state.email.value);
-  final password = Password.pure(state.email.value);
+  final email = Email.dirty(state.email.value);
+  final fullName = FullName.dirty(state.fullName.value);
+  final username = Username.dirty(state.username.value);
+  final password = Password.dirty(state.password.value);
   final isFormValid =
       FormzValid([email, fullName, username, password]).isFormValid;
 
@@ -283,7 +283,6 @@ class SignUpCubit extends Cubit<SignUpState> {
       fullName: state.fullName.value,
       username: state.username.value,
       email: state.email.value,
-
       );
      if(isClosed) return;
      emit(state.copyWith(submissionStatus: SignUpSubmissionStatus.success));
@@ -292,5 +291,4 @@ class SignUpCubit extends Cubit<SignUpState> {
   } 
 
   }
-}
 }

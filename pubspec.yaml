@@ -14,6 +14,8 @@ dependencies:
     path: packages/app_ui
   authentication_client:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/authentication_client
+  blocks_ui:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/blocks_ui
   bloc: ^8.1.4
   env:
     path: packages/env

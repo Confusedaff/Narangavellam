@@ -118,6 +118,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.1.7"
+  blocks_ui:
+    dependency: "direct main"
+    description:
+      path: "C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/blocks_ui"
+      relative: false
+    source: path
+    version: "0.1.0+1"
   boolean_selector:
     dependency: transitive
     description:

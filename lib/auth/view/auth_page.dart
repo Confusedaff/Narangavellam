@@ -1,9 +1,9 @@
 import 'package:animations/animations.dart';
-import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:narangavellam/auth/cubit/auth_cubit.dart';
 import 'package:narangavellam/auth/login/view/login_page.dart';
+import 'package:narangavellam/auth/sign_up/view/sign_up_page.dart';
 
 
 /// {@template auth_page}
@@ -47,10 +47,7 @@ class AuthView extends StatelessWidget {
           child: child,
         );
       },
-      child: showLogin ? const LoginPage() : AppScaffold(body: Tappable(
-        onTap: () => context.read<AuthCubit>().changeAuth(showLogin: true),
-        child: const Text('Show Login'),
-      ),),
+      child: showLogin ? const LoginPage() : const  SignUpPage()
     );
   }
 }

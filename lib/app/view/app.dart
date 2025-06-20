@@ -1,3 +1,24 @@
+import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:narangavellam/app/view/app_view.dart';
+import 'package:user_repository/user_repository.dart';
+
+class App extends StatelessWidget {
+  const App({
+    required this.userRepository,
+    super.key,
+  });
+
+  final UserRepository userRepository;
+
+  @override
+  Widget build(BuildContext context) {
+    return RepositoryProvider.value(
+      value: UserRepository,
+      child: const AppView(),
+    );
+  }
+}
 // import 'package:app_ui/app_ui.dart';
 // import 'package:chats_repository/chats_repository.dart';
 // import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';

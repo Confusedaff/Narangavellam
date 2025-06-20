@@ -1,16 +1,38 @@
-import 'package:api_repository/api_repository.dart';
+import 'package:env/env.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:narangavellam/app/app.dart';
+import 'package:narangavellam/app/view/app.dart';
 import 'package:narangavellam/bootstrap.dart';
-import 'package:narangavellam/firebase_options_prod.dart';
+import 'package:narangavellam/firebase_options_stg.dart';
 import 'package:shared/shared.dart';
+import 'package:supabase_authentication_client/supabase_authentication_client.dart';
+import 'package:token_storage/token_storage.dart';
+import 'package:user_repository/user_repository.dart';
 
 void main() {
-  const apiRepository = ApiRepository();
   bootstrap(
     (powersyncRepository) {
-      return const App(apiRepository: apiRepository);
+
+      final androidClientId = getIt<AppFlavor>().getEnv(Env.androidClientId);
+      final webClientId = getIt<AppFlavor>().getEnv(Env.webClientId);
+
+      final tokenStorage = InMemoryTokenStorage();
+      final googleSignIn = GoogleSignIn(
+        clientId:androidClientId,
+        serverClientId: webClientId,
+      );
+      final supabaseAuthenticationClient = SupabaseAuthenticationClient(
+        powerSyncRepository: powersyncRepository,
+        tokenStorage: tokenStorage,
+        googleSignIn: googleSignIn,
+        );
+      final userRepository = UserRepository(
+        authenticationClient: supabaseAuthenticationClient,);
+      return App(userRepository: userRepository,);
     },
     options: DefaultFirebaseOptions.currentPlatform,
     appFlavor: AppFlavor.staging(),
   );
 }
+
+  

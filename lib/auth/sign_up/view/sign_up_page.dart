@@ -49,7 +49,7 @@ class SignUpView extends StatelessWidget {
             ),
             ),
             Padding(
-              padding: EdgeInsets.only(bottom: AppSpacing.xxlg),
+              padding: EdgeInsets.only(bottom: AppSpacing.lg),
               child: SignInIntoAccountButton(),
             ),
           ],

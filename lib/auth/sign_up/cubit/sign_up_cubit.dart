@@ -12,11 +12,11 @@ part 'sign_up_state.dart';
 /// initial to in progress, success or error. It also validates email, password,
 /// name, surname and phone number fields.
 /// {@endtemplate}
-class SignUpCubit extends Cubit<SignUpState> {
+class SignUpCubit extends Cubit<SignupState> {
   /// {@macro sign_up_cubit}
   SignUpCubit({
     required UserRepository userRepository,
-  }): _userRepository=userRepository,super (const SignUpState.initial());
+  }): _userRepository=userRepository,super (const SignupState.initial());
 
   final UserRepository _userRepository;
 
@@ -26,7 +26,7 @@ class SignUpCubit extends Cubit<SignUpState> {
       );
 
   /// Emits initial state of signup screen. It is used to reset state.
-  void resetState() => emit(const SignUpState.initial());
+  void resetState() => emit(const SignupState.initial());
 
   /// [Email] value was changed, triggering new changes in state. Checking
   /// whether or not value is valid in [Email] and emmiting new [Email]

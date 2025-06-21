@@ -739,7 +739,7 @@ abstract class AppLocalizations {
   /// No description provided for @furtherText.
   ///
   /// In en, this message translates to:
-  /// **'Furhter'**
+  /// **'Next'**
   String get furtherText;
 
   /// No description provided for @somethingWentWrongText.

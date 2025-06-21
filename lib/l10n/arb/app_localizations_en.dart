@@ -418,7 +418,7 @@ class AppLocalizationsEn extends AppLocalizations {
   String get goBackText => 'Go back';
 
   @override
-  String get furtherText => 'Furhter';
+  String get furtherText => 'Next';
 
   @override
   String get somethingWentWrongText => 'Something went wrong!';

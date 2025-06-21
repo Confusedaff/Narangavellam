@@ -50,8 +50,8 @@ enum SignUpSubmissionStatus {
 /// for signup form to work properly. It also stores signup submission status,
 /// that is used to manipulate with state, using Bloc, according to state.
 /// {@endtemplate}
-class SignUpState extends Equatable {
-  const SignUpState._({
+class SignupState extends Equatable {
+  const SignupState._({
     required this.fullName,
     required this.email,
     required this.password,
@@ -63,7 +63,7 @@ class SignUpState extends Equatable {
 
   /// Creates initial signup state. It is used to define initial state in
   /// [SignUpCubit].
-  const SignUpState.initial()
+  const SignupState.initial()
       : this._(
           fullName: const FullName.pure(),
           email: const Email.pure(),
@@ -96,7 +96,7 @@ class SignUpState extends Equatable {
   final bool showPassword;
 
   /// Creates copy of current state with some fields updated.
-  SignUpState copyWith({
+  SignupState copyWith({
     Email? email,
     Password? password,
     FullName? fullName,
@@ -105,7 +105,7 @@ class SignUpState extends Equatable {
     SignUpSubmissionStatus? submissionStatus,
     bool? showPassword,
   }) =>
-      SignUpState._(
+      SignupState._(
         email: email ?? this.email,
         password: password ?? this.password,
         fullName: fullName ?? this.fullName,
@@ -127,13 +127,13 @@ class SignUpState extends Equatable {
       ];
 }
 
-// final signupSubmissionStatusMessage =
-//     <SignUpSubmissionStatus, SubmissionStatusMessage>{
-//   SignUpSubmissionStatus.emailAlreadyRegistered: const SubmissionStatusMessage(
-//     title: 'User with this email already exists.',
-//     description: 'Try another email address.',
-//   ),
-//   SignUpSubmissionStatus.error: const SubmissionStatusMessage.genericError(),
-//   SignUpSubmissionStatus.networkError:
-//       const SubmissionStatusMessage.networkError(),
-// };
+final signupSubmissionStatusMessage =
+    <SignUpSubmissionStatus, SubmissionStatusMessage>{
+  SignUpSubmissionStatus.emailAlreadyRegistered: const SubmissionStatusMessage(
+    title: 'User with this email already exists.',
+    description: 'Try another email address.',
+  ),
+  SignUpSubmissionStatus.error: const SubmissionStatusMessage.genericError(),
+  SignUpSubmissionStatus.networkError:
+      const SubmissionStatusMessage.networkError(),
+};

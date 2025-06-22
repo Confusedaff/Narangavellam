@@ -1,6 +1,6 @@
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:narangavellam/app/view/app.dart';
 import 'package:narangavellam/auth/view/auth_page.dart';
 import 'package:narangavellam/l10n/arb/app_localizations.dart';
 
@@ -12,11 +12,19 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
-      theme:const AppTheme().theme,
+      theme: const AppTheme().theme,
       darkTheme: const AppDarkTheme().theme,
       localizationsDelegates: AppLocalizations.localizationsDelegates,
       supportedLocales: AppLocalizations.supportedLocales,
-      home:const AuthPage(),
+      builder: (context, child) {
+        return Stack(
+          children: [
+            child!,
+            AppSnackbar(key: snackbarKey),
+          ],
+        );
+      },
+      home: const AuthPage(),
     );
   }
 }

@@ -13,6 +13,13 @@ class SignUpForm extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocListener<SignUpCubit, SignupState>(
       listener: (context, state) {
+        if(state.submissionStatus.isSuccess){
+          openSnackbar(
+            const SnackbarMessage.success(
+              title: 'YAY,Account Created !!! You can login now.',
+            ),
+          );
+        }
        if(state.submissionStatus.isError){
            openSnackbar(
               SnackbarMessage.error(

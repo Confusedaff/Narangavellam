@@ -1,8 +1,11 @@
 import 'dart:io';
 
+import 'package:authentication_client/authentication_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_fields/form_fields.dart';
+import 'package:shared/shared.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:user_repository/user_repository.dart';
 
 part 'sign_up_state.dart';
@@ -245,17 +248,24 @@ class SignUpCubit extends Cubit<SignupState> {
   // /// Defines method to format error. It is used to format error in order to
   // /// show it to user.
   void _errorFormatter(Object e, StackTrace stackTrace) {
-    addError(e, stackTrace);
+  addError(e, stackTrace);
 
-    SignUpSubmissionStatus submissionStatus() {
-      return SignUpSubmissionStatus.error;
-    }
+  final submissionStatus = switch (e) {
+    SignUpWithPasswordFailure(:final AuthException error) => switch (
+      error.statusCode?.parse) {
+        HttpStatus.badRequest =>
+          SignUpSubmissionStatus.emailAlreadyRegistered,
+        _ => SignUpSubmissionStatus.error,
+      },
+    _ => SignUpSubmissionStatus.idle,
+  };
 
-    final newState = state.copyWith(
-      submissionStatus: submissionStatus(),
-    );
-    emit(newState);
-  }
+  final newState = state.copyWith(
+    submissionStatus: submissionStatus,
+  );
+  emit(newState);
+}
+
 
   Future<void> onSubmit(File? avatarFile) async {
   final email = Email.dirty(state.email.value);

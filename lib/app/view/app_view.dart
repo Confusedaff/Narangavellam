@@ -1,7 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:narangavellam/app/routes/routes.dart';
 import 'package:narangavellam/app/view/app.dart';
-import 'package:narangavellam/auth/view/auth_page.dart';
 import 'package:narangavellam/l10n/arb/app_localizations.dart';
 
 class AppView extends StatelessWidget {
@@ -9,7 +9,10 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+
+    final routerConfig = router();
+
+    return MaterialApp.router(
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.dark,
       theme: const AppTheme().theme,
@@ -24,7 +27,7 @@ class AppView extends StatelessWidget {
           ],
         );
       },
-      home: const AuthPage(),
+      routerConfig: routerConfig,
     );
   }
 }

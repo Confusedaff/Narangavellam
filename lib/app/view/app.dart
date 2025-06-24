@@ -1,6 +1,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/view/app_view.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -8,17 +9,25 @@ final snackbarKey = GlobalKey<AppSnackbarState>();
 
 class App extends StatelessWidget {
   const App({
+    required this.user,
     required this.userRepository,
     super.key,
   });
 
+  final User user;
   final UserRepository userRepository;
 
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider.value(
       value: UserRepository,
-      child: const AppView(),
+      child: BlocProvider(
+        create: (context) => AppBloc(
+          user: user,
+          userRepository: userRepository,
+        ),
+        child: const AppView(),
+      ),
     );
   }
 }

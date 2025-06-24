@@ -11,9 +11,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({
     required User user,
     required UserRepository userRepository,
-   // required NotificationsRepository notificationsRepository,
   })  : _userRepository = userRepository,
-       // _notificationsRepository = notificationsRepository,
         super(
           user.isAnonymous
               ? const AppState.unauthenticated()
@@ -27,7 +25,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   final UserRepository _userRepository;
-  //final NotificationsRepository _notificationsRepository;
 
   StreamSubscription<User>? _userSubscription;
   StreamSubscription<String>? _pushTokenSubscription;
@@ -39,22 +36,6 @@ class AppBloc extends Bloc<AppEvent, AppState> {
 
     Future<void> authenticate() async {
       emit(AppState.authenticated(user));
-
-      // try {
-      //   final pushToken = await _notificationsRepository.fetchToken();
-      //   if (user.pushToken == null || user.pushToken != pushToken) {
-      //     await _userRepository.updateUser(pushToken: pushToken);
-      //   }
-
-      //   _pushTokenSubscription ??=
-      //       _notificationsRepository.onTokenRefresh().listen((pushToken) async {
-      //     await _userRepository.updateUser(pushToken: pushToken);
-      //   });
-
-      //   await _notificationsRepository.requestPermission();
-      // } catch (error, stackTrace) {
-      //   addError(error, stackTrace);
-      // }
     }
 
     switch (state.status) {
@@ -64,8 +45,8 @@ class AppBloc extends Bloc<AppEvent, AppState> {
         return !user.isAnonymous && user.isNewUser
             ? emit(AppState.onboardingRequired(user))
             : user.isAnonymous
-                ? emit(const AppState.unauthenticated())
-                : authenticate();
+              ? emit(const AppState.unauthenticated())
+              : authenticate();
     }
   }
 

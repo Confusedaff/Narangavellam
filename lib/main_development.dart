@@ -1,8 +1,6 @@
 import 'package:env/env.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:narangavellam/app/app.dart';
-import 'package:narangavellam/app/view/app.dart';
 import 'package:narangavellam/bootstrap.dart';
 import 'package:narangavellam/firebase_options_dev.dart';
 import 'package:shared/shared.dart';
@@ -12,7 +10,7 @@ import 'package:user_repository/user_repository.dart';
 
 void main() {
   bootstrap(
-    (powersyncRepository) {
+    (powersyncRepository) async{
 
       final androidClientId = getIt<AppFlavor>().getEnv(Env.androidClientId);
       final webClientId = getIt<AppFlavor>().getEnv(Env.webClientId);
@@ -27,11 +25,10 @@ void main() {
         tokenStorage: tokenStorage,
         googleSignIn: googleSignIn,
         );
-      final userRepository = UserRepository(
-        authenticationClient: supabaseAuthenticationClient,);
-      return RepositoryProvider<UserRepository>.value(
-        value: userRepository,
-        child: App(userRepository: userRepository,),);
+      final userRepository = UserRepository(authenticationClient: supabaseAuthenticationClient,);
+      return App(
+        user: await userRepository.user.first, 
+        userRepository: userRepository,);
     },
     options: DefaultFirebaseOptions.currentPlatform,
     appFlavor: AppFlavor.development(),

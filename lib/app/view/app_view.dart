@@ -1,6 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:narangavellam/app/routes/routes.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:narangavellam/app/bloc/app_bloc.dart';
+import 'package:narangavellam/app/routes/routes.dart'; // ✅ make sure _rootNavigatorKey is from here
 import 'package:narangavellam/app/view/app.dart';
 import 'package:narangavellam/l10n/arb/app_localizations.dart';
 
@@ -9,8 +11,7 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-    final routerConfig = router();
+    final routerConfig = router(context.read<AppBloc>());
 
     return MaterialApp.router(
       debugShowCheckedModeBanner: false,

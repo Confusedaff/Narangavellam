@@ -12,7 +12,7 @@ import 'package:user_repository/user_repository.dart';
 
 void main() {
   bootstrap(
-    (powersyncRepository) {
+    (powersyncRepository) async{
 
       final androidClientId = getIt<AppFlavor>().getEnv(Env.androidClientId);
       final webClientId = getIt<AppFlavor>().getEnv(Env.webClientId);
@@ -31,7 +31,9 @@ void main() {
         authenticationClient: supabaseAuthenticationClient,);
       return RepositoryProvider<UserRepository>.value(
         value: userRepository,
-        child: App(userRepository: userRepository,),);
+        child: App(
+          user: await userRepository.user.first,
+          userRepository: userRepository,),);
     },
     options: DefaultFirebaseOptions.currentPlatform,
     appFlavor: AppFlavor.production(),

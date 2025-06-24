@@ -48,6 +48,8 @@ class AppTheme {
           surfaceTintColor: AppColors.white,
           backgroundColor: AppColors.white,
         ),
+        splashColor: AppColors.black.withValues(alpha: 0.04 * 255),
+        highlightColor: AppColors.black.withValues(alpha: 0.02 * 255),
       );
 
   /// Defines iOS dart SystemUiOverlayStyle.
@@ -157,11 +159,14 @@ class AppDarkTheme extends AppTheme {
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           type: BottomNavigationBarType.fixed,
         ),
+        splashFactory: InkRipple.splashFactory,
         bottomSheetTheme: const BottomSheetThemeData(
           surfaceTintColor: AppColors.background,
           backgroundColor: AppColors.background,
           modalBackgroundColor: AppColors.background,
         ),
+        splashColor: AppColors.white.withValues(alpha: 0.04 * 255),
+        highlightColor: AppColors.white.withValues(alpha: 0.02 * 255),
       );
 }
 

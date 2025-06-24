@@ -1,4 +1,5 @@
 import 'package:authentication_client/authentication_client.dart';
+import 'package:database_client/database_client.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:supabase_flutter/supabase_flutter.dart' hide User;
 import 'package:user_repository/user_repository.dart';
@@ -6,13 +7,17 @@ import 'package:user_repository/user_repository.dart';
 /// {@template user_repository}
 /// A package that manages user flow.
 /// {@endtemplate}
-class UserRepository {
+class UserRepository extends UserBaseRepository{
   /// {@macro user_repository}
-  const UserRepository({required AuthenticationClient authenticationClient})
-      : _authenticationClient = authenticationClient;
+  const UserRepository({
+    required DatabaseClient databaseClient,
+    required AuthenticationClient authenticationClient,})
+      : _databaseClient = databaseClient,
+        _authenticationClient = authenticationClient;
 
+  final DatabaseClient _databaseClient;
   final AuthenticationClient _authenticationClient;
-
+ 
   /// Stream of [User] which will emit the current user when
   /// the authentication state changes.
   Stream<User> get user => _authenticationClient.user
@@ -161,21 +166,20 @@ class UserRepository {
       Error.throwWithStackTrace(ResetPasswordFailure, stackTrace);
     }
   }
+  
+  @override
+  String? get currentUserId => _databaseClient.currentUserId;
 
+  @override
+  Stream<User> profile({required String userId}) => _databaseClient.profile(userId: userId);
 
-//   @override
-//   String? get currentUserId => _databaseClient.currentUserId;
+  @override
+  Stream<int> followersCountOf({required String userId}) =>
+      _databaseClient.followersCountOf(userId: userId);
 
-//   @override
-//   Stream<User> profile({required String id}) => _databaseClient.profile(id: id);
-
-//   @override
-//   Stream<int> followersCountOf({required String userId}) =>
-//       _databaseClient.followersCountOf(userId: userId);
-
-//   @override
-//   Stream<int> followingsCountOf({required String userId}) =>
-//       _databaseClient.followingsCountOf(userId: userId);
+  @override
+  Stream<int> followingsCountOf({required String userId}) =>
+      _databaseClient.followingsCountOf(userId: userId);
 
 //   @override
 //   Future<List<User>> getFollowers({String? userId}) =>
@@ -185,40 +189,40 @@ class UserRepository {
 //   Future<List<User>> getFollowings({String? userId}) =>
 //       _databaseClient.getFollowings(userId: userId);
 
-//   @override
-//   Future<void> follow({
-//     required String followToId,
-//     String? followerId,
-//   }) =>
-//       _databaseClient.follow(
-//         followToId: followToId,
-//         followerId: followerId,
-//       );
+  @override
+  Future<void> follow({
+    required String followToId,
+    String? followerId,
+  }) =>
+      _databaseClient.follow(
+        followToId: followToId,
+        followerId: followerId,
+      );
 
 //   @override
 //   Future<void> removeFollower({required String id}) =>
 //       _databaseClient.removeFollower(id: id);
 
-//   @override
-//   Future<void> unfollow({required String unfollowId, String? unfollowerId}) =>
-//       _databaseClient.unfollow(
-//         unfollowId: unfollowId,
-//         unfollowerId: unfollowerId,
-//       );
+  @override
+  Future<void> unfollow({required String unfollowId, String? unfollowerId}) =>
+      _databaseClient.unfollow(
+        unfollowId: unfollowId,
+        unfollowerId: unfollowerId,
+      );
 
-//   @override
-//   Future<bool> isFollowed({
-//     required String userId,
-//     String? followerId,
-//   }) =>
-//       _databaseClient.isFollowed(followerId: followerId, userId: userId);
+  @override
+  Future<bool> isFollowed({
+    required String userId,
+    required String followerId,
+  }) =>
+      _databaseClient.isFollowed(followerId: followerId, userId: userId);
 
-//   @override
-//   Stream<bool> followingStatus({
-//     required String userId,
-//     String? followerId,
-//   }) =>
-//       _databaseClient.followingStatus(followerId: followerId, userId: userId);
+  @override
+  Stream<bool> followingStatus({
+    required String userId,
+    String? followerId,
+  }) =>
+      _databaseClient.followingStatus(followerId: followerId, userId: userId);
 
 //   @override
 //   Future<void> updateUser({

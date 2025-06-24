@@ -293,6 +293,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  database_client:
+    dependency: "direct main"
+    description:
+      path: "packages/database_client"
+      relative: true
+    source: path
+    version: "0.1.0+1"
   diff_match_patch:
     dependency: transitive
     description:
@@ -919,6 +926,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.2"
+  posts_repository:
+    dependency: "direct main"
+    description:
+      path: "C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/posts_repository"
+      relative: false
+    source: path
+    version: "0.1.0+1"
   powersync:
     dependency: transitive
     description:
@@ -1106,6 +1120,14 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
+  sliver_tools:
+    dependency: "direct main"
+    description:
+      name: sliver_tools
+      sha256: eae28220badfb9d0559207badcbbc9ad5331aac829a88cb0964d330d2a4636a6
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.12"
   source_gen:
     dependency: transitive
     description:

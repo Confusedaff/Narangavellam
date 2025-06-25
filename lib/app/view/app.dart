@@ -3,6 +3,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/view/app_view.dart';
+import 'package:narangavellam/selector/locale/bloc/locale_bloc.dart';
+import 'package:narangavellam/selector/theme/view/bloc/theme_mode_bloc.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -22,7 +24,6 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-<<<<<<< HEAD
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(
@@ -32,19 +33,20 @@ class App extends StatelessWidget {
           value: postsRepository,
         ),
       ],
-=======
-    return RepositoryProvider.value(
-      value: UserRepository,
->>>>>>> 552bdcd3ae1db20f22688452298595cbdda9a8d0
-      child: BlocProvider(
-        create: (context) => AppBloc(
-          user: user,
-          userRepository: userRepository,
-<<<<<<< HEAD
-          postsRepository: postsRepository,
-=======
->>>>>>> 552bdcd3ae1db20f22688452298595cbdda9a8d0
-        ),
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: (context) => AppBloc(
+              user: user,
+              userRepository: userRepository,
+              postsRepository: postsRepository,
+            ),
+          ),
+          BlocProvider(
+            create: (context) => LocaleBloc(),
+          ),
+          BlocProvider(create: (context) => ThemeModeBloc()),
+        ],
         child: const AppView(),
       ),
     );

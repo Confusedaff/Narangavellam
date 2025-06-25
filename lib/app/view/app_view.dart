@@ -5,6 +5,9 @@ import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/routes/routes.dart'; // ✅ make sure _rootNavigatorKey is from here
 import 'package:narangavellam/app/view/app.dart';
 import 'package:narangavellam/l10n/arb/app_localizations.dart';
+import 'package:narangavellam/selector/locale/bloc/locale_bloc.dart';
+import 'package:narangavellam/selector/theme/view/bloc/theme_mode_bloc.dart';
+import 'package:shared/shared.dart';
 
 class AppView extends StatelessWidget {
   const AppView({super.key});
@@ -13,22 +16,37 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     final routerConfig = router(context.read<AppBloc>());
 
-    return MaterialApp.router(
-      debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.dark,
-      theme: const AppTheme().theme,
-      darkTheme: const AppDarkTheme().theme,
-      localizationsDelegates: AppLocalizations.localizationsDelegates,
-      supportedLocales: AppLocalizations.supportedLocales,
-      builder: (context, child) {
-        return Stack(
-          children: [
-            child!,
-            AppSnackbar(key: snackbarKey),
-          ],
+    return BlocBuilder<LocaleBloc, Locale>(
+      builder: (context, locale) {
+        return BlocBuilder<ThemeModeBloc, ThemeMode>(
+          builder: (context, themeMode) {
+            return AnimatedSwitcher(
+              duration: 350.ms,
+              child: MediaQuery(
+                data: MediaQuery.of(context).copyWith(textScaler: TextScaler.noScaling),
+                child: MaterialApp.router(
+                  debugShowCheckedModeBanner: false,
+                  themeMode: themeMode,
+                  theme: const AppTheme().theme,
+                  darkTheme: const AppDarkTheme().theme,
+                  localizationsDelegates: AppLocalizations.localizationsDelegates,
+                  supportedLocales: AppLocalizations.supportedLocales,
+                  builder: (context, child) {
+                    return Stack(
+                      children: [
+                        child!,
+                        AppSnackbar(key: snackbarKey),
+                      ],
+                    );
+                  },
+                  routerConfig: routerConfig,
+                  locale: locale,
+                ),
+              ),
+            );
+          },
         );
       },
-      routerConfig: routerConfig,
     );
   }
 }

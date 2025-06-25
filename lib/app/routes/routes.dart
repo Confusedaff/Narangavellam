@@ -22,6 +22,13 @@ GoRouter router(AppBloc appBloc) {
         builder: (context, state) => const AuthPage(),
       ),
       GoRoute(
+      path: '/settings',
+      builder: (context, state) => const SettingsPage(),
+      ),
+
+
+
+      GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/route',builder: (context,state) => AppScaffold(body: Center(child: Text('Route Page',style: context.headlineSmall,)
         ,),),),
@@ -109,27 +116,17 @@ GoRouter router(AppBloc appBloc) {
               },
             ),
           ]),
+
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/user',
               pageBuilder: (context, state) {
-<<<<<<< HEAD
 
                 final user = context.select((AppBloc bloc) => bloc.state.user);
 
                 return CustomTransitionPage(
                   child: UserProfilePage(
                     userId: user.id,
-=======
-                return CustomTransitionPage(
-                  child: AppScaffold(
-                    body: Center(
-                      child: ElevatedButton(
-                        onPressed: () => context.read<AppBloc>().add(const AppLogoutRequested()),
-                        child: const Text('Log Out'),
-                      ),
-                    ),
->>>>>>> 552bdcd3ae1db20f22688452298595cbdda9a8d0
                   ),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return SharedAxisTransition(
@@ -146,6 +143,8 @@ GoRouter router(AppBloc appBloc) {
         ],
       ),
     ],
+
+    
     redirect: (context, state) {
       final authenticated = appBloc.state.status == AppStatus.authenticated;
       final authenticating = state.matchedLocation == '/auth';

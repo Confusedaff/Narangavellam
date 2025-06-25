@@ -1,11 +1,15 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_header.dart';
 import 'package:narangavellam/l10n/l10n.dart';
+import 'package:narangavellam/selector/locale/view/locale_selector.dart';
+import 'package:narangavellam/selector/theme/view/theme_selector.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:shared/shared.dart';
 import 'package:sliver_tools/sliver_tools.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -80,16 +84,68 @@ class _UserProfileViewState extends State<UserProfileView> {
                       UserProfileHeader(
                         userId: widget.userId,
                       ),
+                      SliverPersistentHeader(
+                        pinned: !ModalRoute.of(context)!.isFirst,
+                        delegate: const _UserProfileTabBarDelegate(
+                        TabBar(
+                          indicatorSize: TabBarIndicatorSize.tab,
+                          padding: EdgeInsets.zero,
+                          labelPadding: EdgeInsets.zero,
+                        tabs: [
+                        Tab(
+                          icon: Icon(Icons.grid_on),
+                          iconMargin: EdgeInsets.zero,
+                        ),
+                        Tab(
+                          icon: Icon(Icons.person),
+                          iconMargin: EdgeInsets.zero,
+                        ),
+                      ],
+                      ),
+                      ),
+                      ),
                     ],
                   ],
                 ),
               ),
             ];
           },
-          body: const Column(),
+          body: const TabBarView(children: [
+            UserPostPage(),
+             UserProfileMentionedPostPage(),
+          ],),
         ),
       ),
     );
+  }
+}
+
+class _UserProfileTabBarDelegate extends SliverPersistentHeaderDelegate{
+  const _UserProfileTabBarDelegate(this.tabBar);
+
+  final TabBar tabBar;
+
+   @override
+  double get minExtent => tabBar.preferredSize.height;
+
+  @override
+  double get maxExtent => tabBar.preferredSize.height;
+
+  @override
+  Widget build(
+    BuildContext context,
+    double shrinkOffset,
+    bool overlapsContent,
+  ) {
+    return ColoredBox(
+      color: context.theme.scaffoldBackgroundColor,
+      child: tabBar,
+    );
+  }
+
+  @override
+  bool shouldRebuild(_UserProfileTabBarDelegate oldDelegate) {
+    return tabBar != oldDelegate.tabBar;
   }
 }
 
@@ -164,9 +220,9 @@ class UserProfileSettingsButton extends StatelessWidget {
     return Tappable(
       onTap: () => context.showListOptionsModal(
         options: [
-          // ModalOption(child: const LocaleModalOption()),
-          //ModalOption(child: const ThemeSelectorModalOption()),
-          //ModalOption(child: const LogoutModalOption()),
+          ModalOption(child: const LocaleModalOption()),
+          ModalOption(child: const ThemeSelectorModalOption()),
+          ModalOption(child: const LogoutModalOption()),
         ],
       ).then((option) {
         if (option == null) return;
@@ -184,6 +240,65 @@ class UserProfileSettingsButton extends StatelessWidget {
   }
 }
 
+class SettingsPage extends StatelessWidget {
+  const SettingsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Settings'),
+      ),
+      body: ListView(
+        children:[
+          ListTile(title: Text("Language")),
+          ListTile(
+            title: const Text('Theme'),
+              onTap: () => context.push('/settings/theme'),
+            ),
+          ListTile(
+            title: const Text('Log Out'),
+            onTap: () => context.confirmAction(
+            fn: () {
+            context.pop();
+            context.read<AppBloc>().add(const AppLogoutRequested());
+            },
+            title: context.l10n.logOutText,
+            content: context.l10n.logOutConfirmationText,
+            noText: context.l10n.cancelText,
+            yesText: context.l10n.logOutText,
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+}
+
+
+// class UserProfileSettingsButton extends StatelessWidget {
+//   const UserProfileSettingsButton({super.key});
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return Tappable(
+//       onTap: () {
+//         context.push('/settings');
+//       },
+//       child: Assets.icons.setting.svg(
+//         height: AppSize.iconSize,
+//         width: AppSize.iconSize,
+//         colorFilter: ColorFilter.mode(
+//           context.adaptiveColor,
+//           BlendMode.srcIn,
+//         ),
+//       ),
+//     );
+//   }
+// }
+
+
+
 class UserProfileAddMediaButton extends StatelessWidget {
   const UserProfileAddMediaButton({super.key});
 
@@ -199,6 +314,52 @@ class UserProfileAddMediaButton extends StatelessWidget {
       child: const Icon(
         Icons.add_box_outlined,
         size: AppSize.iconSize,
+      ),
+    );
+  }
+}
+
+class UserPostPage extends StatelessWidget {
+  const UserPostPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class UserProfileMentionedPostPage extends StatelessWidget {
+  const UserProfileMentionedPostPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container();
+  }
+}
+
+class LogoutModalOption extends StatelessWidget {
+  const LogoutModalOption({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Tappable(
+      animationEffect: TappableAnimationEffect.none,
+      onTap: () => context.confirmAction(
+        fn: () {
+          context.pop();
+          context.read<AppBloc>().add(const AppLogoutRequested());
+        },
+        title: context.l10n.logOutText,
+        content: context.l10n.logOutConfirmationText,
+        noText: context.l10n.cancelText,
+        yesText: context.l10n.logOutText,
+      ),
+      child: ListTile(
+        title: Text(
+          context.l10n.logOutText,
+          style: context.bodyLarge?.apply(color: AppColors.red),
+        ),
+        leading: const Icon(Icons.logout, color: AppColors.red),
       ),
     );
   }

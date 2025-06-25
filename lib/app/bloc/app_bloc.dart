@@ -11,12 +11,8 @@ part 'app_state.dart';
 class AppBloc extends Bloc<AppEvent, AppState> {
   AppBloc({
     required User user,
-<<<<<<< HEAD
     required UserRepository userRepository, 
     required PostsRepository postsRepository,
-=======
-    required UserRepository userRepository,
->>>>>>> 552bdcd3ae1db20f22688452298595cbdda9a8d0
   })  : _userRepository = userRepository,
         super(
           user.isAnonymous

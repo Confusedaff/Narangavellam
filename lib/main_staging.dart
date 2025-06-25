@@ -27,7 +27,6 @@ void main() {
         tokenStorage: tokenStorage,
         googleSignIn: googleSignIn,
         );
-<<<<<<< HEAD
      final powerSyncDatabaseClient = PowerSyncDatabaseClient( powerSyncRepository: powersyncRepository);
       final userRepository = UserRepository(
         databaseClient: powerSyncDatabaseClient,
@@ -38,12 +37,6 @@ void main() {
         userRepository: userRepository,
         postsRepository: postsRepository,
         );
-=======
-      final userRepository = UserRepository(authenticationClient: supabaseAuthenticationClient,);
-      return App(
-        user: await userRepository.user.first, 
-        userRepository: userRepository,);
->>>>>>> 552bdcd3ae1db20f22688452298595cbdda9a8d0
     },
     options: DefaultFirebaseOptions.currentPlatform,
     appFlavor: AppFlavor.staging(),

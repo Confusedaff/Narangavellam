@@ -54,6 +54,8 @@ dependencies:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/token_storage
   user_repository:
     path: packages/user_repository
+  hydrated_bloc: ^9.1.5
+  path_provider: ^2.1.5
 
 dev_dependencies:
   bloc_test: ^9.1.7

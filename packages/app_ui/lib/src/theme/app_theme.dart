@@ -3,6 +3,9 @@ import 'package:flex_color_scheme/flex_color_scheme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+//git trial
+
+
 /// {@template app_theme}
 /// The Default App [ThemeData].
 /// {@endtemplate}
@@ -48,8 +51,10 @@ class AppTheme {
           surfaceTintColor: AppColors.white,
           backgroundColor: AppColors.white,
         ),
-        splashColor: AppColors.black.withValues(alpha: 0.04 * 255),
-        highlightColor: AppColors.black.withValues(alpha: 0.02 * 255),
+        // ignore: deprecated_member_use
+        splashColor: Colors.black.withOpacity(0.062),
+        // ignore: deprecated_member_use
+        highlightColor: Colors.black.withOpacity(0.1),
       );
 
   /// Defines iOS dart SystemUiOverlayStyle.
@@ -159,14 +164,15 @@ class AppDarkTheme extends AppTheme {
         bottomNavigationBarTheme: const BottomNavigationBarThemeData(
           type: BottomNavigationBarType.fixed,
         ),
-        splashFactory: InkRipple.splashFactory,
         bottomSheetTheme: const BottomSheetThemeData(
           surfaceTintColor: AppColors.background,
           backgroundColor: AppColors.background,
           modalBackgroundColor: AppColors.background,
         ),
-        splashColor: AppColors.white.withValues(alpha: 0.04 * 255),
-        highlightColor: AppColors.white.withValues(alpha: 0.02 * 255),
+           // ignore: deprecated_member_use
+        splashColor: Colors.white.withOpacity(0.062),
+        // ignore: deprecated_member_use
+        highlightColor: Colors.white.withOpacity(0.1),
       );
 }
 

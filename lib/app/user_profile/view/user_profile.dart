@@ -275,30 +275,6 @@ class SettingsPage extends StatelessWidget {
   }
 }
 
-
-// class UserProfileSettingsButton extends StatelessWidget {
-//   const UserProfileSettingsButton({super.key});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Tappable(
-//       onTap: () {
-//         context.push('/settings');
-//       },
-//       child: Assets.icons.setting.svg(
-//         height: AppSize.iconSize,
-//         width: AppSize.iconSize,
-//         colorFilter: ColorFilter.mode(
-//           context.adaptiveColor,
-//           BlendMode.srcIn,
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-
-
 class UserProfileAddMediaButton extends StatelessWidget {
   const UserProfileAddMediaButton({super.key});
 
@@ -307,10 +283,54 @@ class UserProfileAddMediaButton extends StatelessWidget {
     final l10n = context.l10n;
     final user = context.select((AppBloc bloc) => bloc.state.user);
     // final enableStory =
-    //context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
+    //     context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
 
     return Tappable(
-      onTap: () {},
+      onTap: () => context
+          .showListOptionsModal(
+        title: l10n.createText,
+        options: createMediaModalOptions(
+          context: context,
+          reelLabel: l10n.reelText,
+          postLabel: l10n.postText,
+          storyLabel: l10n.storyText,
+          enableStory: true,//enableStory,
+          goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
+          onStoryCreated: (path) {
+            // context.read<CreateStoriesBloc>().add(
+            //       CreateStoriesStoryCreateRequested(
+            //         author: user,
+            //         contentType: StoryContentType.image,
+            //         filePath: path,
+            //         onError: (_, __) {
+            //           toggleLoadingIndeterminate(enable: false);
+            //           openSnackbar(
+            //             SnackbarMessage.error(
+            //               title: l10n.somethingWentWrongText,
+            //               description: l10n.failedToCreateStoryText,
+            //             ),
+            //           );
+            //         },
+            //         onLoading: toggleLoadingIndeterminate,
+            //         onStoryCreated: () {
+            //           toggleLoadingIndeterminate(enable: false);
+            //           openSnackbar(
+            //             SnackbarMessage.success(
+            //               title: l10n.successfullyCreatedStoryText,
+            //             ),
+            //             clearIfQueue: true,
+            //           );
+            //         },
+            //       ),
+            //     );
+            // context.pop();
+          },
+        ),
+      )
+       .then((option) {
+        if (option == null) return;
+        option.onTap(context);
+      }),
       child: const Icon(
         Icons.add_box_outlined,
         size: AppSize.iconSize,

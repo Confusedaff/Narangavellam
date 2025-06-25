@@ -9,6 +9,7 @@ import 'package:posts_repository/posts_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 final snackbarKey = GlobalKey<AppSnackbarState>();
+final loadingIndeterminateKey = GlobalKey<AppLoadingIndeterminateState>();
 
 class App extends StatelessWidget {
   const App({
@@ -142,9 +143,9 @@ void openSnackbar(
       ?.post(message, clearIfQueue: clearIfQueue, undismissable: undismissable);
 }
 
-// void toggleLoadingIndeterminate({bool enable = true, bool autoHide = false}) =>
-//     loadingIndeterminateKey.currentState
-//         ?.setVisibility(visible: enable, autoHide: autoHide);
+void toggleLoadingIndeterminate({bool enable = true, bool autoHide = false}) =>
+    loadingIndeterminateKey.currentState
+        ?.setVisibility(visible: enable, autoHide: autoHide);
 
 /// Closes all snack bars.
 void closeSnackbars() => snackbarKey.currentState?.closeAll();

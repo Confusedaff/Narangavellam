@@ -11,16 +11,19 @@ dev_dependencies:
   test: ^1.25.8
   very_good_analysis: ^6.0.0
 
-
 dependencies:
-
   app_ui:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/app_ui
+  blurhash: ^1.2.0
   env:
     path: ../env
   envied: ^1.1.1
   flutter:
     sdk: flutter
+  image_picker_plus:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/image_picker_plus
   intl: ^0.20.2
   logger: ^2.5.0
   powersync: ^1.13.1
+  uuid: ^4.5.1
+  video_compress: ^3.1.4

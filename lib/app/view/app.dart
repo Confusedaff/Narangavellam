@@ -22,6 +22,7 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+<<<<<<< HEAD
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(
@@ -31,11 +32,18 @@ class App extends StatelessWidget {
           value: postsRepository,
         ),
       ],
+=======
+    return RepositoryProvider.value(
+      value: UserRepository,
+>>>>>>> 552bdcd3ae1db20f22688452298595cbdda9a8d0
       child: BlocProvider(
         create: (context) => AppBloc(
           user: user,
           userRepository: userRepository,
+<<<<<<< HEAD
           postsRepository: postsRepository,
+=======
+>>>>>>> 552bdcd3ae1db20f22688452298595cbdda9a8d0
         ),
         child: const AppView(),
       ),

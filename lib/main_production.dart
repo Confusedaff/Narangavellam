@@ -31,6 +31,7 @@ void main() {
       final userRepository = UserRepository(
         databaseClient: powerSyncDatabaseClient,
         authenticationClient: supabaseAuthenticationClient,);
+<<<<<<< HEAD
       final postsRepository = PostsRepository(databaseClient: powerSyncDatabaseClient);
       
       return App(
@@ -38,6 +39,13 @@ void main() {
         userRepository: userRepository,
         postsRepository: postsRepository,
         );
+=======
+      return RepositoryProvider<UserRepository>.value(
+        value: userRepository,
+        child: App(
+          user: await userRepository.user.first,
+          userRepository: userRepository,),);
+>>>>>>> 552bdcd3ae1db20f22688452298595cbdda9a8d0
     },
     options: DefaultFirebaseOptions.currentPlatform,
     appFlavor: AppFlavor.production(),

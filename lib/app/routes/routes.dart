@@ -7,7 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/app/home/home.dart';
-import 'package:narangavellam/app/user_profile/view/user_profile.dart';
+import 'package:narangavellam/app/user_profile/view/user_profile_page.dart';
 import 'package:narangavellam/auth/view/auth_page.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root'); 
@@ -138,8 +138,66 @@ GoRouter router(AppBloc appBloc) {
                   },
                 );
               },
+               routes: [
+                    GoRoute(
+                      path: 'create_post',
+                      name: 'create_post',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      pageBuilder: (context, state) {
+                        //final pickVideo = state.extra as bool? ?? false;
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: const UserProfileCreatePost(),//pickVideo: pickVideo),
+                          transitionsBuilder: (
+                            context,
+                            animation,
+                            secondaryAnimation,
+                            child,
+                          ) {
+                            return SharedAxisTransition(
+                              animation: animation,
+                              secondaryAnimation: secondaryAnimation,
+                              transitionType:
+                                  SharedAxisTransitionType.horizontal,
+                              child: child,
+                            );
+                          },
+                        );
+                      },
+                      routes: [
+                        GoRoute(
+                          name: 'publish_post',
+                          path: 'publish_post',
+                          parentNavigatorKey: _rootNavigatorKey,
+                          pageBuilder: (context, state) {
+                            final props = state.extra! as CreatePostProps;
+
+                            return CustomTransitionPage(
+                              key: state.pageKey,
+                              child: CreatePostPage(props: props),
+                              transitionsBuilder: (
+                                context,
+                                animation,
+                                secondaryAnimation,
+                                child,
+                              ) {
+                                return SharedAxisTransition(
+                                  animation: animation,
+                                  secondaryAnimation: secondaryAnimation,
+                                  transitionType:
+                                      SharedAxisTransitionType.horizontal,
+                                  child: child,
+                                );
+                              },
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+               ],
             ),
-          ]),
+          ],
+          ),
         ],
       ),
     ],

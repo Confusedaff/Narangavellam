@@ -6,7 +6,9 @@ publish_to: none
 environment:
   sdk: ^3.5.0
 
-dependencies: 
+dependencies:
+  shared:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/shared
   database_client:
     path: ../database_client
   

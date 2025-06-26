@@ -7,6 +7,9 @@ environment:
   sdk: ^3.5.0
 
 dev_dependencies:
+  build_runner: ^2.5.4
+  freezed: ^3.0.6
+  json_serializable: ^6.9.5
   mocktail: ^1.0.4
   test: ^1.25.8
   very_good_analysis: ^6.0.0
@@ -15,15 +18,25 @@ dependencies:
   app_ui:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/app_ui
   blurhash: ^1.2.0
+  dio: ^5.8.0+1
   env:
     path: ../env
   envied: ^1.1.1
+  equatable: ^2.0.7
   flutter:
     sdk: flutter
+  flutter_image_compress: ^2.4.0
+  freezed_annotation: ^3.0.0
+  http_parser: ^4.1.2
   image_picker_plus:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/image_picker_plus
   intl: ^0.20.2
+  json_annotation: ^4.9.0
   logger: ^2.5.0
+  meta: ^1.16.0
+  mime: ^2.0.0
   powersync: ^1.13.1
+  user_repository:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/user_repository
   uuid: ^4.5.1
   video_compress: ^3.1.4

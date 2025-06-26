@@ -1,6 +1,7 @@
 // ignore_for_file: public_member_api_docs
 
 import 'package:powersync_repository/powersync_repository.dart';
+import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
 abstract class UserBaseRepository{
@@ -32,6 +33,12 @@ abstract class PostsBaseRepository {
   const PostsBaseRepository();
 
   Stream<int> postsAmountof({required String userId});
+
+  Future<Post?>createPost({
+    required String id,
+    required String caption,
+    required String media,
+  });
 }
 
 abstract class DatabaseClient implements UserBaseRepository, PostsBaseRepository{
@@ -146,6 +153,41 @@ class PowerSyncDatabaseClient extends DatabaseClient{
     ''',
       parameters: [followerId ?? currentUserId, userId],
     ).map((event) => event.isNotEmpty);
+  }
+  
+  @override
+  Future<Post?> createPost({
+    required String id, 
+    required String caption, 
+    required String media,}) 
+    async {
+    if (currentUserId == null) return null;
+    final result = await Future.wait([
+      _powerSyncRepository.db().execute(
+        '''
+        INSERT INTO posts(id, user_id, caption, media, created_at)
+        VALUES(?, ?, ?, ?, ?)
+        RETURNING *
+        ''',
+        [
+          id,
+          currentUserId,
+          caption,
+          media,
+          DateTime.timestamp().toIso8601String(),
+        ],
+      ),
+      _powerSyncRepository.db().get(
+        '''
+      SELECT * FROM profiles WHERE id = ?
+        ''',
+        [currentUserId],
+      ),
+    ]);
+    if (result.isEmpty) return null;
+    final row = Map<String, dynamic>.from((result.first as ResultSet).first);
+    final author = User.fromJson(result.last as Row);
+    return Post.fromJson(row).copyWith(author: author);
   }
 }
   

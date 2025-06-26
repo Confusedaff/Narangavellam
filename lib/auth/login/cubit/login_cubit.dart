@@ -6,7 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:form_fields/form_fields.dart';
 import 'package:shared/shared.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:user_repository/user_repository.dart';
+import 'package:user_repository/user_repository.dart' hide SubmissionStatusMessage;
 
 part 'login_state.dart';
 

@@ -12,6 +12,8 @@ dependencies:
     sdk: flutter
   powersync_repository:
     path: ../powersync_repository
+  shared:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/shared
   user_repository:
     path: ../user_repository
 

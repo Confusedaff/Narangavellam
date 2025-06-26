@@ -76,7 +76,9 @@ List<ModalOption> createMediaModalOptions({
   required BuildContext context,
   required void Function(String route, {Object? extra}) goTo,
   required bool enableStory,
-  ValueSetter<String>? onStoryCreated,
+  required Future<void> Function() onCreateReelTap,
+  ValueSetter<String>? onStoryCreated, 
+
 }) =>
     <ModalOption>[
       ModalOption(
@@ -101,5 +103,6 @@ List<ModalOption> followerModalOptions({
   required String unfollowLabel,
   required VoidCallback onUnfollowTap,
 }) =>
-    <ModalOption>[ModalOption(name: unfollowLabel, onTap: onUnfollowTap)];
-    
+    <ModalOption>[ModalOption(name: unfollowLabel, onTap: onUnfollowTap,
+    ),
+];

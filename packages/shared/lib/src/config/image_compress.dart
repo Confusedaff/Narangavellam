@@ -18,7 +18,11 @@ class PickImage {
 
   static final PickImage _internal = PickImage._();
 
-  late TabsTexts _tabsTexts;
+  TabsTexts? _tabsTexts;
+
+  TabsTexts get tabsTexts => _tabsTexts ?? const TabsTexts();
+
+  // late TabsTexts _tabsTexts;
 
   // ignore: use_setters_to_change_properties
   void init({TabsTexts? tabsTexts}) {
@@ -62,7 +66,7 @@ class PickImage {
           maximumSelection: maxSelection,
           showImagePreview: showPreview,
           cropImage: cropImage,
-          tabsTexts: _tabsTexts,
+          tabsTexts: this.tabsTexts,
           appTheme: _appTheme(context),
           callbackFunction: (details) => onMediaPicked.call(context, details),
         ),
@@ -85,7 +89,7 @@ class PickImage {
           cropImage: cropImage,
           maximumSelection: maxSelection,
           showImagePreview: showPreview,
-          tabsTexts: _tabsTexts,
+          tabsTexts: this.tabsTexts,
           pickAvatar: pickAvatar,
           appTheme: _appTheme(context),
           gridDelegate: _sliverGridDelegate(),
@@ -111,7 +115,7 @@ class PickImage {
           showImagePreview: showPreview,
           cropImage: cropImage,
           maximumSelection: maxSelection,
-          tabsTexts: _tabsTexts,
+          tabsTexts: tabsTexts,
           appTheme: _appTheme(context),
           callbackFunction: (details) => onMediaPicked.call(context, details),
         ),
@@ -132,7 +136,7 @@ class PickImage {
         galleryDisplaySettings: GalleryDisplaySettings(
           showImagePreview: true,
           cropImage: true,
-          tabsTexts: _tabsTexts,
+          tabsTexts: this.tabsTexts,
           appTheme: _appTheme(context),
           callbackFunction: (details) async => onMediaPicked.call(details),
         ),

@@ -4,6 +4,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
+import 'package:narangavellam/app/user_profile/widgets/user_profile_create_post.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_header.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:narangavellam/selector/locale/view/locale_selector.dart';
@@ -251,7 +252,7 @@ class SettingsPage extends StatelessWidget {
       ),
       body: ListView(
         children:[
-          ListTile(title: Text("Language")),
+          const ListTile(title: Text('Language')),
           ListTile(
             title: const Text('Theme'),
               onTap: () => context.push('/settings/theme'),
@@ -281,10 +282,9 @@ class UserProfileAddMediaButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    final user = context.select((AppBloc bloc) => bloc.state.user);
+    //final user = context.select((AppBloc bloc) => bloc.state.user);
     // final enableStory =
     //     context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
-
     return Tappable(
       onTap: () => context
           .showListOptionsModal(
@@ -296,37 +296,18 @@ class UserProfileAddMediaButton extends StatelessWidget {
           storyLabel: l10n.storyText,
           enableStory: true,//enableStory,
           goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
-          onStoryCreated: (path) {
-            // context.read<CreateStoriesBloc>().add(
-            //       CreateStoriesStoryCreateRequested(
-            //         author: user,
-            //         contentType: StoryContentType.image,
-            //         filePath: path,
-            //         onError: (_, __) {
-            //           toggleLoadingIndeterminate(enable: false);
-            //           openSnackbar(
-            //             SnackbarMessage.error(
-            //               title: l10n.somethingWentWrongText,
-            //               description: l10n.failedToCreateStoryText,
-            //             ),
-            //           );
-            //         },
-            //         onLoading: toggleLoadingIndeterminate,
-            //         onStoryCreated: () {
-            //           toggleLoadingIndeterminate(enable: false);
-            //           openSnackbar(
-            //             SnackbarMessage.success(
-            //               title: l10n.successfullyCreatedStoryText,
-            //             ),
-            //             clearIfQueue: true,
-            //           );
-            //         },
-            //       ),
-            //     );
-            // context.pop();
-          },
+          onCreateReelTap: () => PickImage().pickVideo(
+             context,
+              onMediaPicked: (context, details) => context.pushNamed(
+              'publish_post',
+              extra: CreatePostProps(
+              details: details,
+              isReel: true,
+            ),
+          ),
         ),
-      )
+      ),
+    )
        .then((option) {
         if (option == null) return;
         option.onTap(context);

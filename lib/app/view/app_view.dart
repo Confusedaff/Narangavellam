@@ -2,9 +2,10 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
-import 'package:narangavellam/app/routes/routes.dart'; // ✅ make sure _rootNavigatorKey is from here
+import 'package:narangavellam/app/routes/routes.dart';
 import 'package:narangavellam/app/view/app.dart';
-import 'package:narangavellam/l10n/arb/app_localizations.dart';
+import 'package:narangavellam/app/view/app_init_utilities.dart';
+import 'package:narangavellam/l10n/app_localizations.dart';
 import 'package:narangavellam/selector/locale/bloc/locale_bloc.dart';
 import 'package:narangavellam/selector/theme/view/bloc/theme_mode_bloc.dart';
 import 'package:shared/shared.dart';
@@ -20,6 +21,7 @@ class AppView extends StatelessWidget {
       builder: (context, locale) {
         return BlocBuilder<ThemeModeBloc, ThemeMode>(
           builder: (context, themeMode) {
+            WidgetsBinding.instance.addPostFrameCallback((_) => initUtilities(context, locale));
             return AnimatedSwitcher(
               duration: 350.ms,
               child: MediaQuery(

@@ -259,9 +259,56 @@ GoRouter router(AppBloc appBloc) {
                         );
                       },
                     ),
+                    GoRoute(
+                      path: 'edit',
+                      name: 'edit_profile',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      pageBuilder: (context, state) {
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: const UserProfileEdit(),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return SharedAxisTransition(
+                              animation: animation,
+                              secondaryAnimation: secondaryAnimation,
+                              transitionType: SharedAxisTransitionType.vertical,
+                              child: child,
+                            );
+                          },
+                        );
+                      },
+                      routes: [
+                        GoRoute(
+                          path: 'info/:label',
+                          name: 'edit_profile_info',
+                          parentNavigatorKey: _rootNavigatorKey,
+                          pageBuilder: (context, state) {
+                            final query = state.uri.queryParameters;
+                            final label = state.pathParameters['label']!;
+                            final appBarTitle = query['title']!;
+                            final description = query['description'];
+                            final infoValue = query['value'];
+                            final infoType =
+                                state.extra as ProfileEditInfoType?;
+
+                            return MaterialPage<void>(
+                              fullscreenDialog: true,
+                              child: ProfileInfoEditPage(
+                                appBarTitle: appBarTitle,
+                                description: description,
+                                infoValue: infoValue,
+                                infoLabel: label,
+                                infoType: infoType!,
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ],
-            ),
-          ],
+                ),
+            ],
           ),
         ],
       ),

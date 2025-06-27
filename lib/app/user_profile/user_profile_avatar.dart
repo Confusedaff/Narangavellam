@@ -102,45 +102,45 @@ class UserProfileAvatar extends StatelessWidget {
         ),
       );
 
- Future<void> _pickImage(BuildContext context) async {
-  Future<void> precacheAvatarUrl(String url) =>
-      precacheImage(CachedNetworkImageProvider(url), context);
+  Future<void> _pickImage(BuildContext context) async {
+    final imageFile = await PickImage()
+        .pickImage(context, source: ImageSource.both, pickAvatar: true);
+    if (imageFile == null) return;
 
-  final imageFile = await PickImage()
-      .pickImage(context, source: ImageSource.both, pickAvatar: true);
-  if (imageFile == null) return;
+    final selectedFile = imageFile.selectedFiles.firstOrNull;
+    if (selectedFile == null) return;
 
-  final selectedFile = imageFile.selectedFiles.firstOrNull;
-  if (selectedFile == null) return;
+    final compressedFile = await compressImageFile(selectedFile.selectedFile);
+    final file = compressedFile ?? selectedFile.selectedFile;
+    final bytes = await file.readAsBytes();
 
-  // 🔁 Replace ImageCompress with custom function
-  final compressedFile = await compressImageFile(selectedFile.selectedFile);
-  final file = compressedFile ?? selectedFile.selectedFile;
-  final bytes = await file.readAsBytes();
+    final avatarsStorage = Supabase.instance.client.storage.from('avatars');
+    final fileExt = file.path.split('.').last.toLowerCase();
+    final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
+    final filePath = fileName;
 
-  final avatarsStorage = Supabase.instance.client.storage.from('avatars');
-  final fileExt = file.path.split('.').last.toLowerCase();
-  final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
-  final filePath = fileName;
+    await avatarsStorage.uploadBinary(
+      filePath,
+      bytes,
+      fileOptions:
+          FileOptions(contentType: 'image/$fileExt', cacheControl: '360000'),
+    );
 
-  await avatarsStorage.uploadBinary(
-    filePath,
-    bytes,
-    fileOptions:
-        FileOptions(contentType: 'image/$fileExt', cacheControl: '360000'),
-  );
+    final imageUrlResponse = await avatarsStorage.createSignedUrl(
+      filePath,
+      60 * 60 * 24 * 365 * 10,
+    );
 
-  final imageUrlResponse =
-      await avatarsStorage.createSignedUrl(filePath, 60 * 60 * 24 * 365 * 10);
+    if (context.mounted) {
+      try {
+        await precacheImage(CachedNetworkImageProvider(imageUrlResponse), context);
+      } catch (error, stackTrace) {
+        logE('Failed to precache avatar url', error: error, stackTrace: stackTrace);
+      }
+    }
 
-  try {
-    await precacheAvatarUrl(imageUrlResponse);
-  } catch (error, stackTrace) {
-    logE('Failed to precache avatar url', error: error, stackTrace: stackTrace);
+    onImagePick?.call(imageUrlResponse);
   }
-
-  onImagePick?.call(imageUrlResponse);
-}
 
   Future<File?> compressImageFile(File file) async {
   final targetPath = '${file.parent.path}/${DateTime.now().millisecondsSinceEpoch}.jpg';

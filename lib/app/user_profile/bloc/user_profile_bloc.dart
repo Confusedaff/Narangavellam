@@ -23,6 +23,7 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           on<UserProfileFetchFollowingsRequested>(_onUserProfileFetchFollowingsRequested);
           on<UserProfileFollowersSubscriptionRequested>(_onUserProfileFollowersSubscriptionRequested);
           on<UserProfileRemoveFollowerRequested>(_onUserProfileRemoveFollowerRequested);
+          on<UserProfileUpdateRequested>(_onUserProfileUpdateRequested);
         }
   
   final String _userId;
@@ -116,6 +117,26 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
       await _userRepository.removeFollower(id: event.userId ?? _userId);
     } catch (error, stackTrace) {
       addError(error, stackTrace);
+    }
+  }
+
+  Future<void> _onUserProfileUpdateRequested(
+    UserProfileUpdateRequested event,
+    Emitter<UserProfileState> emit,
+    ) async {
+   try {
+      await _userRepository.updateUser(
+      email: event.email,
+      username: event.username,
+      avatarUrl: event.avatarUrl,
+      fullName: event.fullName,
+      pushToken: event.pushToken,
+    );
+
+    emit(state.copyWith(status: UserProfileStatus.userUpdated));
+    } catch (error, stackTrace) {
+    addError(error, stackTrace);
+    emit(state.copyWith(status: UserProfileStatus.userUpdateFailed));
     }
   }
 

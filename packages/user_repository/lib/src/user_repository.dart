@@ -237,21 +237,21 @@ class UserRepository extends UserBaseRepository{
       Future<void> removeFollower({required String id}) => 
       _databaseClient.removeFollower(id: id);
           
-//   @override
-//   Future<void> updateUser({
-//     String? fullName,
-//     String? email,
-//     String? username,
-//     String? avatarUrl,
-//     String? pushToken,
-//   }) =>
-//       _databaseClient.updateUser(
-//         fullName: fullName,
-//         email: email,
-//         username: username,
-//         avatarUrl: avatarUrl,
-//         pushToken: pushToken,
-//       );
+  @override
+  Future<void> updateUser({
+    String? fullName,
+    String? email,
+    String? username,
+    String? avatarUrl,
+    String? pushToken,
+  }) =>
+      _databaseClient.updateUser(
+        fullName: fullName,
+        email: email,
+        username: username,
+        avatarUrl: avatarUrl,
+        pushToken: pushToken,
+      );
 
 //   @override
 //   Future<List<User>> searchUsers({

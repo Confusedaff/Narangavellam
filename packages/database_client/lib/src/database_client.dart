@@ -19,6 +19,14 @@ abstract class UserBaseRepository{
   required String userId,
   });
 
+  Future<void> updateUser({
+    String? fullName,
+    String? email,
+    String? username,
+    String? avatarUrl,
+    String? pushToken,
+  });
+
   Future<void> removeFollower({required String id});
 
    /// Returns a list of followings of the user identified by [userId].
@@ -259,6 +267,27 @@ class PowerSyncDatabaseClient extends DatabaseClient{
         [id, currentUserId],
       );
     }
+    
+      @override
+      Future<void> updateUser({
+        String? fullName,
+        String? email,
+        String? username,
+        String? avatarUrl,
+        String? pushToken,
+        String? password,
+      }) =>
+          _powerSyncRepository.updateUser(
+            email: email,
+            password: password,
+            data: {
+              if (fullName != null) 'full_name': fullName,
+              if (username != null) 'username': username,
+              if (avatarUrl != null) 'avatar_url': avatarUrl,
+              if (pushToken != null) 'push_token': pushToken,
+            },
+          );
+
 
 }
   

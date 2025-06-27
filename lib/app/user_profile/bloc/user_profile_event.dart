@@ -57,9 +57,15 @@ final class UserProfileFetchFollowingsRequested extends UserProfileEvent {
   final String? userId;
 }
 
-final class UserProfileFollowersSubscriptionRequested extends UserProfileEvent {
-  const UserProfileFollowersSubscriptionRequested();
+class UserProfileFollowersSubscriptionRequested extends UserProfileEvent {
+  final String userId;
+
+  const UserProfileFollowersSubscriptionRequested(this.userId);
+
+  @override
+  List<Object> get props => [userId];
 }
+
 
 final class UserProfileFollowUserRequested extends UserProfileEvent {
   const UserProfileFollowUserRequested({this.userId});

@@ -19,7 +19,10 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           on<UserProfilePostsCountSubscriptionRequested>(_onUserProfilePostsCountSubscriptionRequested);
           on<UserProfileFollowersCountSubscriptionRequested>(_onUserProfileFollowersCountSubscriptionRequested);
           on<UserProfileFollowingsCountSubscriptionRequested>(_onUserProfileFollowingsCountSubscriptionRequested);
-          on<UserProfileFollowUserRequested>(_OnUserProfileFollowUserRequested);
+          on<UserProfileFollowUserRequested>(_onUserProfileFollowUserRequested);
+          on<UserProfileFetchFollowingsRequested>(_onUserProfileFetchFollowingsRequested);
+          on<UserProfileFollowersSubscriptionRequested>(_onUserProfileFollowersSubscriptionRequested);
+          on<UserProfileRemoveFollowerRequested>(_onUserProfileRemoveFollowerRequested);
         }
   
   final String _userId;
@@ -40,47 +43,80 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
      );
   }
 
-    Future<void> _onUserProfilePostsCountSubscriptionRequested(
-    UserProfilePostsCountSubscriptionRequested event,
-    Emitter<UserProfileState> emit,
-  ) async{
-  await emit.forEach(
-    _postsRepository.postsAmountof(userId:_userId),
-    onData: (postsCount) => state.copyWith(postsCount: postsCount),
-   );
-}
-
-Future<void> _onUserProfileFollowingsCountSubscriptionRequested(
-  UserProfileFollowingsCountSubscriptionRequested event,
-  Emitter<UserProfileState> emit,
-) async {
-  await emit.forEach(
-    _userRepository.followingsCountOf(userId: _userId),
-    onData: (followingsCount) =>
-      state.copyWith(followingsCount: followingsCount),
-  );
-}
-
-Future<void> _onUserProfileFollowersCountSubscriptionRequested(
-  UserProfileFollowersCountSubscriptionRequested event,
-  Emitter<UserProfileState> emit,
-) async {
-  await emit.forEach(
-    _userRepository.followersCountOf(userId: _userId),
-    onData: (followersCount) =>
-      state.copyWith(followersCount: followersCount),
-  );
-}
-
-Future<void> _OnUserProfileFollowUserRequested(
-  UserProfileFollowUserRequested event,
-  Emitter<UserProfileState> emit,
-) async {
-  try{
-    await _userRepository.follow(followToId: event.userId ?? _userId);
-  }catch(error,stackTrace){
-    addError(error,stackTrace);
+      Future<void> _onUserProfilePostsCountSubscriptionRequested(
+      UserProfilePostsCountSubscriptionRequested event,
+      Emitter<UserProfileState> emit,
+    ) async{
+    await emit.forEach(
+      _postsRepository.postsAmountof(userId:_userId),
+      onData: (postsCount) => state.copyWith(postsCount: postsCount),
+    );
   }
-}
+
+  Future<void> _onUserProfileFollowingsCountSubscriptionRequested(
+    UserProfileFollowingsCountSubscriptionRequested event,
+    Emitter<UserProfileState> emit,
+  ) async {
+    await emit.forEach(
+      _userRepository.followingsCountOf(userId: _userId),
+      onData: (followingsCount) =>
+        state.copyWith(followingsCount: followingsCount),
+    );
+  }
+
+  Future<void> _onUserProfileFollowersCountSubscriptionRequested(
+    UserProfileFollowersCountSubscriptionRequested event,
+    Emitter<UserProfileState> emit,
+  ) async {
+    await emit.forEach(
+      _userRepository.followersCountOf(userId: _userId),
+      onData: (followersCount) =>
+        state.copyWith(followersCount: followersCount),
+    );
+  }
+
+  Future<void> _onUserProfileFollowUserRequested(
+    UserProfileFollowUserRequested event,
+    Emitter<UserProfileState> emit,
+  ) async {
+    try{
+      await _userRepository.follow(followToId: event.userId ?? _userId);
+    }catch(error,stackTrace){
+      addError(error,stackTrace);
+    }
+  }
+
+  Future<void> _onUserProfileFollowersSubscriptionRequested(
+  UserProfileFollowersSubscriptionRequested event,
+  Emitter<UserProfileState> emit,
+  ) async {
+  await emit.forEach(
+    _userRepository.followers(userId: _userId),
+    onData: (followers) => state.copyWith(followers: followers),
+    );
+  }
+
+    Future<void> _onUserProfileFetchFollowingsRequested(
+    UserProfileFetchFollowingsRequested event,
+    Emitter<UserProfileState> emit,
+    ) async {
+    try {
+      final followings = await _userRepository.getFollowings(userId: _userId);
+      emit(state.copyWith(followings: followings));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
+  }
+
+   Future<void> _onUserProfileRemoveFollowerRequested(
+    UserProfileRemoveFollowerRequested event,
+    Emitter<UserProfileState> emit,
+  ) async {
+    try {
+      await _userRepository.removeFollower(id: event.userId ?? _userId);
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
+  }
 
 }

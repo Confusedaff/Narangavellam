@@ -9,6 +9,8 @@ import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/app/home/home.dart';
 import 'package:narangavellam/app/user_profile/view/user_profile_page.dart';
 import 'package:narangavellam/auth/view/auth_page.dart';
+import 'package:posts_repository/posts_repository.dart';
+import 'package:user_repository/user_repository.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root'); 
 
@@ -194,7 +196,45 @@ GoRouter router(AppBloc appBloc) {
                         ),
                       ],
                     ),
-               ],
+                    GoRoute(
+                      path: 'statistics',
+                      name: 'user_statistics',
+                      parentNavigatorKey: _rootNavigatorKey,
+                      pageBuilder: (context, state) {
+                        final userId = state.uri.queryParameters['user_id'] ?? context.read<AppBloc>().state.user.id;
+                        final tabIndex = state.extra as int? ?? 0;
+
+                        return CustomTransitionPage(
+                          key: state.pageKey,
+                          child: BlocProvider(
+                            create: (context) => UserProfileBloc(
+                              userId: userId,
+                              userRepository: context.read<UserRepository>(),
+                              postsRepository: context.read<PostsRepository>(),
+                            )
+                              ..add(const UserProfileSubscriptionRequested())
+                              ..add(
+                                const UserProfileFollowingsCountSubscriptionRequested(),
+                              )
+                              ..add(
+                                const UserProfileFollowersCountSubscriptionRequested(),
+                              ),
+                            child: UserProfileStatistics(tabIndex: tabIndex),
+                          ),
+                          transitionsBuilder:
+                              (context, animation, secondaryAnimation, child) {
+                            return SharedAxisTransition(
+                              animation: animation,
+                              secondaryAnimation: secondaryAnimation,
+                              transitionType:
+                                  SharedAxisTransitionType.horizontal,
+                              child: child,
+                            );
+                          },
+                        );
+                      },
+                    ),
+                  ],
             ),
           ],
           ),

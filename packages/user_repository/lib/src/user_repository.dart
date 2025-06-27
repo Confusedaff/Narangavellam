@@ -223,7 +223,20 @@ class UserRepository extends UserBaseRepository{
     String? followerId,
   }) =>
       _databaseClient.followingStatus(followerId: followerId, userId: userId);
-
+      
+      @override
+      Stream<List<User>> followers({required String userId}) => 
+        _databaseClient.followers(userId: userId);
+       
+      
+      @override
+      Future<List<User>> getFollowings({String? userId}) => 
+        _databaseClient.getFollowings(userId: userId);
+          
+      @override
+      Future<void> removeFollower({required String id}) => 
+      _databaseClient.removeFollower(id: id);
+          
 //   @override
 //   Future<void> updateUser({
 //     String? fullName,

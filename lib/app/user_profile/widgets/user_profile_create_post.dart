@@ -99,13 +99,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   Future<void> _onShareTap(String caption) async{
     void goHome(){
-      if(widget.props.isReel){
-        context
-              ..pop()
-              ..pop();
-      }else{
+       context.go('/user');
+    if (widget.props.isReel) {
+    logI('Navigating home...');
+    context.go('/user');
+    } else {
+    // handle non-reel case
+    }
 
-      }
     }
 
     final navigateToReelPage = widget.props.isReel ||

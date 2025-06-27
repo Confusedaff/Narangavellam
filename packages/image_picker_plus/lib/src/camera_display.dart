@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker_plus/src/custom_crop.dart';
 import 'package:image_picker_plus/src/entities/app_theme.dart';
 import 'package:image_picker_plus/src/entities/selected_image_details.dart';
@@ -12,7 +13,6 @@ import 'package:image_picker_plus/src/utilities/enum.dart';
 import 'package:image_picker_plus/src/utilities/extensions/file_extension.dart';
 import 'package:image_picker_plus/src/video_layout/record_count.dart';
 import 'package:image_picker_plus/src/video_layout/record_fade_animation.dart';
-import 'package:insta_assets_crop/insta_assets_crop.dart';
 import 'package:photo_manager/photo_manager.dart';
 
 class CustomCameraDisplay extends StatefulWidget {
@@ -369,24 +369,29 @@ class CustomCameraDisplayState extends State<CustomCameraDisplay> {
     );
   }
 
-  Future<File?> cropImage(File imageFile) async {
-    await InstaAssetsCrop.requestPermissions();
-    final scale = cropKey.currentState!.scale;
-    final area = cropKey.currentState!.area;
-    if (area == null) {
-      return null;
-    }
-    final sample = await InstaAssetsCrop.sampleImage(
-      file: imageFile,
-      preferredSize: (2000 / scale).round(),
-    );
-    final File file = await InstaAssetsCrop.cropImage(
-      file: sample,
-      area: area,
-    );
-    sample.delete();
-    return file;
-  }
+ Future<File?> cropImage(File imageFile) async {
+  // Open interactive cropper UI for the user
+  final CroppedFile? cropped = await ImageCropper().cropImage(
+    sourcePath: imageFile.path,
+    aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1), // customize aspect ratio if needed
+    uiSettings: [
+      AndroidUiSettings(
+        toolbarTitle: 'Crop Image',
+        toolbarColor: Colors.blue,
+        toolbarWidgetColor: Colors.white,
+        initAspectRatio: CropAspectRatioPreset.original,
+        lockAspectRatio: false, // true if you want a fixed aspect ratio
+      ),
+      IOSUiSettings(
+        title: 'Crop Image',
+      ),
+    ],
+  );
+
+  // Return the cropped file or null if the user cancelled
+  if (cropped == null) return null;
+  return File(cropped.path);
+}
 
   GestureDetector cameraButton(BuildContext context) {
     Color whiteColor = widget.appTheme.primaryColor;

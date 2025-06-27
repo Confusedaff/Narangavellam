@@ -55,7 +55,7 @@ Widget build(BuildContext context) {
         animation: Listenable.merge([_opacity, _visible]),
         builder: (context, child) {
           return AnimatedOpacity(
-            duration: 250.ms,
+            duration: 700.ms,
             opacity: _opacity.value,
             child: _visible.value
                 ? CircularProgressIndicator(

@@ -2,12 +2,12 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker_plus/image_picker_plus.dart';
 import 'package:image_picker_plus/src/crop_image_view.dart';
 import 'package:image_picker_plus/src/custom_crop.dart';
 import 'package:image_picker_plus/src/image.dart';
 import 'package:image_picker_plus/src/multi_selection_mode.dart';
-import 'package:insta_assets_crop/insta_assets_crop.dart';
 import 'package:shimmer/shimmer.dart';
 
 class ImagesViewPage extends StatefulWidget {
@@ -460,7 +460,7 @@ class _ImagesViewPageState extends State<ImagesViewPage>
                         final currentImage = widget.multiSelectedMedia.value[i];
                         final isThatVideo = currentImage.isVideo;
                         final croppedImage = !isThatVideo && widget.cropImage
-                            ? await cropImage(currentImage, indexOfCropImage: i)
+                            ? await cropImage(currentImage)
                             : null;
                         final image = croppedImage ?? currentImage;
                         final byte = await image.readAsBytes();
@@ -698,32 +698,28 @@ class _ImagesViewPageState extends State<ImagesViewPage>
     }
   }
 
-  Future<File?> cropImage(File imageFile, {int? indexOfCropImage}) async {
-    await InstaAssetsCrop.requestPermissions();
-    double? scale;
-    Rect? area;
-    if (indexOfCropImage == null) {
-      scale = cropKey.currentState?.scale;
-      area = cropKey.currentState?.area;
-    } else {
-      scale = scaleOfCropsKeys.value[indexOfCropImage];
-      area = areaOfCropsKeys.value[indexOfCropImage];
-    }
+ Future<File?> cropImage(File imageFile) async {
+  // Start cropping with image_cropper; it opens a native UI.
+  final CroppedFile? croppedFile = await ImageCropper().cropImage(
+    sourcePath: imageFile.path,
+    uiSettings: [
+      AndroidUiSettings(
+        toolbarTitle: 'Crop Image',
+        toolbarColor: Colors.black,
+        toolbarWidgetColor: Colors.white,
+        initAspectRatio: CropAspectRatioPreset.original,
+        lockAspectRatio: false,
+      ),
+      IOSUiSettings(
+        title: 'Crop Image',
+      ),
+    ],
+  );
 
-    if (area == null || scale == null) return null;
+  if (croppedFile == null) return null; // user canceled
 
-    final sample = await InstaAssetsCrop.sampleImage(
-      file: imageFile,
-      preferredSize: (2000 / scale).round(),
-    );
-
-    final file = await InstaAssetsCrop.cropImage(
-      file: sample,
-      area: area,
-    );
-    sample.delete();
-    return file;
-  }
+  return File(croppedFile.path);
+}
 
   void clearMultiImages() {
     // setState(() {

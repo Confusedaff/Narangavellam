@@ -16,7 +16,7 @@ class SignUpForm extends StatelessWidget {
         if(state.submissionStatus.isSuccess){
           openSnackbar(
             const SnackbarMessage.success(
-              title: 'YAY,Account Created !!! You can login now.',
+              title: 'Welcom to Naranga Vellam.',
             ),
           );
         }

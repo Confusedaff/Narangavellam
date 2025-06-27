@@ -1,12 +1,11 @@
 import 'dart:io';
 
-import 'package:authentication_client/authentication_client.dart';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:form_fields/form_fields.dart';
-import 'package:shared/shared.dart';
-import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:user_repository/user_repository.dart' hide SubmissionStatusMessage;
+import 'package:powersync_repository/powersync_repository.dart';
+import 'package:shared/shared.dart' hide SubmissionStatusMessage;
+import 'package:user_repository/user_repository.dart';
 
 part 'sign_up_state.dart';
 
@@ -19,7 +18,8 @@ class SignUpCubit extends Cubit<SignupState> {
   /// {@macro sign_up_cubit}
   SignUpCubit({
     required UserRepository userRepository,
-  }): _userRepository=userRepository,super (const SignupState.initial());
+  })  : _userRepository = userRepository,
+        super(const SignupState.initial());
 
   final UserRepository _userRepository;
 
@@ -42,7 +42,7 @@ class SignUpCubit extends Cubit<SignupState> {
         ? Email.dirty(
             newValue,
           )
-        : Email.dirty(
+        : Email.pure(
             newValue,
           );
 
@@ -80,7 +80,7 @@ class SignUpCubit extends Cubit<SignupState> {
         ? Password.dirty(
             newValue,
           )
-        : Password.dirty(
+        : Password.pure(
             newValue,
           );
 
@@ -116,7 +116,7 @@ class SignUpCubit extends Cubit<SignupState> {
         ? FullName.dirty(
             newValue,
           )
-        : FullName.dirty(
+        : FullName.pure(
             newValue,
           );
 
@@ -154,7 +154,7 @@ class SignUpCubit extends Cubit<SignupState> {
         ? Username.dirty(
             newValue,
           )
-        : Username.dirty(
+        : Username.pure(
             newValue,
           );
 
@@ -181,124 +181,79 @@ class SignUpCubit extends Cubit<SignupState> {
 
   /// Defines method to submit form. It is used to check if all inputs are valid
   /// and if so, it is used to signup user.
-  // Future<void> onSubmit({
-  //   File? avatarFile,
-  // }) async {
-  //   final email = Email.dirty(state.email.value);
-  //   final password = Password.dirty(state.password.value);
-  //   final fullName = FullName.dirty(state.fullName.value);
-  //   final username = Username.dirty(state.username.value);
-  //   final isFormValid =
-  //       FormzValid([email, password, fullName, username]).isFormValid;
+  Future<void> onSubmit({
+    File? avatarFile,
+  }) async {
+    final email = Email.dirty(state.email.value);
+    final password = Password.dirty(state.password.value);
+    final fullName = FullName.dirty(state.fullName.value);
+    final username = Username.dirty(state.username.value);
+    final isFormValid =
+        FormzValid([email, password, fullName, username]).isFormValid;
 
-  //   final newState = state.copyWith(
-  //     email: email,
-  //     password: password,
-  //     fullName: fullName,
-  //     username: username,
-  //     submissionStatus: isFormValid ? SignUpSubmissionStatus.inProgress : null,
-  //   );
+    final newState = state.copyWith(
+      email: email,
+      password: password,
+      fullName: fullName,
+      username: username,
+      submissionStatus: isFormValid ? SignUpSubmissionStatus.inProgress : null,
+    );
 
-  //   emit(newState);
+    emit(newState);
 
-  //   if (!isFormValid) return;
+    if (!isFormValid) return;
 
-    // try {
-    //   String? imageUrlResponse;
-    //   if (avatarFile != null) {
-    //     final imageBytes =
-    //         await PickImage().imageBytes(file: File(avatarFile.path));
-    //     final avatarsStorage = Supabase.instance.client.storage.from('avatars');
+    try {
+      String? imageUrlResponse;
+      if (avatarFile != null) {
+        final imageBytes =
+            await PickImage().imageBytes(file: File(avatarFile.path));
+        final avatarsStorage = Supabase.instance.client.storage.from('avatars');
 
-    //     final fileExt = avatarFile.path.split('.').last.toLowerCase();
-    //     final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
-    //     final filePath = fileName;
-    //     await avatarsStorage.uploadBinary(
-    //       filePath,
-    //       imageBytes,
-    //       fileOptions: FileOptions(
-    //         contentType: 'image/$fileExt',
-    //         cacheControl: '360000',
-    //       ),
-    //     );
-    //     imageUrlResponse = await avatarsStorage.createSignedUrl(
-    //       filePath,
-    //       60 * 60 * 24 * 365 * 10,
-    //     );
-    //   }
+        final fileExt = avatarFile.path.split('.').last.toLowerCase();
+        final fileName = '${DateTime.now().toIso8601String()}.$fileExt';
+        final filePath = fileName;
+        await avatarsStorage.uploadBinary(
+          filePath,
+          imageBytes,
+          fileOptions: FileOptions(
+            contentType: 'image/$fileExt',
+            cacheControl: '360000',
+          ),
+        );
+        imageUrlResponse = await avatarsStorage.createSignedUrl(
+          filePath,
+          60 * 60 * 24 * 365 * 10,
+        );
+      }
 
-      // final pushToken = await _notificationsClient.fetchToken();
-
-      // await _userRepository.signUpWithPassword(
-      //   email: email.value,
-      //   password: password.value,
-      //   fullName: fullName.value,
-      //   username: username.value,
-      //   avatarUrl: imageUrlResponse,
-      //   pushToken: pushToken,
-      // );
-
-  //     if (isClosed) return;
-  //     emit(state.copyWith(submissionStatus: SignUpSubmissionStatus.success));
-  //   } catch (e, stackTrace) {
-  //     _errorFormatter(e, stackTrace);
-  //   }
-  // }
-
-  // /// Defines method to format error. It is used to format error in order to
-  // /// show it to user.
-  void _errorFormatter(Object e, StackTrace stackTrace) {
-  addError(e, stackTrace);
-
-  final submissionStatus = switch (e) {
-    SignUpWithPasswordFailure(:final AuthException error) => switch (
-      error.statusCode?.parse) {
-        HttpStatus.badRequest =>
-          SignUpSubmissionStatus.emailAlreadyRegistered,
-        _ => SignUpSubmissionStatus.error,
-      },
-    _ => SignUpSubmissionStatus.idle,
-  };
-
-  final newState = state.copyWith(
-    submissionStatus: submissionStatus,
-  );
-  emit(newState);
-}
-
-
-  Future<void> onSubmit(File? avatarFile) async {
-  final email = Email.dirty(state.email.value);
-  final fullName = FullName.dirty(state.fullName.value);
-  final username = Username.dirty(state.username.value);
-  final password = Password.dirty(state.password.value);
-  final isFormValid =
-      FormzValid([email, fullName, username, password]).isFormValid;
-
-  final newState = state.copyWith(
-    email: email,
-    fullName: fullName,
-    username: username,
-    password: password,
-    submissionStatus: isFormValid ? SignUpSubmissionStatus.inProgress : null,
-  );
-
-  emit(newState);
-
-  if (!isFormValid) return;
-
-  try {
-    await _userRepository.signUpWithPassword(
-      password: state.password.value,
-      fullName: state.fullName.value,
-      username: state.username.value,
-      email: state.email.value,
+      await _userRepository.signUpWithPassword(
+        email: email.value,
+        password: password.value,
+        fullName: fullName.value,
+        username: username.value,
+        avatarUrl: imageUrlResponse,
       );
-     if(isClosed) return;
-     emit(state.copyWith(submissionStatus: SignUpSubmissionStatus.success));
-  } catch (error,stackTrace) {
-    _errorFormatter(error,stackTrace);
-  } 
 
+      if (isClosed) return;
+      emit(state.copyWith(submissionStatus: SignUpSubmissionStatus.success));
+    } catch (e, stackTrace) {
+      _errorFormatter(e, stackTrace);
+    }
+  }
+
+  /// Defines method to format error. It is used to format error in order to
+  /// show it to user.
+  void _errorFormatter(Object e, StackTrace stackTrace) {
+    addError(e, stackTrace);
+
+    SignUpSubmissionStatus submissionStatus() {
+      return SignUpSubmissionStatus.error;
+    }
+
+    final newState = state.copyWith(
+      submissionStatus: submissionStatus(),
+    );
+    emit(newState);
   }
 }

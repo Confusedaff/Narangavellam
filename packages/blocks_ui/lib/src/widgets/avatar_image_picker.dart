@@ -1,16 +1,11 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
-import 'package:shared/shared.dart';
+import 'package:image_cropper/image_cropper.dart';
+import 'package:image_picker/image_picker.dart';
 
-/// AvatarImagePicker displays a circular avatar image that can be uploaded
-/// from the device.
-///
-/// Tapping the avatar opens an image picker to select a new image.
-/// Provides option to compress images before uploading.
-class AvatarImagePicker extends StatelessWidget {
+class AvatarImagePicker extends StatefulWidget {
   const AvatarImagePicker({
     this.compress = true,
     this.radius = 64,
@@ -30,48 +25,69 @@ class AvatarImagePicker extends StatelessWidget {
   final double placeholderSize;
   final bool withPlaceholder;
 
-  /// Picks an image from the device's gallery or camera and passes the image
-  /// bytes and file to the provided callback.
-  ///
-  /// Handles compressing the image before returning it.
-  // Future<void> _pickImage(BuildContext context) async {
-  //   final file = await PickImage().pickImage(
-  //     context,
-  //     pickAvatar: true,
-  //     source: ImageSource.both,
-  //   );
-  //   if (file == null) return;
+  @override
+  State<AvatarImagePicker> createState() => _AvatarImagePickerState();
+}
 
-  //   final selectedFile = file.selectedFiles.firstOrNull;
-  //   if (selectedFile == null) return;
-  //   final compressed =
-  //       await ImageCompress.compressFile(selectedFile.selectedFile);
-  //   final compressedFile = compressed == null ? null : File(compressed.path);
-  //   final newFile = compressedFile ?? selectedFile.selectedFile;
-  //   final compressedBytes = compressedFile == null
-  //       ? null
-  //       : await PickImage().imageBytes(file: compressedFile);
-  //   final bytes = compressedBytes ?? selectedFile.selectedByte;
-  //   onUpload?.call(bytes, newFile);
-  // }
+class _AvatarImagePickerState extends State<AvatarImagePicker> {
+  Uint8List? _localImageBytes;
+
+  Future<void> _pickImage(BuildContext context) async {
+    final picker = ImagePicker();
+    final picked = await picker.pickImage(
+      source: ImageSource.gallery,
+      imageQuality: widget.compress ? 85 : null,
+    );
+    if (picked == null) return;
+
+    final cropped = await ImageCropper().cropImage(
+      sourcePath: picked.path,
+      aspectRatio: const CropAspectRatio(ratioX: 1, ratioY: 1),
+      uiSettings: [
+        AndroidUiSettings(
+          toolbarTitle: 'Crop Avatar',
+          toolbarColor: Colors.blue,
+          toolbarWidgetColor: Colors.white,
+          hideBottomControls: true,
+          lockAspectRatio: true,
+        ),
+        IOSUiSettings(
+          title: 'Crop Avatar',
+          aspectRatioLockEnabled: true,
+        ),
+      ],
+    );
+    if (cropped == null) return;
+
+    final file = File(cropped.path);
+    final bytes = await file.readAsBytes();
+
+    // Update state to reflect the new image
+    setState(() {
+      _localImageBytes = bytes;
+    });
+
+    widget.onUpload?.call(bytes, file);
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      //onTap: () => _pickImage.call(context),
+    final image = _localImageBytes ?? widget.imageBytes;
+
+    return GestureDetector(
+      onTap: () => _pickImage(context),
       child: Stack(
         children: [
           CircleAvatar(
-            radius: radius,
+            radius: widget.radius,
             backgroundColor: Colors.grey.shade500,
-            backgroundImage:
-                imageBytes == null ? null : MemoryImage(imageBytes!),
-            child: imageBytes != null
+            backgroundImage: image == null ? null : MemoryImage(image),
+            child: image != null
                 ? null
-                : withPlaceholder
+                : widget.withPlaceholder
                     ? Icon(
                         Icons.person,
-                        size: placeholderSize,
+                        size: widget.placeholderSize,
                       )
                     : null,
           ),
@@ -86,12 +102,12 @@ class AvatarImagePicker extends StatelessWidget {
                 shape: BoxShape.circle,
                 border: Border.all(
                   width: 2,
-                  color: context.reversedAdaptiveColor,
+                  color: Colors.white,
                 ),
               ),
               child: const Icon(
                 Icons.add,
-                size: AppSize.iconSizeSmall,
+                size: 16,
               ),
             ),
           ),

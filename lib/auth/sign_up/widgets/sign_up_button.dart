@@ -27,7 +27,7 @@ class SignUpButton extends StatelessWidget {
       true => AppButton.inProgress(style: style, scale: 0.5),
       _ => AppButton.auth(
           context.l10n.signUpText,
-          () => context.read<SignUpCubit>().onSubmit(avatarFile),
+          () => context.read<SignUpCubit>().onSubmit(avatarFile: avatarFile),
           style: style,
           outlined: true,
         ),

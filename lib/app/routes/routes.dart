@@ -27,13 +27,38 @@ GoRouter router(AppBloc appBloc) {
       path: '/settings',
       builder: (context, state) => const SettingsPage(),
       ),
-
-
-
       GoRoute(
         parentNavigatorKey: _rootNavigatorKey,
         path: '/route',builder: (context,state) => AppScaffold(body: Center(child: Text('Route Page',style: context.headlineSmall,)
-        ,),),),
+          ,)
+        ,),
+      ),
+        GoRoute(
+          path: '/users/:user_id',
+          name: 'user_profile',
+          parentNavigatorKey: _rootNavigatorKey,
+          pageBuilder: (context, state) {
+            final userId = state.pathParameters['user_id']!;
+            //final props = state.extra as UserProfileProps?;
+
+            return CustomTransitionPage(
+              key: state.pageKey,
+              child: UserProfilePage(
+                userId: userId,
+                //props: props ?? const UserProfileProps.build(),
+              ),
+              transitionsBuilder:
+                  (context, animation, secondaryAnimation, child) {
+                return SharedAxisTransition(
+                  animation: animation,
+                  secondaryAnimation: secondaryAnimation,
+                  transitionType: SharedAxisTransitionType.horizontal,
+                  child: child,
+                );
+              },
+            );
+          },
+        ),
       StatefulShellRoute.indexedStack(
         parentNavigatorKey: _rootNavigatorKey, 
         builder: (context, state, navigationShell) {

@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
+import 'package:narangavellam/app/user_profile/user_profile_avatar.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_button.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:shared/shared.dart';
@@ -38,10 +39,17 @@ class UserProfileHeader extends StatelessWidget {
           children: [
             Row(
               children: [
-                CircleAvatar(
-                  backgroundImage: NetworkImage(user.avatarUrl ?? ''),
-                  radius: 32,
-                ),
+                UserProfileAvatar(
+                  avatarUrl: user.avatarUrl,
+                    onLongPress: (avatarUrl) => avatarUrl == null
+                      ? null
+                      : context.showImagePreview(avatarUrl),
+                    onTap: (imageUrl) {
+                      if (imageUrl == null) return;
+                      if (!isOwner) context.showImagePreview(imageUrl);
+                    },
+                    animationEffect: TappableAnimationEffect.scale,
+                    ), // UserProfileAvatar
                 const Gap.h(AppSpacing.md),
                 Expanded(child: UserProfileStatisticsCounts(
                   onStatisticTap: (tabIndex) => _pushToUserStatisticInfo(context, tabIndex: tabIndex),

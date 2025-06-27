@@ -99,7 +99,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   Future<void> _onShareTap(String caption) async{
     void goHome(){
-       context.go('/user');
+      context.go('/user');
     if (widget.props.isReel) {
     logI('Navigating home...');
     context.go('/user');

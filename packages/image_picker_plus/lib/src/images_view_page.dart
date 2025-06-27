@@ -446,11 +446,22 @@ class _ImagesViewPageState extends State<ImagesViewPage>
                         areaOfCropsKeys.value.add(cropKey.currentState?.area);
                       } else {
                         if (indexOfLatestImage != -1) {
-                          scaleOfCropsKeys.value[indexOfLatestImage] =
-                              cropKey.currentState?.scale;
-                          areaOfCropsKeys.value[indexOfLatestImage] =
-                              cropKey.currentState?.area;
+                        final scale = cropKey.currentState?.scale;
+                        final area = cropKey.currentState?.area;
+
+                        // Grow the lists if needed
+                        while (scaleOfCropsKeys.value.length <= indexOfLatestImage) {
+                          scaleOfCropsKeys.value.add(null);
                         }
+                        while (areaOfCropsKeys.value.length <= indexOfLatestImage) {
+                          areaOfCropsKeys.value.add(null);
+                        }
+
+                        // Now safe to assign
+                        scaleOfCropsKeys.value[indexOfLatestImage] = scale;
+                        areaOfCropsKeys.value[indexOfLatestImage] = area;
+                      }
+
                       }
 
                       final selectedBytes = <SelectedByte>[];

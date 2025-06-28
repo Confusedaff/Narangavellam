@@ -211,28 +211,7 @@ class PowerSyncDatabaseClient extends DatabaseClient{
     return Post.fromJson(row).copyWith(author: author);
   }
 
-  @override
-  Future<List<User>> getFollowings({String? userId}) async {
-    final followingsUserId = await _powerSyncRepository.db().getAll(
-      'SELECT subscribed_to_id FROM subscriptions WHERE subscriber_id = ? ',
-      [userId ?? currentUserId],
-    );
-    if (followingsUserId.isEmpty) return [];
-
-    final followings = <User>[];
-    for (final followingsUserId in followingsUserId) {
-      final result = await _powerSyncRepository.db().execute(
-        'SELECT * FROM profiles WHERE id = ?',
-        [followingsUserId['subscribed_to_id']],
-      );
-      if (result.isEmpty) continue;
-      final following = User.fromJson(result.first);
-      followings.add(following);
-    }
-    return followings;
-  }
-
-  @override
+ @override
   Stream<List<User>> followers({required String userId}) async* {
     final streamResult = _powerSyncRepository.db().watch(
       'SELECT subscriber_id FROM subscriptions WHERE subscribed_to_id = ? ',
@@ -255,6 +234,27 @@ class PowerSyncDatabaseClient extends DatabaseClient{
       }
       yield followers;
     }
+  }
+
+  @override
+  Future<List<User>> getFollowings({String? userId}) async {
+    final followingsUserId = await _powerSyncRepository.db().getAll(
+      'SELECT subscribed_to_id FROM subscriptions WHERE subscriber_id = ? ',
+      [userId ?? currentUserId],
+    );
+    if (followingsUserId.isEmpty) return [];
+
+    final followings = <User>[];
+    for (final followingsUserId in followingsUserId) {
+      final result = await _powerSyncRepository.db().execute(
+        'SELECT * FROM profiles WHERE id = ?',
+        [followingsUserId['subscribed_to_id']],
+      );
+      if (result.isEmpty) continue;
+      final following = User.fromJson(result.first);
+      followings.add(following);
+    }
+    return followings;
   }
   
   @override
@@ -287,7 +287,4 @@ class PowerSyncDatabaseClient extends DatabaseClient{
               if (pushToken != null) 'push_token': pushToken,
             },
           );
-
-
 }
-  

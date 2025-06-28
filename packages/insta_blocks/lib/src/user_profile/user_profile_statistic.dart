@@ -16,24 +16,24 @@ class UserProfileStatistic extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-  return Tappable(
-    animationEffect: TappableAnimationEffect.none,
-    onTap: onTap,
-    child: Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        StatisticValue(value: value),
-        Text(
-          name.toLowerCase(),
-          style: context.bodyLarge,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-        ),
-      ],
-    ),
-  );
+    return Tappable(
+      onTap: onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          StatisticValue(value: value),
+          Text(
+            name.toLowerCase(),
+            style: context.bodyLarge,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
 }
-}
+
 class StatisticValue extends StatelessWidget {
   const StatisticValue({required this.value, super.key});
 

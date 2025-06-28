@@ -28,8 +28,6 @@ class _UserProfileFollowersState extends State<UserProfileFollowers>
   @override
   bool get wantKeepAlive => true;
 
-
-
   @override
   Widget build(BuildContext context) {
     super.build(context);

@@ -2,6 +2,8 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
+import 'package:narangavellam/app/user_profile/widgets/user_profile_followers.dart';
+import 'package:narangavellam/app/user_profile/widgets/user_profile_followings.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 
 class UserProfileStatistics extends StatefulWidget {
@@ -45,8 +47,8 @@ class _UserProfileStatisticsState extends State<UserProfileStatistics>
         body: TabBarView(
           controller: _tabController,
           children: const [
-            // UserProfileFollowers(),
-            // UserProfileFollowings(),
+            UserProfileFollowers(),
+            UserProfileFollowings(),
           ],
         ),
       ),

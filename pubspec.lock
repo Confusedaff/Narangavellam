@@ -118,13 +118,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "9.1.7"
-  blocks_ui:
-    dependency: "direct main"
-    description:
-      path: "C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/blocks_ui"
-      relative: false
-    source: path
-    version: "0.1.0+1"
   blurhash:
     dependency: transitive
     description:
@@ -911,7 +904,7 @@ packages:
     source: hosted
     version: "4.3.0"
   image_cropper:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: image_cropper
       sha256: "4e9c96c029eb5a23798da1b6af39787f964da6ffc78fd8447c140542a9f7c6fc"
@@ -1013,6 +1006,13 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
+  insta_blocks:
+    dependency: "direct main"
+    description:
+      path: "C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/insta_blocks"
+      relative: false
+    source: path
+    version: "0.1.0+1"
   intl:
     dependency: "direct main"
     description:
@@ -1109,6 +1109,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.11.1"
+  maths:
+    dependency: "direct main"
+    description:
+      name: maths
+      sha256: "3fac1af53908d5e1948bd4736b44f7d1c87fd7f5b39834872f3595cffbe722a7"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.0.2"
   meta:
     dependency: transitive
     description:

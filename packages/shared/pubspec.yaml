@@ -36,6 +36,7 @@ dependencies:
   meta: ^1.16.0
   mime: ^2.0.0
   powersync: ^1.13.1
+  stream_transform: ^2.1.1
   user_repository:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/user_repository
   uuid: ^4.5.1

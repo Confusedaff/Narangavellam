@@ -3,7 +3,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
-  group('BlocksUi', () {
+  group('InstaBlocks', () {
     test('can be instantiated', () {
     });
   });

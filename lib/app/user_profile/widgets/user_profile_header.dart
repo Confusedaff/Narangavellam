@@ -1,8 +1,8 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:blocks_ui/blocks_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:insta_blocks/insta_blocks.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
 import 'package:narangavellam/app/user_profile/user_profile_avatar.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_button.dart';
@@ -53,7 +53,7 @@ class UserProfileHeader extends StatelessWidget {
                 const Gap.h(AppSpacing.md),
                 Expanded(child: UserProfileStatisticsCounts(
                   onStatisticTap: (tabIndex) => _pushToUserStatisticInfo(context, tabIndex: tabIndex),
-                )),
+                ),),
               ],
             ),
             const Gap.v(AppSpacing.md),

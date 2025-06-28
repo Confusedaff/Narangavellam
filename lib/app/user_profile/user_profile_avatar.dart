@@ -13,7 +13,7 @@ typedef UserProfilePlaceholderBuilder = Widget Function(
   String url,
 );
 
-class UserProfileAvatar extends StatelessWidget {
+class UserProfileAvatar extends StatefulWidget {
   const UserProfileAvatar({
     this.userId,
     super.key,
@@ -90,6 +90,11 @@ class UserProfileAvatar extends StatelessWidget {
     border: Border.fromBorderSide(BorderSide(width: 3, color: Colors.white)),
   );
 
+  @override
+  State<UserProfileAvatar> createState() => _UserProfileAvatarState();
+}
+
+class _UserProfileAvatarState extends State<UserProfileAvatar> {
   BoxDecoration _greyBorderDecoration(BuildContext context) => BoxDecoration(
         shape: BoxShape.circle,
         border: Border.fromBorderSide(
@@ -131,15 +136,13 @@ class UserProfileAvatar extends StatelessWidget {
       60 * 60 * 24 * 365 * 10,
     );
 
-    if (context.mounted) {
+    if (!mounted) return;
       try {
         await precacheImage(CachedNetworkImageProvider(imageUrlResponse), context);
       } catch (error, stackTrace) {
         logE('Failed to precache avatar url', error: error, stackTrace: stackTrace);
       }
-    }
-
-    onImagePick?.call(imageUrlResponse);
+    widget.onImagePick?.call(imageUrlResponse);
   }
 
   Future<File?> compressImageFile(File file) async {
@@ -148,20 +151,19 @@ class UserProfileAvatar extends StatelessWidget {
   final compressedXFile = await FlutterImageCompress.compressAndGetFile(
     file.absolute.path,
     targetPath,
-    quality: 85, // You can tweak this for higher/lower compression
+    quality: 85,
     format: CompressFormat.jpeg,
   );
 
   return compressedXFile != null ? File(compressedXFile.path) : null;
 }
 
-
   @override
   Widget build(BuildContext context) {
-    final radius = (this.radius) ??
-        (isLarge
+    final radius = (this.widget.radius) ??
+        (widget.isLarge
             ? 42.0
-            : withAdaptiveBorder
+            : widget.withAdaptiveBorder
                 ? 22.0
                 : 18.0);
     late final height = radius * 2;
@@ -169,18 +171,18 @@ class UserProfileAvatar extends StatelessWidget {
 
 
     BoxDecoration? border() {
-      if (!enableInactiveBorder && !showStories) return null;
-      if (showStories) return _gradientBorderDecoration;
-      if (enableInactiveBorder && !showStories) {
+      if (!widget.enableInactiveBorder && !widget.showStories) return null;
+      if (widget.showStories) return UserProfileAvatar._gradientBorderDecoration;
+      if (widget.enableInactiveBorder && !widget.showStories) {
         return _greyBorderDecoration(context);
       }
       return null;
     }
 
     Gradient? gradient() {
-      if (!enableInactiveBorder && !showStories) return null;
-      if (showStories) return _defaultGradient;
-      if (enableInactiveBorder && !showStories) {
+      if (!widget.enableInactiveBorder && !widget.showStories) return null;
+      if (widget.showStories) return UserProfileAvatar._defaultGradient;
+      if (widget.enableInactiveBorder && !widget.showStories) {
         return LinearGradient(
           colors: [Colors.grey.shade600, Colors.grey.shade600],
         );
@@ -191,27 +193,27 @@ class UserProfileAvatar extends StatelessWidget {
     late Widget avatar;
 
     Widget placeholder(BuildContext context, String url) =>
-        withShimmerPlaceholder
+        widget.withShimmerPlaceholder
             ? ShimmerPlaceholder(radius: radius)
-            : placeholderBuilder?.call(context, url) ??
-                _defaultPlaceholder(
+            : widget.placeholderBuilder?.call(context, url) ??
+                UserProfileAvatar._defaultPlaceholder(
                   context: context,
                   radius: radius,
                 );
 
-    if (avatarUrl == null || (avatarUrl?.trim().isEmpty ?? true)) {
+    if (widget.avatarUrl == null || (widget.avatarUrl?.trim().isEmpty ?? true)) {
       final circleAvatar = CircleAvatar(
         radius: radius,
         backgroundColor: AppColors.white,
         foregroundImage: ResizeImage.resizeIfNeeded(
-          resizeWidth,
-          resizeHeight,
+          widget.resizeWidth,
+          widget.resizeHeight,
           Assets.images.profilePhoto.provider(),
         ),
       );
-      if (!withAdaptiveBorder) {
+      if (!widget.withAdaptiveBorder) {
         avatar = GradientCircleContainer(
-          strokeWidth: strokeWidth ?? 2,
+          strokeWidth: widget.strokeWidth ?? 2,
           radius: radius,
           gradient: gradient(),
           child: circleAvatar,
@@ -227,8 +229,8 @@ class UserProfileAvatar extends StatelessWidget {
               Container(
                 decoration: border() != null
                     ? context.isDark
-                        ? _blackBorderDecoration
-                        : _whiteBorderDecoration
+                        ? UserProfileAvatar._blackBorderDecoration
+                        : UserProfileAvatar._whiteBorderDecoration
                     : null,
                 child: circleAvatar,
               ),
@@ -238,9 +240,9 @@ class UserProfileAvatar extends StatelessWidget {
       }
     } else {
       final image = CachedNetworkImage(
-        imageUrl: avatarUrl!,
+        imageUrl: widget.avatarUrl!,
         fit: BoxFit.cover,
-        cacheKey: avatarUrl,
+        cacheKey: widget.avatarUrl,
         height: height,
         width: width,
         memCacheHeight: height.toInt(),
@@ -250,23 +252,23 @@ class UserProfileAvatar extends StatelessWidget {
           backgroundColor: AppColors.white,
           radius: radius,
           foregroundImage: ResizeImage.resizeIfNeeded(
-            resizeWidth,
-            resizeHeight,
+            widget.resizeWidth,
+            widget.resizeHeight,
             Assets.images.profilePhoto.provider(),
           ),
         ),
         imageBuilder: (context, imageProvider) => CircleAvatar(
           radius: radius,
           backgroundImage: ResizeImage.resizeIfNeeded(
-            resizeWidth,
-            resizeHeight,
+            widget.resizeWidth,
+            widget.resizeHeight,
             imageProvider,
           ),
         ),
       );
-      if (!withAdaptiveBorder) {
+      if (!widget.withAdaptiveBorder) {
         avatar = GradientCircleContainer(
-          strokeWidth: strokeWidth ?? 2,
+          strokeWidth: widget.strokeWidth ?? 2,
           radius: radius,
           gradient: gradient(),
           child: image,
@@ -282,8 +284,8 @@ class UserProfileAvatar extends StatelessWidget {
               Container(
                 decoration: border() != null
                     ? context.isDark
-                        ? _blackBorderDecoration
-                        : _whiteBorderDecoration
+                        ? UserProfileAvatar._blackBorderDecoration
+                        : UserProfileAvatar._whiteBorderDecoration
                     : null,
                 child: image,
               ),
@@ -293,27 +295,27 @@ class UserProfileAvatar extends StatelessWidget {
       }
     }
 
-    if (withAddButton) {
+    if (widget.withAddButton) {
       final plusCircularIcon = Positioned(
         bottom: 0,
         right: 0,
         child: Tappable(
-          onTap: onAddButtonTap,
+          onTap: widget.onAddButtonTap,
           animationEffect: TappableAnimationEffect.scale,
           child: Container(
-            width: isLarge ? 32 : 18,
-            height: isLarge ? 32 : 18,
+            width: widget.isLarge ? 32 : 18,
+            height: widget.isLarge ? 32 : 18,
             decoration: BoxDecoration(
               color: Colors.blue,
               shape: BoxShape.circle,
               border: Border.all(
-                width: isLarge ? 3 : 2,
+                width: widget.isLarge ? 3 : 2,
                 color: context.reversedAdaptiveColor,
               ),
             ),
             child: Icon(
               Icons.add,
-              size: isLarge ? AppSize.iconSizeSmall : AppSize.iconSizeXSmall,
+              size: widget.isLarge ? AppSize.iconSizeSmall : AppSize.iconSizeXSmall,
             ),
           ),
         ),
@@ -322,15 +324,15 @@ class UserProfileAvatar extends StatelessWidget {
     }
 
     return Tappable(
-      onTap: onTap == null
-          ? !onTapPickImage
+      onTap: widget.onTap == null
+          ? !widget.onTapPickImage
               ? null
               : () => _pickImage.call(context)
-          : () => onTap?.call(avatarUrl),
+          : () => widget.onTap?.call(widget.avatarUrl),
       onLongPress:
-          onLongPress == null ? null : () => onLongPress?.call(avatarUrl),
-      animationEffect: animationEffect,
-      scaleStrength: scaleStrength,
+          widget.onLongPress == null ? null : () => widget.onLongPress?.call(widget.avatarUrl),
+      animationEffect: widget.animationEffect,
+      scaleStrength: widget.scaleStrength,
       child: avatar,
     );
   }

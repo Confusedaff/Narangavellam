@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:app_ui/app_ui.dart';
-import 'package:blocks_ui/blocks_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:narangavellam/app/user_profile/widgets/avatar_image_picker.dart';
 import 'package:narangavellam/auth/sign_up/signup.dart';
 import 'package:narangavellam/auth/sign_up/widgets/sign_up_button.dart';
 import 'package:user_repository/user_repository.dart';

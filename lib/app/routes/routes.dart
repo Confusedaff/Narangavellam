@@ -7,8 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/app/home/home.dart';
-import 'package:narangavellam/app/user_profile/view/user_profile_page.dart';
 import 'package:narangavellam/auth/view/auth_page.dart';
+import 'package:narangavellam/feed/feed.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -70,11 +70,7 @@ GoRouter router(AppBloc appBloc) {
               path: '/feed',
               pageBuilder: (context, state) {
                 return CustomTransitionPage(
-                  child: AppScaffold(
-                    body: Center(
-                      child: ElevatedButton(onPressed: () => context.push('/route'), child: const Text('Go to route')),
-                    ),
-                  ),
+                  child:const FeedPage(),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return SharedAxisTransition(
                       animation: animation,

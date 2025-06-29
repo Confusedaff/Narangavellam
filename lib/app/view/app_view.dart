@@ -6,6 +6,7 @@ import 'package:narangavellam/app/routes/routes.dart';
 import 'package:narangavellam/app/view/app.dart';
 import 'package:narangavellam/app/view/app_init_utilities.dart';
 import 'package:narangavellam/l10n/app_localizations.dart';
+import 'package:narangavellam/l10n/slang/translations.g.dart';
 import 'package:narangavellam/selector/locale/bloc/locale_bloc.dart';
 import 'package:narangavellam/selector/theme/view/bloc/theme_mode_bloc.dart';
 import 'package:shared/shared.dart';
@@ -19,6 +20,9 @@ class AppView extends StatelessWidget {
 
     return BlocBuilder<LocaleBloc, Locale>(
       builder: (context, locale) {
+          WidgetsBinding.instance.addPostFrameCallback(
+          (_) => LocaleSettings.setLocaleRaw(locale.languageCode),
+          );
         return BlocBuilder<ThemeModeBloc, ThemeMode>(
           builder: (context, themeMode) {
             WidgetsBinding.instance.addPostFrameCallback((_) => initUtilities(context, locale));

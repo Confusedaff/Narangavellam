@@ -3,7 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:insta_blocks/insta_blocks.dart';
+import 'package:instagram_blocks_ui/widget/better_stream_builder.dart';
 import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_button.dart';
 import 'package:narangavellam/l10n/l10n.dart';

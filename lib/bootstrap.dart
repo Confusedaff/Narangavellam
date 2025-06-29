@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:narangavellam/app/app.dart';
+import 'package:narangavellam/l10n/l10n.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
@@ -61,7 +62,7 @@ Future<void> bootstrap(
     final powerSyncRepository = PowerSyncRepository(env: appFlavor.getEnv);
       await powerSyncRepository.initialize();
 
-    runApp(await builder(powerSyncRepository));
+    runApp(TranslationProvider(child: await builder(powerSyncRepository)));
   },
   (error, stack) {
     logE(error.toString(), stackTrace: stack);

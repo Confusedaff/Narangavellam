@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_blocks/insta_blocks.dart';
+import 'package:narangavellam/l10n/slang/translations.g.dart';
 import 'package:shared/shared.dart';
 
 class FeedPage extends StatelessWidget {
@@ -33,6 +34,13 @@ class FeedView extends StatelessWidget {
     return AppScaffold(
                     body: Column(
                       children: [
+                        Text.rich(
+                            t.likedBy(
+                              name: const TextSpan(text: 'KP'),
+                              and: const TextSpan(text: 'and'),
+                              others: const TextSpan(text: '5 others'),
+                            ),
+                          ), 
                         Expanded(
                           child: ListView.builder(
                             itemCount: feed.length,

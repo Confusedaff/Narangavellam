@@ -44,6 +44,8 @@ dependencies:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/image_picker_plus
   insta_blocks:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/insta_blocks
+  instagram_blocks_ui:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/instagram_blocks_ui
   intl: ^0.20.2
   maths: ^0.0.2
   mocktail: ^1.0.4
@@ -55,11 +57,14 @@ dependencies:
   shared:
     path: packages/shared
   shimmer: ^3.0.0
+  slang: ^4.7.2
+  slang_flutter: ^4.7.0
   sliver_tools: ^0.2.12
   supabase: ^2.8.0
   supabase_authentication_client:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/supabase_authentication_client
   supabase_flutter: ^2.9.1
+  timeago: ^3.7.1
   token_storage:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/token_storage
   user_repository:
@@ -71,6 +76,7 @@ dev_dependencies:
   envied_generator: ^1.1.1
   flutter_test:
     sdk: flutter
+  slang_build_runner: ^4.7.0
   very_good_analysis: ^6.0.0
 
 flutter:

@@ -1,7 +1,5 @@
 /// A Very Good Project created by Very Good CLI.
 library;
-
-export 'src/better_stream_builder.dart';
 export 'src/bloc_action_converter.dart';
 export 'src/block_action.dart';
 export 'src/insta_block.dart';

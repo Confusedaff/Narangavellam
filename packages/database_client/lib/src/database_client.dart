@@ -55,6 +55,31 @@ abstract class PostsBaseRepository {
     required String caption,
     required String media,
   });
+
+  Stream<int> likesOf({
+    required String id,
+    bool post = true,
+  });
+
+   Future<List<User>> getPostLikersInFollowings({
+    required String postId,
+    int limit = 3,
+    int offset = 0,
+  });
+
+   Future<List<Post>> getPage({
+    required int offset,
+    required int limit,
+    bool onlyReels = false,
+  });
+
+  Stream<bool> isLiked({
+    required String id,
+    String? userId,
+    bool post = true,
+  });
+
+  Stream<int> commentsAmountOf({required String postId});
 }
 
 abstract class DatabaseClient implements UserBaseRepository, PostsBaseRepository
@@ -287,4 +312,204 @@ class PowerSyncDatabaseClient extends DatabaseClient{
               if (pushToken != null) 'push_token': pushToken,
             },
           );
+
+           @override
+  Future<List<Post>> getPage({
+    required int offset,
+    required int limit,
+    bool onlyReels = false,
+  }) async {
+          //     if (onlyReels) {
+          //       final result = await _powerSyncRepository.db().execute(
+          //         '''
+          // SELECT
+          //   posts.*,
+          //   p.id as user_id,
+          //   p.avatar_url as avatar_url,
+          //   p.username as username
+          // FROM
+          //   posts
+          //   inner join profiles p on posts.user_id = p.id
+          // WHERE array_length(array(posts.media), 1) = 1
+          //   AND posts.media.type = '__video_media__'
+          // LIMIT ?1 OFFSET ?2
+          //     ''',
+          //         [limit, offset],
+          //       );
+
+          //       final posts = <Post>[];
+
+          //       for (final row in result) {
+          //         final json = Map<String, dynamic>.from(row);
+          //         final post = Post.fromJson(json);
+          //         posts.add(post);
+          //       }
+          //       return posts;
+          //     }
+    final result = await _powerSyncRepository.db().computeWithDatabase(
+      (db) async {
+        final result = db.select(
+                  '''
+        SELECT
+          posts.*,
+          p.id as user_id,
+          p.avatar_url as avatar_url,
+          p.username as username,
+          p.full_name as full_name
+        FROM
+          posts
+          inner join profiles p on posts.user_id = p.id 
+        ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
+            ''',
+          [limit, offset],
+        );
+        // final jsonListMedia = result.map((row) {
+        //   final json = Map<String, dynamic>.from(row);
+        //   return json['media'] as String;
+        // }).toList();
+
+        // final receivePort = ReceivePort();
+
+        // void computeJsonListMedia(List<dynamic> args) {
+        //   final sendPort = args[0] as SendPort;
+        //   final jsonListMedia = args[1] as List<String>;
+        //   final listMedia = jsonListMedia
+        //       .map(
+        //         (jsonMedia) => (jsonDecode(jsonMedia) as List<dynamic>)
+        //             .cast<Map<String, dynamic>>(),
+        //       )
+        //       .toList();
+
+        //   return sendPort.send(listMedia);
+        // }
+
+        // final isolate = await Isolate.spawn(
+        //   computeJsonListMedia,
+        //   [receivePort.sendPort, jsonListMedia],
+        // );
+        // isolate.kill(priority: Isolate.immediate);
+        // final media =
+        //     await receivePort.first as List<List<Map<String, dynamic>>>;
+
+        final posts = <Post>[];
+        for (final row in result) {
+            final json = Map<String, dynamic>.from(row);
+            final post = Post.fromJson(json);
+            posts.add(post);
+          }
+
+        // for (var i = 0; i < result.length; i++) {
+        //   final json = Map<String, dynamic>.from(result[i]);
+        //   final post = Post(
+        //     id: json['id'] as String,
+        //     createdAt: DateTime.parse(json['created_at'] as String),
+        //     author: User(
+        //       id: json['user_id'] as String,
+        //       avatarUrl: json['avatar_url'] as String?,
+        //       username: json['username'] as String?,
+        //       fullName: json['full_name'] as String?,
+        //     ),
+        //     caption: json['caption'] as String,
+        //     media: List<Media>.from(media[i].map(Media.fromJson).toList()),
+        //   );
+        //   posts.add(post);
+        //}
+        return posts;
+      },
+    );
+// final result = await _powerSyncRepository.db().execute(
+//           '''
+// SELECT
+//   posts.*,
+//   p.id as user_id,
+//   p.avatar_url as avatar_url,
+//   p.username as username,
+//   p.full_name as full_name
+// FROM
+//   posts
+//   inner join profiles p on posts.user_id = p.id
+// ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
+//     ''',
+//           [limit, offset],
+//         );
+
+//     final instaBlocks = result.map((row) {
+//       final json = Map<String, dynamic>.from(row);
+//       return Post.fromJson(json);
+//     }).toList();
+    return result;
+  }
+
+  @override
+    Stream<int> likesOf({required String id, bool post = true}) {
+    final statement = post ? 'post_id' : 'comment_id';
+    return _powerSyncRepository.db().watch(
+    '''
+    SELECT COUNT(*) AS total_likes
+    FROM likes
+    WHERE $statement = ? AND $statement IS NOT NULL
+    ''',
+          parameters: [id],
+        ).map((result) => result.safeMap((row) => row['total_likes']).first as int);
+  }
+
+  @override
+  Future<List<User>> getPostLikersInFollowings({
+    required String postId,
+    int limit = 3,
+    int offset = 0,
+  }) async {
+    final result = await _powerSyncRepository.db().getAll(
+      '''
+      SELECT id, avatar_url, username, full_name
+      FROM profiles
+      WHERE id IN (
+          SELECT l.user_id
+          FROM likes l
+          WHERE l.post_id = ?1
+          AND EXISTS (
+              SELECT *
+              FROM subscriptions f
+              WHERE f.subscribed_to_id = l.user_Id
+              AND f.subscriber_id = ?2
+          ) AND id <> ?2
+      )
+      LIMIT ?3 OFFSET ?4
+      ''',
+      [postId, currentUserId, limit, offset],
+    );
+    if (result.isEmpty) return [];
+    return result.safeMap(User.fromJson).toList(growable: false);
+  }
+
+    @override
+    Stream<bool> isLiked({
+      required String id,
+      String? userId,
+      bool post = true,
+    }) {
+      final statement = post ? 'post_id' : 'comment_id';
+      return _powerSyncRepository.db().watch(
+        '''
+        SELECT EXISTS (
+          SELECT 1 
+          FROM likes
+          WHERE user_id = ? AND $statement = ? AND $statement IS NOT NULL
+        )
+        ''',
+        parameters: [userId ?? currentUserId, id],
+      ).map((event) => (event.first.values.first! as int).isTrue);
+    }
+
+     @override
+  Stream<int> commentsAmountOf({required String postId}) =>
+      _powerSyncRepository.db().watch(
+        '''
+      SELECT COUNT(*) AS comments_count FROM comments
+      WHERE post_id = ? 
+        ''',
+        parameters: [postId],
+      ).map(
+        (result) => result.map((row) => row['comments_count']).first as int,
+      );
 }

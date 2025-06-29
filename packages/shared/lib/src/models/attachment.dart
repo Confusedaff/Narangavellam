@@ -9,7 +9,6 @@ import 'package:flutter/material.dart';
 import 'package:image_size_getter/file_input.dart';
 import 'package:image_size_getter/image_size_getter.dart' hide Size;
 import 'package:shared/shared.dart';
-import 'package:shared/src/models/attachment_file.dart';
 
 // Useful extensions on [Attachment].
 extension OriginalSizeX on Attachment {
@@ -119,22 +118,22 @@ class Attachment extends Equatable {
           if (file?.mediaType != null) 'mime_type': file?.mediaType?.mimeType,
         };
 
-  // factory Attachment.fromOGAttachment(OGAttachment ogAttachment) => Attachment(
-  //       // If the type is not specified, we default to urlPreview.
-  //       type: AttachmentType.urlPreview.value,
-  //       title: ogAttachment.title,
-  //       titleLink: ogAttachment.titleLink,
-  //       text: ogAttachment.text,
-  //       imageUrl: ogAttachment.imageUrl,
-  //       originalHeight: ogAttachment.imageHeight,
-  //       originalWidth: ogAttachment.imageWidth,
-  //       thumbUrl: ogAttachment.thumbUrl,
-  //       authorName: ogAttachment.authorName,
-  //       authorLink: ogAttachment.authorLink,
-  //       assetUrl: ogAttachment.assetUrl,
-  //       ogScrapeUrl: ogAttachment.ogScrapeUrl,
-  //       uploadState: const UploadState.success(),
-  //     );
+  factory Attachment.fromOGAttachment(OGAttachment ogAttachment) => Attachment(
+        // If the type is not specified, we default to urlPreview.
+        type: AttachmentType.urlPreview.value,
+        title: ogAttachment.title,
+        titleLink: ogAttachment.titleLink,
+        text: ogAttachment.text,
+        imageUrl: ogAttachment.imageUrl,
+        originalHeight: ogAttachment.imageHeight,
+        originalWidth: ogAttachment.imageWidth,
+        thumbUrl: ogAttachment.thumbUrl,
+        authorName: ogAttachment.authorName,
+        authorLink: ogAttachment.authorLink,
+        assetUrl: ogAttachment.assetUrl,
+        ogScrapeUrl: ogAttachment.ogScrapeUrl,
+        uploadState: const UploadState.success(),
+      );
 
   ///The attachment type based on the URL resource. This can be: audio,
   ///image or video

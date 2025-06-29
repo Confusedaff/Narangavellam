@@ -16,6 +16,7 @@ dependencies:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/authentication_client
   bloc: ^8.1.4
   cached_network_image: ^3.4.1
+  collection: ^1.19.1
   database_client:
     path: packages/database_client
   env:
@@ -45,6 +46,8 @@ dependencies:
   insta_blocks:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/insta_blocks
   intl: ^0.20.2
+  inview_notifier_list: ^3.0.0
+  json_annotation: ^4.9.0
   maths: ^0.0.2
   mocktail: ^1.0.4
   path_provider: ^2.1.5
@@ -55,11 +58,14 @@ dependencies:
   shared:
     path: packages/shared
   shimmer: ^3.0.0
+  slang: ^4.7.2
+  slang_flutter: ^4.7.0
   sliver_tools: ^0.2.12
   supabase: ^2.8.0
   supabase_authentication_client:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/supabase_authentication_client
   supabase_flutter: ^2.9.1
+  timeago: ^3.7.1
   token_storage:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/token_storage
   user_repository:
@@ -67,10 +73,12 @@ dependencies:
 
 dev_dependencies:
   bloc_test: ^9.1.7
-  build_runner: ^2.5.1
+  build_runner: ^2.5.4
   envied_generator: ^1.1.1
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.9.5
+  slang_build_runner: ^4.7.0
   very_good_analysis: ^6.0.0
 
 flutter:

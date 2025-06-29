@@ -8,19 +8,36 @@ environment:
   flutter: ^3.24.0
 
 dependencies:
-  user_repository:
-    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/user_repository
-  app_ui: 
+  app_ui:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/app_ui
+  avatar_stack: ^3.0.0
+  cached_memory_image: ^1.5.0
+  cached_network_image: ^3.4.1
+  carousel_slider: ^5.1.1
+  equatable: ^2.0.7
   flutter:
     sdk: flutter
+  flutter_animate: ^4.5.2
+  flutter_blurhash: ^0.9.1
+  flutter_image_compress: ^2.4.0
+
   image_cropper: ^9.1.0
   image_picker: ^1.1.2
+  inview_notifier_list: ^3.0.0
   json_annotation: ^4.9.0
   meta: ^1.16.0
-  shared: 
+  octo_image: ^2.1.0
+  powersync_repository:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/powersync_repository
+  shared:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/shared
-  equatable: ^2.0.7
+  shimmer: ^3.0.0
+  smooth_video_progress: ^0.0.4
+  sprung: ^3.0.1
+  user_repository:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/user_repository
+  video_player: ^2.10.0
+  visibility_detector: ^0.4.0+2
 
 dev_dependencies:
   build_runner: ^2.5.4

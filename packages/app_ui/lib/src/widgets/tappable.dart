@@ -108,56 +108,61 @@ class Tappable extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // if (context.theme.platform == TargetPlatform.iOS) {
-    //   return FadedButton(
-    //     onTap: onTap,
-    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius),
-    //     color: color ?? Theme.of(context).canvasColor,
-    //     onLongPress: onLongPress != null
-    //         ? () {
-    //             if (context.theme.platform == TargetPlatform.iOS) {
-    //               HapticFeedback.heavyImpact();
-    //             }
-    //             onLongPress!();
-    //           }
-    //         : null,
-    //     child: child,
-    //   );
-    // }
+    if (context.theme.platform == TargetPlatform.iOS) {
+      return FadedButton(
+        onTap: onTap,
+        borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius),
+        color: color ?? Theme.of(context).canvasColor,
+        onLongPress: onLongPress != null
+            ? () {
+                if (context.theme.platform == TargetPlatform.iOS) {
+                  HapticFeedback.heavyImpact();
+                }
+                onLongPress!();
+              }
+            : null,
+        onLongPressMoveUpdate: (LongPressMoveUpdateDetails details) {  },
+        onLongPressEnd: (LongPressEndDetails details) {  },
+        fadeStrength: fadeStrength,
+        throttle: throttle,
+        throttleDuration: null,
+        child: child,
+      );
+    }
 
-    // final tappable = Material(
-    //   color: color ?? Theme.of(context).canvasColor,
-    //   type: type,
-    //   borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius
-    // ),
-    //   child: InkWell(
-    //     splashFactory: kIsWeb
-    //         ? InkRipple.splashFactory
-    //         : InkSparkle.constantTurbulenceSeedSplashFactory,
-    //     borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius),
-    //     onTap: onTap,
-    //     onHighlightChanged: onHighlightChanged,
-    //     onLongPress: onLongPress,
-    //     child: child,
-    //   ),
-    // );
-    // // if (!kIsWeb && onLongPress != null) {
-    // //   return tappable;
-    // // }
-    // if (kIsWeb) {
-    //   Future<void> onPointerDown(PointerDownEvent event) async {
-    //     // Check if right mouse button clicked
-    //     if (event.kind == PointerDeviceKind.mouse &&
-    //         event.buttons == kSecondaryMouseButton) {
-    //       if (onLongPress != null) onLongPress!.call();
-    //     }
-    //   }
-
-    //   return Listener(
-    //     onPointerDown: onPointerDown,
-    //     child: tappable,
-    //   );
+    final tappable = Material(
+      color: color ?? Theme.of(context).canvasColor,
+      type: type,
+      borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius
+    ),
+      child: InkWell(
+        splashFactory: kIsWeb
+            ? InkRipple.splashFactory
+            : InkSparkle.constantTurbulenceSeedSplashFactory,
+        borderRadius: customBorderRadius ?? BorderRadius.circular(borderRadius),
+        onTap: onTap,
+        onHighlightChanged: onHighlightChanged,
+        onLongPress: onLongPress,
+        child: child,
+      ),
+    );
+    // if (!kIsWeb && onLongPress != null) {
+    //   return tappable;
     // }
+    if (kIsWeb) {
+      Future<void> onPointerDown(PointerDownEvent event) async {
+        // Check if right mouse button clicked
+        if (event.kind == PointerDeviceKind.mouse &&
+            event.buttons == kSecondaryMouseButton) {
+          if (onLongPress != null) onLongPress!.call();
+        }
+      }
+
+      return Listener(
+        onPointerDown: onPointerDown,
+        child: tappable,
+      );
+    }
 
     return switch (animationEffect) {
       TappableAnimationEffect.none => DefaultButton(

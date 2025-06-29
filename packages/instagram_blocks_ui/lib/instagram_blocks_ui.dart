@@ -2,3 +2,4 @@
 library;
 
 export 'src/instagram_blocks_ui.dart';
+export 'widget/widget.dart';

@@ -8,8 +8,21 @@ environment:
   flutter: ^3.24.0
 
 dependencies:
+  app_ui:
+    path: ../app_ui
+  cached_network_image: ^3.4.1
   flutter:
     sdk: flutter
+  powersync_repository:
+    path: ../powersync_repository
+  insta_blocks:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/insta_blocks
+  shared:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/shared
+  user_repository:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/user_repository
+  flutter_image_compress: ^2.4.0
+  shimmer: ^3.0.0
 
 dev_dependencies:
   flutter_test:

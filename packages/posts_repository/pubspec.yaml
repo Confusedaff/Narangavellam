@@ -7,11 +7,13 @@ environment:
   sdk: ^3.5.0
 
 dependencies:
-  shared:
-    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/shared
   database_client:
     path: ../database_client
-  
+  shared:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/shared
+  user_repository:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/user_repository
+
 dev_dependencies:
   mocktail: ^1.0.4
   test: ^1.25.8

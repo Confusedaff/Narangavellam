@@ -17,6 +17,8 @@ dependencies:
  shared:
   path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/shared
  supabase_flutter: ^2.9.1
+ insta_blocks:
+  path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/insta_blocks
 
 dev_dependencies:
   mocktail: ^1.0.4

@@ -39,13 +39,13 @@ GoRouter router(AppBloc appBloc) {
           parentNavigatorKey: _rootNavigatorKey,
           pageBuilder: (context, state) {
             final userId = state.pathParameters['user_id']!;
-            //final props = state.extra as UserProfileProps?;
+            final props = state.extra as UserProfileProps?;
 
             return CustomTransitionPage(
               key: state.pageKey,
               child: UserProfilePage(
                 userId: userId,
-                //props: props ?? const UserProfileProps.build(),
+                props: props ?? const UserProfileProps.build(),
               ),
               transitionsBuilder:
                   (context, animation, secondaryAnimation, child) {

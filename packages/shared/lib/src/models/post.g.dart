@@ -1,30 +1,43 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore_for_file: cast_nullable_to_non_nullable, implicit_dynamic_parameter, lines_longer_than_80_chars, prefer_const_constructors, require_trailing_commas
+
 part of 'post.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Post _$PostFromJson(Map<String, dynamic> json) => Post(
-      id: json['id'] as String,
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      author: const UserConverter()
-          .fromJson(json['author'] as Map<String, dynamic>),
-      caption: json['caption'] as String,
-      media: json['media'] == null
-          ? const []
-          : const ListMediaConverterFromDb().fromJson(json['media'] as String),
-      updatedAt: json['updatedAt'] == null
-          ? null
-          : DateTime.parse(json['updatedAt'] as String),
+Post _$PostFromJson(Map<String, dynamic> json) => $checkedCreate(
+      'Post',
+      json,
+      ($checkedConvert) {
+        final val = Post(
+          id: $checkedConvert('id', (v) => v as String),
+          createdAt:
+              $checkedConvert('created_at', (v) => DateTime.parse(v as String)),
+          author: $checkedConvert('author',
+              (v) => const UserConverter().fromJson(v as Map<String, dynamic>)),
+          caption: $checkedConvert('caption', (v) => v as String),
+          media: $checkedConvert(
+              'media',
+              (v) => v == null
+                  ? const []
+                  : const ListMediaConverterFromDb().fromJson(v as String)),
+          updatedAt: $checkedConvert('updated_at',
+              (v) => v == null ? null : DateTime.parse(v as String)),
+        );
+        return val;
+      },
+      fieldKeyMap: const {'createdAt': 'created_at', 'updatedAt': 'updated_at'},
     );
 
 Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'id': instance.id,
       'author': const UserConverter().toJson(instance.author),
       'caption': instance.caption,
-      'createdAt': instance.createdAt.toIso8601String(),
-      'updatedAt': instance.updatedAt?.toIso8601String(),
+      'created_at': instance.createdAt.toIso8601String(),
+      if (instance.updatedAt?.toIso8601String() case final value?)
+        'updated_at': value,
       'media': const ListMediaConverterFromDb().toJson(instance.media),
     };

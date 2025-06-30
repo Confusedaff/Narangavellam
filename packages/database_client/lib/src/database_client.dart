@@ -55,6 +55,45 @@ abstract class PostsBaseRepository {
     required String caption,
     required String media,
   });
+
+  /// Fetches the profiles of users who liked the post, identified by [postId]
+  /// and who are in followings of the user identified by current user `id`.
+  Future<List<User>> getPostLikersInFollowings({
+    required String postId,
+    int limit = 3,
+    int offset = 0,
+  });
+
+  /// Returns the page of posts with provided [offset] and [limit].
+  Future<List<Post>> getPage({
+    required int offset,
+    required int limit,
+    bool onlyReels = false,
+  });
+
+  /// Returns a real-time stream of likes count of post by provided [id].
+  Stream<int> likesOf({
+    required String id,
+    bool post = true,
+  });
+
+   /// Returns a real-time stream of whether the post by [id] is liked by user
+  /// identified by [userId].
+  Stream<bool> isLiked({
+    required String id,
+    String? userId,
+    bool post = true,
+  });
+
+  /// Returns a stream of amount of comments of the post identified by [postId].
+  Stream<int> commentsAmountOf({required String postId});
+
+  /// Likes the post by provided either post or comment [id].
+  Future<void> like({
+    required String id,
+    bool post = true,
+  });
+
 }
 
 abstract class DatabaseClient implements UserBaseRepository, PostsBaseRepository
@@ -236,6 +275,37 @@ class PowerSyncDatabaseClient extends DatabaseClient{
     }
   }
 
+    @override
+    Future<List<Post>> getPage({
+      required int offset,
+      required int limit,
+      bool onlyReels = false,
+    }) async {
+      final result = await _powerSyncRepository.db().execute(
+        '''
+        SELECT
+          posts.*,
+          p.id as user_id,
+          p.avatar_url as avatar_url,
+          p.username as username,
+          p.full_name as full_name
+        FROM
+          posts
+        inner join profiles p on posts.user_id = p.id
+        ORDER BY created_at DESC LIMIT ?1 OFFSET ?2
+        ''',
+        [limit, offset],
+      );
+      final posts = <Post>[];
+
+        for (final row in result) {
+          final json = Map<String, dynamic>.from(row);
+          final post = Post.fromJson(json);
+          posts.add(post);
+        }
+        return posts;
+  }
+  
   @override
   Future<List<User>> getFollowings({String? userId}) async {
     final followingsUserId = await _powerSyncRepository.db().getAll(
@@ -257,34 +327,139 @@ class PowerSyncDatabaseClient extends DatabaseClient{
     return followings;
   }
   
+   @override
+  Future<void> removeFollower({required String id}) async {
+    if (currentUserId == null) return;
+    await _powerSyncRepository.db().execute(
+      '''
+          DELETE FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
+      ''',
+      [id, currentUserId],
+    );
+  }
+  
+   @override
+  Future<void> updateUser({
+    String? fullName,
+    String? email,
+    String? username,
+    String? avatarUrl,
+    String? pushToken,
+    String? password,
+  }) =>
+      _powerSyncRepository.updateUser(
+        email: email,
+        password: password,
+        data: {
+          if (fullName != null) 'full_name': fullName,
+          if (username != null) 'username': username,
+          if (avatarUrl != null) 'avatar_url': avatarUrl,
+          if (pushToken != null) 'push_token': pushToken,
+        },
+      );
+
   @override
-    Future<void> removeFollower({required String id}) async {
-      if (currentUserId == null) return;
+  Future<List<User>> getPostLikersInFollowings({
+    required String postId,
+    int limit = 3,
+    int offset = 0,
+  }) async {
+    final result = await _powerSyncRepository.db().getAll(
+      '''
+      SELECT id, avatar_url, username, full_name
+      FROM profiles
+      WHERE id IN (
+          SELECT l.user_id
+          FROM likes l
+          WHERE l.post_id = ?1
+          AND EXISTS (
+              SELECT *
+              FROM subscriptions f
+              WHERE f.subscribed_to_id = l.user_Id
+              AND f.subscriber_id = ?2
+          ) AND id <> ?2
+      )
+      LIMIT ?3 OFFSET ?4
+      ''',
+      [postId, currentUserId, limit, offset],
+    );
+    if (result.isEmpty) return [];
+    return result.safeMap(User.fromJson).toList(growable: false);
+  }
+
+  @override
+  Stream<int> likesOf({required String id, bool post = true}) {
+    final statement = post ? 'post_id' : 'comment_id';
+    return _powerSyncRepository.db().watch(
+      '''
+      SELECT COUNT(*) AS total_likes
+      FROM likes
+      WHERE $statement = ? AND $statement IS NOT NULL
+      ''',
+      parameters: [id],
+    ).map((result) => result.safeMap((row) => row['total_likes']).first as int);
+  }
+
+    @override
+  Stream<bool> isLiked({
+    required String id,
+    String? userId,
+    bool post = true,
+  }) {
+    final statement = post ? 'post_id' : 'comment_id';
+    return _powerSyncRepository.db().watch(
+      '''
+      SELECT EXISTS (
+        SELECT 1 
+        FROM likes
+        WHERE user_id = ? AND $statement = ? AND $statement IS NOT NULL
+      )
+      ''',
+      parameters: [userId ?? currentUserId, id],
+    ).map((event) => (event.first.values.first! as int).isTrue);
+  }
+
+   @override
+  Stream<int> commentsAmountOf({required String postId}) =>
+      _powerSyncRepository.db().watch(
+        '''
+        SELECT COUNT(*) AS comments_count FROM comments
+        WHERE post_id = ? 
+        ''',
+        parameters: [postId],
+      ).map(
+        (result) => result.map((row) => row['comments_count']).first as int,
+      );
+
+  @override
+  Future<void> like({
+    required String id,
+    bool post = true,
+  }) async {
+    if (currentUserId == null) return;
+    final statement = post ? 'post_id' : 'comment_id';
+    final exists = await _powerSyncRepository.db().execute(
+      'SELECT 1 FROM likes '
+      'WHERE user_id = ? AND $statement = ? AND $statement IS NOT NULL',
+      [currentUserId, id],
+    );
+    if (exists.isEmpty) {
       await _powerSyncRepository.db().execute(
         '''
-            DELETE FROM subscriptions WHERE subscriber_id = ? AND subscribed_to_id = ?
-        ''',
-        [id, currentUserId],
+          INSERT INTO likes(user_id, $statement, id)
+            VALUES(?, ?, uuid())
+      ''',
+        [currentUserId, id],
       );
+      return;
     }
-    
-      @override
-      Future<void> updateUser({
-        String? fullName,
-        String? email,
-        String? username,
-        String? avatarUrl,
-        String? pushToken,
-        String? password,
-      }) =>
-          _powerSyncRepository.updateUser(
-            email: email,
-            password: password,
-            data: {
-              if (fullName != null) 'full_name': fullName,
-              if (username != null) 'username': username,
-              if (avatarUrl != null) 'avatar_url': avatarUrl,
-              if (pushToken != null) 'push_token': pushToken,
-            },
-          );
+    await _powerSyncRepository.db().execute(
+      '''
+          DELETE FROM likes 
+          WHERE user_id = ? AND $statement = ? AND $statement IS NOT NULL
+      ''',
+      [currentUserId, id],
+    );
+  }
+
 }

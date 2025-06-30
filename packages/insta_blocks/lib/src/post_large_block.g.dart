@@ -1,5 +1,7 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
+// ignore_for_file: cast_nullable_to_non_nullable, implicit_dynamic_parameter, lines_longer_than_80_chars, prefer_const_constructors, require_trailing_commas
+
 part of 'post_large_block.dart';
 
 // **************************************************************************
@@ -7,17 +9,33 @@ part of 'post_large_block.dart';
 // **************************************************************************
 
 PostLargeBlock _$PostLargeBlockFromJson(Map<String, dynamic> json) =>
-    PostLargeBlock(
-      id: json['id'] as String,
-      author: const PostAuthorConverter()
-          .fromJson(json['author'] as Map<String, dynamic>),
-      createdAt: DateTime.parse(json['createdAt'] as String),
-      media: const ListMediaConverterFromRemoteConfig()
-          .fromJson(json['media'] as List),
-      caption: json['caption'] as String,
-      action: const BlockActionConverter()
-          .fromJson(json['action'] as Map<String, dynamic>?),
-      type: json['type'] as String? ?? PostLargeBlock.identifier,
+    $checkedCreate(
+      'PostLargeBlock',
+      json,
+      ($checkedConvert) {
+        final val = PostLargeBlock(
+          id: $checkedConvert('id', (v) => v as String),
+          author: $checkedConvert(
+              'author',
+              (v) => const PostAuthorConverter()
+                  .fromJson(v as Map<String, dynamic>)),
+          createdAt:
+              $checkedConvert('created_at', (v) => DateTime.parse(v as String)),
+          media: $checkedConvert(
+              'media',
+              (v) => const ListMediaConverterFromRemoteConfig()
+                  .fromJson(v as List)),
+          caption: $checkedConvert('caption', (v) => v as String),
+          action: $checkedConvert(
+              'action',
+              (v) => const BlockActionConverter()
+                  .fromJson(v as Map<String, dynamic>?)),
+          type: $checkedConvert(
+              'type', (v) => v as String? ?? PostLargeBlock.identifier),
+        );
+        return val;
+      },
+      fieldKeyMap: const {'createdAt': 'created_at'},
     );
 
 Map<String, dynamic> _$PostLargeBlockToJson(PostLargeBlock instance) =>
@@ -25,9 +43,11 @@ Map<String, dynamic> _$PostLargeBlockToJson(PostLargeBlock instance) =>
       'type': instance.type,
       'author': const PostAuthorConverter().toJson(instance.author),
       'id': instance.id,
-      'createdAt': instance.createdAt.toIso8601String(),
+      'created_at': instance.createdAt.toIso8601String(),
       'media':
           const ListMediaConverterFromRemoteConfig().toJson(instance.media),
       'caption': instance.caption,
-      'action': const BlockActionConverter().toJson(instance.action),
+      if (const BlockActionConverter().toJson(instance.action)
+          case final value?)
+        'action': value,
     };

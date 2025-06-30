@@ -3,6 +3,7 @@ library;
 export 'src/bloc_action_converter.dart';
 export 'src/block_action.dart';
 export 'src/insta_block.dart';
+export 'src/insta_blocks_converter.dart';
 export 'src/models/models.dart';
 export 'src/post_block.dart';
 export 'src/post_large_block.dart';

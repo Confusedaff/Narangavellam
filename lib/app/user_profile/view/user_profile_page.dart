@@ -6,6 +6,7 @@ import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_create_post.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_header.dart';
+import 'package:narangavellam/app/user_profile/widgets/user_profile_props.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:narangavellam/selector/locale/view/locale_selector.dart';
 import 'package:narangavellam/selector/theme/view/theme_selector.dart';
@@ -15,9 +16,13 @@ import 'package:sliver_tools/sliver_tools.dart';
 import 'package:user_repository/user_repository.dart';
 
 class UserProfilePage extends StatelessWidget {
-  const UserProfilePage({required this.userId, super.key});
+  const UserProfilePage({
+    required this.userId, 
+    this.props = const UserProfileProps.build(), 
+    super.key,});
 
   final String userId;
+  final UserProfileProps props;
 
  @override
   Widget build(BuildContext context) {
@@ -35,15 +40,19 @@ class UserProfilePage extends StatelessWidget {
             ..add(const UserProfileFollowersCountSubscriptionRequested()),
         ),
       ],
-      child: UserProfileView(userId: userId),
+      child: UserProfileView(userId: userId, props:props),
     );
   }
 }
 
 class UserProfileView extends StatefulWidget {
-  const UserProfileView({required this.userId, super.key});
+  const UserProfileView({
+    required this.userId,
+    required this.props,
+    super.key});
 
   final String userId;
+  final UserProfileProps props;
 
   @override
   State<UserProfileView> createState() => _UserProfileViewState();

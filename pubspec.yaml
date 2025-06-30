@@ -47,6 +47,7 @@ dependencies:
   instagram_blocks_ui:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/instagram_blocks_ui
   intl: ^0.20.2
+  json_annotation: ^4.9.0
   maths: ^0.0.2
   mocktail: ^1.0.4
   path_provider: ^2.1.5
@@ -76,6 +77,7 @@ dev_dependencies:
   envied_generator: ^1.1.1
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.9.5
   slang_build_runner: ^4.7.0
   very_good_analysis: ^6.0.0
 

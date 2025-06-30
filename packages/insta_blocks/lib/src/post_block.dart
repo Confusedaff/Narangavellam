@@ -1,7 +1,5 @@
 import 'package:equatable/equatable.dart';
 import 'package:insta_blocks/insta_blocks.dart';
-import 'package:insta_blocks/src/bloc_action_converter.dart';
-import 'package:insta_blocks/src/block_action.dart';
 import 'package:shared/shared.dart';
 
 /// {@template post_block}

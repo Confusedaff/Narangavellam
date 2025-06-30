@@ -1,57 +1,71 @@
-import 'dart:math';
-
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:insta_blocks/insta_blocks.dart';
-import 'package:narangavellam/l10n/slang/translations.g.dart';
-import 'package:shared/shared.dart';
+import 'package:narangavellam/feed/bloc/feed_bloc.dart';
+import 'package:narangavellam/feed/post/view/post_view.dart';
+import 'package:posts_repository/posts_repository.dart';
 
 class FeedPage extends StatelessWidget {
   const FeedPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return FeedView();
+    return BlocProvider(
+      create:(context) => FeedBloc(postsRepository: context.read<PostsRepository>()),
+      child: const FeedView(),);
   }
 }
 
-class FeedView extends StatelessWidget {
+class FeedView extends StatefulWidget {
   const FeedView({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final feed = List.generate(10, (index) => PostLargeBlock(
-      id: uuid.v4(), 
-      author: PostAuthor.randomConfirmed(), 
-      createdAt:  DateTime.now().subtract(Duration(days:Random().nextInt(365))), 
-      media: [ImageMedia(
-        id: uuid.v4(), 
-        url: 'https://cdn.pixabay.com/photo/2024/09/21/10/53/anime-9063542_1280.png',
-        ), ],
-      caption: 'NANANANANAANA',
-      ),);
+  State<FeedView> createState() => _FeedViewState();
+}
 
-    return AppScaffold(
-                    body: Column(
-                      children: [
-                        Text.rich(
-                            t.likedBy(
-                              name: const TextSpan(text: 'KP'),
-                              and: const TextSpan(text: 'and'),
-                              others: const TextSpan(text: '5 others'),
-                            ),
-                          ), 
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: feed.length,
-                            itemBuilder: (context,index){
-                            final post = feed[index];
-                            return Image.network(post.firstMediaUrl!);
-                          },
-                          ),
-                        ),
-                      ],
+class _FeedViewState extends State<FeedView> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<FeedBloc>().add(const FeedPageRequested(page: 0));
+  }
+  @override
+  Widget build(BuildContext context) {
+    return const AppScaffold(
+                    body: FeedBody(),
+    );
+  }
+}
+
+class FeedBody extends StatelessWidget {
+  const FeedBody({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CustomScrollView(
+      slivers: [
+        BlocBuilder<FeedBloc, FeedState>(
+          builder: (context, state) {
+            final blocks = state.feed.feedPage.blocks;
+            return SliverList.builder(
+              itemCount: state.feed.feedPage.totalBlocks,
+              itemBuilder: (context, index) {
+                final block = blocks[index];
+                return switch ('') {
+                  _ when block is PostBlock => PostView(
+                    block: block,
+                    withInViewNotifier: false,
                     ),
+                  _ => SizedBox(
+                        child: Text('Unsupported block type: ${block.type}'),
+                      ),
+                };
+              },
+            );
+          },
+        ),
+      ],
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:authentication_client/authentication_client.dart';
+import 'package:insta_blocks/insta_blocks.dart';
 
 /// {@template user}
 /// User model represents the current user.
@@ -79,12 +80,12 @@ class User extends AuthenticationUser {
   }
 }
 
-// /// Extension that converts [PostAuthor] into [User] instance.
-// extension UserX on PostAuthor {
-//   /// Converts a [PostAuthor] into a [User] instance.
-//   User get toUser => User(
-//         id: id,
-//         avatarUrl: avatarUrl,
-//         username: username,
-//       );
-// }
+/// Extension that converts [PostAuthor] into [User] instance.
+extension UserToPostAuthorConverter on PostAuthor {
+  /// Converts a [PostAuthor] into a [User] instance.
+  User get toUser => User(
+        id: id,
+        avatarUrl: avatarUrl,
+        username: username,
+      );
+}

@@ -41,7 +41,7 @@ class Translations implements BaseTranslations<AppLocale, Translations> {
 	// Translations
 	String likedByrich({required Object name, required Object and, required Object others}) => 'Liked by ${name} ${and} ${others}';
 
-  TextSpan likedBy(
+   TextSpan likedBy(
           {required InlineSpan name,
           required InlineSpan and,
           required InlineSpan others}) =>

@@ -23,6 +23,18 @@ dependencies:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/user_repository
   flutter_image_compress: ^2.4.0
   shimmer: ^3.0.0
+  carousel_slider: ^5.1.1
+  inview_notifier_list: ^3.0.0
+  octo_image: ^2.1.0
+  flutter_blurhash: ^0.9.1
+  cached_memory_image: ^1.5.0
+  video_player: ^2.10.0
+  smooth_video_progress: ^0.0.4
+  flutter_animate: ^4.5.2
+  sprung: ^3.0.1
+  visibility_detector: ^0.4.0+2
+  avatar_stack: ^3.0.0
+  timeago: ^3.7.1
 
 dev_dependencies:
   flutter_test:

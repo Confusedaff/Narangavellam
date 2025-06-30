@@ -1,11 +1,9 @@
-// ignore_for_file: avoid_positional_boolean_parameters
+// ignore_for_file: avoid_positional_boolean_parameters, public_member_api_docs
 // ignore_for_file: use_setters_to_change_properties
 
 import 'package:flutter/material.dart';
 import 'package:insta_blocks/insta_blocks.dart';
-import 'package:instagram_blocks_ui/src/post_large/post_footer.dart';
-import 'package:instagram_blocks_ui/src/post_large/post_header.dart';
-import 'package:instagram_blocks_ui/src/post_large/post_media.dart';
+import 'package:instagram_blocks_ui/src/post_large/index.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -111,7 +109,7 @@ class _PostLargeState extends State<PostLarge> {
       media: widget.block.media,
       likePost: widget.likePost,
       onPageChanged: _updateCurrentIndex,
-      videoPlayerBuilder: widget.videoPlayerBuilder,
+      //videoPlayerBuilder: widget.videoPlayerBuilder,
       postIndex: widget.postIndex,
       withInViewNotifier: widget.withInViewNotifier,
     );

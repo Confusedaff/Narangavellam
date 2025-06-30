@@ -8,3 +8,4 @@ export 'src/config/debouncer.dart';
 export 'src/config/stream_transformers.dart';
 export 'src/config/throttler.dart';
 export 'src/models/models.dart';
+export 'src/models/og_attachment.dart';

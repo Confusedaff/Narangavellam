@@ -4,22 +4,24 @@ import 'package:flutter/material.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
-import 'package:user_repository/user_repository.dart';
 
+part 'feed_bloc_mixin.dart';
 part 'feed_event.dart';
 part 'feed_state.dart';
 
-class FeedBloc extends Bloc<FeedEvent, FeedState> {
+class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
   FeedBloc({
     required PostsRepository postsRepository,
   })  : _postsRepository = postsRepository,
         super(const FeedState.initial()) {
     on<FeedPageRequested>(_onFeedPageRequested);
+    on<FeedRefreshRequested>(_onFeedRefreshRequested,transformer: throttleDroppable(duration:550.ms));
   }
 
-  final PostsRepository _postsRepository;
+  @override
+  PostsRepository get postsRepository => _postsRepository;
 
-  static const _feedPageLimit = 10;
+  final PostsRepository _postsRepository;
 
   Future<void> _onFeedPageRequested(
     FeedPageRequested event,
@@ -28,48 +30,53 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> {
     emit(state.loading());
     try {
 
-      final currentPage = event.page ?? state.feed.feedPage.page;
-      final posts = await _postsRepository.getPage(
-        offset: currentPage * _feedPageLimit,
-        limit: _feedPageLimit,
-      );
+     final currentPage = event.page ?? state.feed.feedPage.page;
+      final (:newPage, :hasMore, :blocks) =
+    await fetchFeedPage(page: currentPage);
 
-      final postLikersFutures = posts.map(
-        (post) => _postsRepository.getPostLikersInFollowings(postId: post.id),
-      );
+  final feed = state.feed.copyWith(
+    feedPage: state.feed.feedPage.copyWith(
+    page: newPage,
+    hasMore: hasMore,
+    blocks: [...state.feed.feedPage.blocks, ...blocks],
+    totalBlocks: state.feed.feedPage.totalBlocks + blocks.length,
+    ),
+  );
 
-      final postLikers = await Future.wait(postLikersFutures);
-
-      final newPage = currentPage + 1;
-
-      final hasMore = posts.length >= _feedPageLimit;
-
-      final blocks = List<InstaBlock>.generate(posts.length, (index) {
-        final likersInFollowings = postLikers[index];
-        final post = posts[index]
-            .toPostLargeBlock(likersInFollowings: likersInFollowings);
-        return post;
-      });
-        final feed = state.feed.copyWith(
-        feedPage: state.feed.feedPage.copyWith(
-          page: newPage,
-          hasMore: hasMore,
-          blocks: [...state.feed.feedPage.blocks, ...blocks],
-          totalBlocks: state.feed.feedPage.totalBlocks + blocks.length,
-        ),
-      );
-      emit(state.populated(feed: feed));
-    } catch (error, stackTrace) {
-      addError(error, stackTrace);
-      emit(state.failure());
+  emit(state.populated(feed: feed));
+  } catch (error, stackTrace) {
+    addError(error, stackTrace);
+    emit(state.failure());
     }
   }
-  
+
+  Future<void> _onFeedRefreshRequested(
+  FeedRefreshRequested event,
+  Emitter<FeedState> emit,
+  ) async {
+  emit(state.loading());
+  try {
+    final (:newPage, :hasMore, :blocks) = await fetchFeedPage();
+    final feed = state.feed.copyWith(
+      feedPage: FeedPage(
+        page: newPage,
+        blocks: blocks,
+        hasMore: hasMore,
+        totalBlocks: blocks.length,
+      ),
+    );
+
+    emit(state.populated(feed: feed));
+  } catch (error, stackTrace) {
+    addError(error, stackTrace);
+    emit(state.failure());
+    }
+  }
 }
 
 extension PostX on Post {
   /// Converts [Post] instance into [PostLargeBlock] instance.
-  PostLargeBlock toPostLargeBlock({List<User> likersInFollowings = const []}) =>
+  PostLargeBlock get topostlargeblock =>//toPostLargeBlock({List<User> likersInFollowings = const []}) =>
       PostLargeBlock(
         id: id,
         author: PostAuthor.confirmed(

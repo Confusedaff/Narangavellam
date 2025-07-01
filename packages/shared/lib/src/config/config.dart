@@ -3,6 +3,7 @@ export 'blur_hash.dart';
 export 'debouncer.dart';
 export 'image_compress.dart';
 export 'logger.dart';
+export 'stream_transformers.dart';
 export 'throttler.dart';
 export 'uid.dart';
 export 'utilities/utilities.dart';

@@ -16,6 +16,7 @@ dependencies:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/authentication_client
   bloc: ^8.1.4
   cached_network_image: ^3.4.1
+  collection: ^1.19.1
   database_client:
     path: packages/database_client
   env:
@@ -47,6 +48,7 @@ dependencies:
   instagram_blocks_ui:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/instagram_blocks_ui
   intl: ^0.20.2
+  inview_notifier_list: ^3.0.0
   json_annotation: ^4.9.0
   maths: ^0.0.2
   mocktail: ^1.0.4

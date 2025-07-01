@@ -5,6 +5,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/view/app.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -319,7 +320,15 @@ class _CreatePostPageState extends State<CreatePostPage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
+            PostMedia(
+              media: _media, 
+              withInViewNotifier: false,
+              withLikeOverlay: false,
+              autoHideCurrentIndex: false,
+              mediaCarouselSettings: const MediaCarouselSettings.empty(
+                viewportFraction: .9,
+              ),
+              ),
             const Gap.v(AppSpacing.sm),
             CaptionInputField(
               captionController: _captionController, 

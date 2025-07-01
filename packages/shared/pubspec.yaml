@@ -17,6 +17,7 @@ dev_dependencies:
 dependencies:
   app_ui:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/app_ui
+  bloc_concurrency: ^0.2.0
   blurhash: ^1.2.0
   dio: ^5.8.0+1
   env:

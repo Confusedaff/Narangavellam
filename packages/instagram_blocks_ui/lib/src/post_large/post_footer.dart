@@ -10,7 +10,6 @@ import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/carousel_dot_indicator.dart';
 import 'package:instagram_blocks_ui/src/comments_count.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
-import 'package:instagram_blocks_ui/src/post_large/index.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 

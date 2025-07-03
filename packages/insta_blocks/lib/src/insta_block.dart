@@ -1,3 +1,4 @@
+import 'package:insta_blocks/insta_blocks.dart';
 import 'package:insta_blocks/src/post_large_block.dart';
 import 'package:insta_blocks/src/unknown_block.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -27,12 +28,12 @@ abstract class InstaBlock {
         return PostLargeBlock.fromJson(json);
       // case PostSmallBlock.identifier:
       //   return PostSmallBlock.fromJson(json);
-      // case PostSponsoredBlock.identifier:
-      //   return PostSponsoredBlock.fromJson(json);
-      // case DividerHorizontalBlock.identifier:
-      //   return DividerHorizontalBlock.fromJson(json);
-      // case SectionHeaderBlock.identifier:
-      //   return SectionHeaderBlock.fromJson(json);
+      case PostSponsoredBlock.identifier:
+        return PostSponsoredBlock.fromJson(json);
+      case DividerHorizontalBlock.identifier:
+        return DividerHorizontalBlock.fromJson(json);
+      case SectionHeaderBlock.identifier:
+        return SectionHeaderBlock.fromJson(json);
     }
     return UnknownBlock();
   }

@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
 import 'package:hydrated_bloc/hydrated_bloc.dart';
@@ -12,6 +13,7 @@ import 'package:shared/shared.dart';
 
 typedef AppBuilder = FutureOr<Widget> Function(
   PowerSyncRepository,
+  FirebaseRemoteConfigRepository,
 );
 
 class AppBlocObserver extends BlocObserver {
@@ -62,7 +64,10 @@ Future<void> bootstrap(
     final powerSyncRepository = PowerSyncRepository(env: appFlavor.getEnv);
       await powerSyncRepository.initialize();
 
-    runApp(TranslationProvider(child: await builder(powerSyncRepository)));
+    final firebaseRemoteConfig = FirebaseRemoteConfig.instance;
+    final firebaseRemoteConfigRepository = FirebaseRemoteConfigRepository(firebaseRemoteConfig: firebaseRemoteConfig);
+
+    runApp(TranslationProvider(child: await builder(powerSyncRepository,firebaseRemoteConfigRepository)));
   },
   (error, stack) {
     logE(error.toString(), stackTrace: stack);

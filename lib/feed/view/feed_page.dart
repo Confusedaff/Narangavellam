@@ -1,11 +1,17 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/feed/post/view/post_view.dart';
+import 'package:narangavellam/feed/widgets/divider_block.dart';
+import 'package:narangavellam/feed/widgets/feed_item_loader.dart';
+import 'package:narangavellam/feed/widgets/feed_page_controller.dart';
+import 'package:narangavellam/l10n/l10n.dart';
+import 'package:narangavellam/network_error/view/network_error.dart';
 import 'package:posts_repository/posts_repository.dart';
 
 class FeedPage extends StatelessWidget {
@@ -14,7 +20,9 @@ class FeedPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create:(context) => FeedBloc(postsRepository: context.read<PostsRepository>()),
+      create:(context) => FeedBloc(postsRepository: context.read<PostsRepository>(), 
+                                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
+                                  ),
       child: const FeedView(),);
   }
 }
@@ -45,8 +53,13 @@ class FeedBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final feedPageController = FeedPageController();
     return RefreshIndicator.adaptive(
-      onRefresh: () async => Future.microtask(() => context.read<FeedBloc>().add(const FeedRefreshRequested())),
+      onRefresh: () async {
+        await Future.microtask(() => context.read<FeedBloc>().add(const FeedRefreshRequested()),
+        );
+        feedPageController.markAnimationAsUnseen();
+      },
       child: InViewNotifierCustomScrollView(
         //cacheExtent: 2760,
         initialInViewIds: const ['0'],
@@ -68,21 +81,23 @@ class FeedBody extends StatelessWidget {
                   return true;
                 },
             builder: (context, state) {
-              final blocks = state.feed.feedPage.blocks;
+              final feedPage = state.feed.feedPage;
+              final hasMorePosts = feedPage.hasMore;
+              final isFailure = state.status == FeedStatus.failure;
+
               return SliverList.builder(
                 itemCount: state.feed.feedPage.totalBlocks,
                 itemBuilder: (context, index) {
-                  final block = blocks[index];
-                  return switch ('') {
-                    _ when block is PostBlock => PostView(
-                      block: block,
-                      postIndex: index,
-                      withInViewNotifier: true,
-                      ),
-                    _ => SizedBox(
-                          child: Text('Unsupported block type: ${block.type}'),
-                        ),
-                  };
+                  final block = feedPage.blocks[index];
+                  return _buildBlock(
+                    context: context, 
+                    index: index, 
+                    feedLength: feedPage.totalBlocks, 
+                    block: block, 
+                    feedPageController: feedPageController, 
+                    hasMorePosts: hasMorePosts, 
+                    isFailure: isFailure,
+                    );
                 },
               );
             },
@@ -91,4 +106,67 @@ class FeedBody extends StatelessWidget {
       ),
     );
   }
+
+  Widget _buildBlock({
+  required BuildContext context,
+  required int index,
+  required int feedLength,
+  required InstaBlock block,
+  required FeedPageController feedPageController,
+  required bool hasMorePosts,
+  required bool isFailure,
+  }) {
+    if(block is DividerHorizontalBlock){
+      return DividerBlock(feedPageController: feedPageController);
+    }
+      if (block is SectionHeaderBlock) {
+    return switch (block.sectionType) {
+      SectionHeaderBlockType.suggested => Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
+            ),
+            child: Text(
+              context.l10n.suggestedForYouText,
+              style: context.headlineSmall,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const AppDivider(),
+        ],
+      ),
+    };
+  }
+      if (index + 1 == feedLength) {
+  if (isFailure) {
+    if (!hasMorePosts) return const SizedBox.shrink();
+    return NetworkError(
+      onRetry: () {
+        context.read<FeedBloc>().add(const FeedPageRequested());
+      },
+    );
+  } else {
+    return Padding(
+      padding: EdgeInsets.only(top: feedLength == 0 ? AppSpacing.md : 0),
+      child: FeedLoaderItem(
+        key: ValueKey(index),
+        onPresented: () => hasMorePosts
+            ? context.read<FeedBloc>().add(const FeedPageRequested())
+            : context
+                .read<FeedBloc>()
+                .add(const FeedRecommendedPostsPageRequested()),
+          ),
+        );
+      }
+    }
+    if (block is PostBlock) {
+      return PostView(key: ValueKey(block.id), block: block, postIndex: index);
+    }
+    return Text('Unknown block type: ${block.type}');
+  }
+
 }

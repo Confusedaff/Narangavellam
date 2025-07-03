@@ -12,7 +12,7 @@ import 'package:user_repository/user_repository.dart';
 
 void main() {
   bootstrap(
-    (powersyncRepository) async{
+    (powersyncRepository,firebaseRemoteConfigRepository) async{
 
       final androidClientId = getIt<AppFlavor>().getEnv(Env.androidClientId);
       final webClientId = getIt<AppFlavor>().getEnv(Env.webClientId);
@@ -37,6 +37,7 @@ void main() {
         user: await userRepository.user.first, 
         userRepository: userRepository,
         postsRepository: postsRepository,
+        firebaseRemoteConfigRepository: firebaseRemoteConfigRepository,
         );
     },
     options: DefaultFirebaseOptions.currentPlatform,

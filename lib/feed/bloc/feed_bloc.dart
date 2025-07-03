@@ -1,5 +1,10 @@
+import 'dart:convert';
+import 'dart:isolate';
+import 'dart:math';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -12,16 +17,25 @@ part 'feed_state.dart';
 class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
   FeedBloc({
     required PostsRepository postsRepository,
+    required FirebaseRemoteConfigRepository firebaseRemoteConfigRepository,
   })  : _postsRepository = postsRepository,
+        _firebaseRemoteConfigRepository = firebaseRemoteConfigRepository,
         super(const FeedState.initial()) {
     on<FeedPageRequested>(_onFeedPageRequested);
     on<FeedRefreshRequested>(_onFeedRefreshRequested,transformer: throttleDroppable(duration:550.ms));
+    on<FeedRecommendedPostsPageRequested>(
+      _onFeedRecommendedPostsPageRequested,
+      transformer: throttleDroppable(),
+    );
   }
 
   @override
   PostsRepository get postsRepository => _postsRepository;
+  @override
+  FirebaseRemoteConfigRepository get firebaseRemoteConfigRepository => _firebaseRemoteConfigRepository;
 
   final PostsRepository _postsRepository;
+  final FirebaseRemoteConfigRepository _firebaseRemoteConfigRepository;
 
   Future<void> _onFeedPageRequested(
     FeedPageRequested event,
@@ -44,6 +58,9 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
   );
 
   emit(state.populated(feed: feed));
+
+   if(!hasMore) add (const FeedRecommendedPostsPageRequested());
+   
   } catch (error, stackTrace) {
     addError(error, stackTrace);
     emit(state.failure());
@@ -72,6 +89,36 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
     emit(state.failure());
     }
   }
+
+  Future<void> _onFeedRecommendedPostsPageRequested(
+    FeedRecommendedPostsPageRequested event,
+    Emitter<FeedState> emit,
+  ) async {
+    emit(state.loading());
+    try {
+      final recommendedBlocks = <InstaBlock>[
+        ...PostsRepository.recommendedPosts..shuffle(),
+      ];
+      final blocks = await insertSponsoredBlocks(
+        hasMore: true,
+        blocks: recommendedBlocks,
+      );
+
+      final feed = state.feed.copyWith(
+        feedPage: state.feed.feedPage.copyWith(
+          blocks: [...state.feed.feedPage.blocks, ...blocks],
+          totalBlocks: state.feed.feedPage.totalBlocks + blocks.length,
+        ),
+      );
+
+      emit(state.populated(feed: feed));
+      
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
 }
 
 extension PostX on Post {

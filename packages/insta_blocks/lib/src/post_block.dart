@@ -188,3 +188,12 @@ extension PostBlockActions on PostBlock {
 //         caption: caption,
 //       );
 // }
+extension PostBlockListExtension on List<PostLargeBlock> {
+  /// Provides each element in list of [PostLargeBlock] with action
+  /// [NavigateToPostAuthorProfileAction].
+  List<PostLargeBlock> get withNavigateToPostAuthorAction => map(
+        (e) => e.copyWith(
+          action: NavigateToPostAuthorProfileAction(authorId: e.author.id),
+        ),
+      ).toList();
+}

@@ -11,6 +11,7 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
   int get feedPageLimit => 10;
 
   PostsRepository get postsRepository;
+  FirebaseRemoteConfigRepository get firebaseRemoteConfigRepository;
 
   PaginatedFeedResult fetchFeedPage({
   int page = 0,
@@ -30,7 +31,11 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
 
   final instaBlocks =
       mapper?.call(posts) ?? postsToLargeBlocksMapper(posts);//postLikers);
-  return (newPage: newPage, hasMore: hasMore, blocks: instaBlocks);
+  if(!withSponsoredBlocks){
+    return (newPage: newPage, hasMore: hasMore, blocks: instaBlocks);
+  }
+  final blocks = await insertSponsoredBlocks(hasMore: hasMore, blocks: instaBlocks);
+   return (newPage: newPage, hasMore: hasMore, blocks: blocks);
 }
 
   //   Future<List<List<User>>> _fetchPostLikersInFollowings(List<Post> posts) =>
@@ -54,4 +59,76 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
     //final likersInFollowings = postLikers[posts.indexOf(post)];return
      post.topostlargeblock,//likersInFollowings: likersInFollowings);
   ).toList();
+
+    Future<List<InstaBlock>> insertSponsoredBlocks({
+    required bool hasMore,
+    required List<InstaBlock> blocks,
+  }) async {
+    final sponsoredBlocksStringJson =
+        firebaseRemoteConfigRepository.fetchRemoteData('sponsored_blocks');
+
+    final receivePort = ReceivePort();
+    final isolate = await Isolate.spawn(_computeSponsoredBlocks, [
+      receivePort.sendPort,
+      hasMore,
+      blocks,
+      sponsoredBlocksStringJson,
+    ]);
+    isolate.kill(priority: Isolate.immediate);
+
+    final insertedBlocks = await receivePort.first as List<InstaBlock>;
+    return insertedBlocks;
+  }
+
+     static Future<void> _computeSponsoredBlocks(List<dynamic> args) async {
+    final sendPort = args[0] as SendPort;
+    final hasMore = args[1] as bool;
+    final blocks = args[2] as List<InstaBlock>;
+    final sponsoredBlocksListJson =
+        List<Map<String, dynamic>>.from(jsonDecode(args[3] as String) as List);
+
+    final random = Random();
+
+    var tempBlocks = [...blocks];
+    var tempDataLength = tempBlocks.length;
+
+    const skipRange = [1, 2, 3,];
+    var previousSkipRangeIs1 = false;
+
+    final sponsored =
+        sponsoredBlocksListJson.take(20).map(InstaBlock.fromJson).toList();
+
+    while (tempDataLength > 1) {
+      final allowedSkipRange = switch ((previousSkipRangeIs1, tempDataLength)) {
+        (true, > 3) => skipRange.sublist(1),
+        (_, == 2) => [1],
+        (_, == 3) => [1, 2],
+        _ => skipRange,
+      };
+
+      final randomSponsoredPost = sponsored[random.nextInt(sponsored.length)];
+
+      final randomSkipRange =
+          allowedSkipRange[random.nextInt(allowedSkipRange.length)];
+
+      previousSkipRangeIs1 = randomSkipRange == 1;
+
+      tempBlocks = tempBlocks.sublist(randomSkipRange);
+      blocks.insert(blocks.length - tempBlocks.length, randomSponsoredPost);
+      tempDataLength = tempBlocks.length;
+    }
+
+    if (!hasMore) {
+      return sendPort.send(
+        blocks.followedBy([
+          if (blocks.isNotEmpty) DividerHorizontalBlock(),
+          const SectionHeaderBlock(
+            sectionType: SectionHeaderBlockType.suggested,
+          ),
+        ]).toList(),
+      );
+    }
+
+    return sendPort.send(blocks);
+  }
 }

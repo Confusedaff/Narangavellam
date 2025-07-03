@@ -24,8 +24,11 @@ dependencies:
   envied: ^1.1.1
   equatable: ^2.0.7
   firebase_core: ^3.14.0
+  firebase_remote_config_repository:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/firebase_remote_config_repository
   flutter:
     sdk: flutter
+  flutter_animate: ^4.5.2
   flutter_bloc: ^8.1.6
   flutter_gen: ^5.10.0
   flutter_image_compress: ^2.4.0
@@ -50,6 +53,7 @@ dependencies:
   intl: ^0.20.2
   inview_notifier_list: ^3.0.0
   json_annotation: ^4.9.0
+  lottie: ^3.3.0
   maths: ^0.0.2
   mocktail: ^1.0.4
   path_provider: ^2.1.5

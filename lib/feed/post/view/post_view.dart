@@ -7,6 +7,7 @@ import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_props.dart';
 import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/feed/post/bloc/post_bloc.dart';
+import 'package:narangavellam/feed/post/video/view/video_player.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -18,7 +19,7 @@ class PostView extends StatelessWidget {
     this.postIndex,
     this.withInViewNotifier = true,
     this.withCustomVideoPlayer = true,
-    //this.videoPlayerType = VideoPlayerType.feed,
+    this.videoPlayerType = VideoPlayerType.feed,
     super.key,
   });
 
@@ -27,7 +28,7 @@ class PostView extends StatelessWidget {
   final int? postIndex;
   final bool withInViewNotifier;
   final bool withCustomVideoPlayer;
-  //final VideoPlayerType videoPlayerType;
+  final VideoPlayerType videoPlayerType;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +56,7 @@ class PostView extends StatelessWidget {
             postIndex: postIndex,
             withInViewNotifier: withInViewNotifier,
             withCustomVideoPlayer: withCustomVideoPlayer,
-            //videoPlayerType: videoPlayerType,
+            videoPlayerType: videoPlayerType,
           ),
     );
   }
@@ -67,7 +68,7 @@ class PostLargeView extends StatelessWidget {
     required this.postIndex,
     required this.withInViewNotifier,
     required this.withCustomVideoPlayer,
-    //required this.videoPlayerType,
+    required this.videoPlayerType,
     super.key,
   });
 
@@ -75,7 +76,7 @@ class PostLargeView extends StatelessWidget {
   final int? postIndex;
   final bool withInViewNotifier;
   final bool withCustomVideoPlayer;
-  //final VideoPlayerType videoPlayerType;
+  final VideoPlayerType videoPlayerType;
 
   // void _navigateToPostAuthor(
   //   BuildContext context, {

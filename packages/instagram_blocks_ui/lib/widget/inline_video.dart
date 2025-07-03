@@ -327,9 +327,9 @@ class ToggleSoundButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Tappable(
+      onTap: () => onSoundToggled?.call(enable: !soundEnabled),
       animationEffect: TappableAnimationEffect.fade,
       fadeStrength: FadeStrength.medium,
-      onTap: () => onSoundToggled?.call(enable: !soundEnabled),
       child: Container(
         height: 35,
         width: 35,

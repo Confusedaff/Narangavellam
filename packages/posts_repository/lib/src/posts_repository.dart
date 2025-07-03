@@ -252,5 +252,8 @@ class PostsRepository extends PostsBaseRepository{
     ),
   ].withNavigateToPostAuthorAction;
   
+  @override
+  Future<String?> deletePost({required String id}) => 
+  _databaseClient.deletePost(id: id);
+  
 }
-

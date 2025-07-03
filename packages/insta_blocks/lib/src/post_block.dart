@@ -102,92 +102,22 @@ extension PostBlockActions on PostBlock {
       action?.actionType == BlockActionType.navigation;
 }
 
-// /// {@template post_block_list_extension}
-// /// Extends the functionality of a list of [PostLargeBlock] by providing a
-// /// method to add a navigation action to each element in the list.
-// ///
-// /// Usage:
-// /// ```dart
-// /// List<PostLargeBlock> postList = ...;
-// ///
-// /// List<PostLargeBlock> postListWithAction =
-// ///   postList.withNavigateToPostAuthorAction;
-// /// ```
-// /// The `withNavigateToPostAuthorAction` method returns a new list where each
-// /// element has the action [NavigateToPostAuthorProfileAction] added to it.
-// /// The action is created using the author ID of each element in the original
-// /// list.
-// /// {@endtemplate}
-// extension PostBlockListExtension on List<PostLargeBlock> {
-//   /// Provides each element in list of [PostLargeBlock] with action
-//   /// [NavigateToPostAuthorProfileAction].
-//   List<PostLargeBlock> get withNavigateToPostAuthorAction => map(
-//         (e) => e.copyWith(
-//           action: NavigateToPostAuthorProfileAction(authorId: e.author.id),
-//         ),
-//       ).toList();
-// }
-
-// /// {@template post_converter_extension}
-// /// Converts a [Post] instance into different types of [PostBlock] instances.
-// ///
-// /// Each conversion method creates a new instance of the corresponding
-// /// [PostBlock] type and initializes its properties using the properties of the
-// /// original [Post] instance.
-// ///
-// /// Example usage:
-// /// ```dart
-// /// Post post = ...;
-// ///
-// /// PostLargeBlock largeBlock = post.toPostLargeBlock(
-// ///   likersInFollowings: likers,
-// /// );
-// /// PostSmallBlock smallBlock = post.toPostSmallBlock;
-// /// PostReelBlock reelBlock = post.toPostReelBlock;
-// /// ```
-// /// {@endtemplate}
-// extension PostConverterExtension on Post {
-//   /// Converts [Post] instance into [PostLargeBlock] instance.
-//   PostLargeBlock get toPostLargeBlock => PostLargeBlock(
-//         id: id,
-//         author: PostAuthor.confirmed(
-//           id: author.id,
-//           avatarUrl: author.avatarUrl,
-//           username: author.displayUsername,
-//         ),
-//         createdAt: createdAt,
-//         media: media,
-//         caption: caption,
-//         action: NavigateToPostAuthorProfileAction(authorId: author.id),
-//       );
-
-//   /// Converts [Post] instance into [PostSmallBlock] instance.
-//   PostSmallBlock get toPostSmallBlock => PostSmallBlock(
-//         id: id,
-//         author: PostAuthor.confirmed(
-//           id: author.id,
-//           avatarUrl: author.avatarUrl,
-//           username: author.displayUsername,
-//         ),
-//         createdAt: createdAt,
-//         media: media,
-//         caption: caption,
-//         action: NavigateToPostAuthorProfileAction(authorId: author.id),
-//       );
-
-//   /// Converts [Post] instance into [PostReelBlock] instance.
-//   PostReelBlock get toPostReelBlock => PostReelBlock(
-//         id: id,
-//         author: PostAuthor.confirmed(
-//           id: author.id,
-//           avatarUrl: author.avatarUrl,
-//           username: author.displayUsername,
-//         ),
-//         createdAt: createdAt,
-//         media: media,
-//         caption: caption,
-//       );
-// }
+/// {@template post_block_list_extension}
+/// Extends the functionality of a list of [PostLargeBlock] by providing a
+/// method to add a navigation action to each element in the list.
+///
+/// Usage:
+/// ```dart
+/// List<PostLargeBlock> postList = ...;
+///
+/// List<PostLargeBlock> postListWithAction =
+///   postList.withNavigateToPostAuthorAction;
+/// ```
+/// The `withNavigateToPostAuthorAction` method returns a new list where each
+/// element has the action [NavigateToPostAuthorProfileAction] added to it.
+/// The action is created using the author ID of each element in the original
+/// list.
+/// {@endtemplate}
 extension PostBlockListExtension on List<PostLargeBlock> {
   /// Provides each element in list of [PostLargeBlock] with action
   /// [NavigateToPostAuthorProfileAction].
@@ -196,4 +126,65 @@ extension PostBlockListExtension on List<PostLargeBlock> {
           action: NavigateToPostAuthorProfileAction(authorId: e.author.id),
         ),
       ).toList();
+}
+
+/// {@template post_converter_extension}
+/// Converts a [Post] instance into different types of [PostBlock] instances.
+///
+/// Each conversion method creates a new instance of the corresponding
+/// [PostBlock] type and initializes its properties using the properties of the
+/// original [Post] instance.
+///
+/// Example usage:
+/// ```dart
+/// Post post = ...;
+///
+/// PostLargeBlock largeBlock = post.toPostLargeBlock(
+///   likersInFollowings: likers,
+/// );
+/// PostSmallBlock smallBlock = post.toPostSmallBlock;
+/// PostReelBlock reelBlock = post.toPostReelBlock;
+/// ```
+/// {@endtemplate}
+extension PostConverterExtension on Post {
+  /// Converts [Post] instance into [PostLargeBlock] instance.
+  PostLargeBlock get toPostLargeBlock => PostLargeBlock(
+        id: id,
+        author: PostAuthor.confirmed(
+          id: author.id,
+          avatarUrl: author.avatarUrl,
+          username: author.displayUsername,
+        ),
+        createdAt: createdAt,
+        media: media,
+        caption: caption,
+        action: NavigateToPostAuthorProfileAction(authorId: author.id),
+      );
+
+  /// Converts [Post] instance into [PostSmallBlock] instance.
+  // PostSmallBlock get toPostSmallBlock => PostSmallBlock(
+  //       id: id,
+  //       author: PostAuthor.confirmed(
+  //         id: author.id,
+  //         avatarUrl: author.avatarUrl,
+  //         username: author.displayUsername,
+  //       ),
+  //       createdAt: createdAt,
+  //       media: media,
+  //       caption: caption,
+  //       action: NavigateToPostAuthorProfileAction(authorId: author.id),
+  //     );
+
+  /// Converts [Post] instance into [PostReelBlock] instance.
+  // PostReelBlock get toPostReelBlock => PostReelBlock(
+  //       id: id,
+  //       author: PostAuthor.confirmed(
+  //         id: author.id,
+  //         avatarUrl: author.avatarUrl,
+  //         username: author.displayUsername,
+  //       ),
+  //       createdAt: createdAt,
+  //       media: media,
+  //       caption: caption,
+  //     );
 }

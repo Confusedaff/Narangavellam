@@ -5,6 +5,7 @@ import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_props.dart';
+import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/feed/post/bloc/post_bloc.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
@@ -182,13 +183,14 @@ class PostLargeView extends StatelessWidget {
               ),
               onPostDelete: (_) {
               bloc.add(const PostDeleteRequested());
-              // context.read<FeedBloc>().add(
-              //   FeedUpdateRequested(
-              //     post: block.toPost,
-              //     isDelete: true, 
-              //     update: null,
-              //     ),
-              //   );
+              context.read<FeedBloc>().add(
+                FeedUpdateRequested(
+                  update: FeedPageUpdate(
+                    newPost: block.toPost, 
+                    type:PageUpdateType.delete,
+                    ),   
+                  ),
+                );
               },
             )
           : const PostOptionsSettings.viewer(),

@@ -27,14 +27,14 @@ final class FeedReelsPageRequested extends FeedPageBasedEvent {
   List<Object?> get props => [page];
 }
 
-// final class FeedUpdateRequested extends FeedEvent {
-//   const FeedUpdateRequested({required this.update});
+final class FeedUpdateRequested extends FeedEvent {
+  const FeedUpdateRequested({required this.update});
 
-//   final PageUpdate update;
+  final PageUpdate update;
 
-//   @override
-//   List<Object?> get props => [update];
-// }
+  @override
+  List<Object?> get props => [update];
+}
 
 final class FeedPostCreateRequested extends FeedEvent {
   const FeedPostCreateRequested({

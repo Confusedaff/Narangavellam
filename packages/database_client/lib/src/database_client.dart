@@ -94,6 +94,11 @@ abstract class PostsBaseRepository {
     bool post = true,
   });
 
+    /// Deletes the post with provided [id].
+  /// Returns the optional `id` of the deleted post.
+  Future<String?> deletePost({required String id});
+
+
 }
 
 abstract class DatabaseClient implements UserBaseRepository, PostsBaseRepository
@@ -461,5 +466,15 @@ class PowerSyncDatabaseClient extends DatabaseClient{
       [currentUserId, id],
     );
   }
+
+  @override
+  Future<String?> deletePost({required String id}) async {
+    final result = await _powerSyncRepository
+        .db()
+        .execute('DELETE FROM posts WHERE id = ? RETURNING id', [id]);
+    if (result.isEmpty) return null;
+    return result.first['id'] as String;
+  }
+
 
 }

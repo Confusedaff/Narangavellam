@@ -3,6 +3,7 @@ import 'dart:isolate';
 import 'dart:math';
 
 import 'package:bloc/bloc.dart';
+import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
       _onFeedRecommendedPostsPageRequested,
       transformer: throttleDroppable(),
     );
+    on<FeedUpdateRequested>(_onFeedUpdateRequested);
   }
 
   @override
@@ -113,6 +115,50 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
 
       emit(state.populated(feed: feed));
       
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
+   Future<void> _onFeedUpdateRequested(
+    FeedUpdateRequested event,
+    Emitter<FeedState> emit,
+  ) async {
+    emit(state.loading());
+    final update = event.update;
+    final oldFeed = state.feed;
+
+    try {
+      final feedBlock = oldFeed.feedPage.blocks.findPostBlock(
+        test: (block) => block.id == update.newPost.id,
+      );
+      // final reel = oldFeed.reelsPage.blocks.findPostBlock(
+      //   test: (block) =>
+      //       block.id == update.newPost.id,//&&
+      //       block.type == PostReelBlock.identifier,
+      // );
+      if (feedBlock == null && !update.isCreate) {
+        return emit(state.populated());
+      }
+      final updatedFeedBlocks = oldFeed.updateFeedPage(update: update);
+      List<InstaBlock>? updatedReelsBlocks;
+      if (update.canUpdateReel) {
+        updatedReelsBlocks = oldFeed.updateReelsPage(update: update);
+      }
+
+      final feed = oldFeed.copyWith(
+        feedPage: oldFeed.feedPage.copyWith(
+          blocks: updatedFeedBlocks,
+          totalBlocks: updatedFeedBlocks.length,
+        ),
+        reelsPage: oldFeed.reelsPage.copyWith(
+          blocks: updatedReelsBlocks,
+          totalBlocks: updatedReelsBlocks?.length,
+        ),
+      );
+
+      emit(state.populated(feed: feed));
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(state.failure());

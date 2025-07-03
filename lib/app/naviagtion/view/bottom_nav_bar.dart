@@ -1,8 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:narangavellam/feed/feed.dart';
 import 'package:narangavellam/l10n/l10n.dart';
-import 'package:shared/shared.dart';
 
 class BottomNavBar extends StatelessWidget {
   const BottomNavBar({required this.navigationShell,super.key});
@@ -24,10 +24,13 @@ class BottomNavBar extends StatelessWidget {
       currentIndex: navigationShell.currentIndex,
       onTap: (index) {
         if(index == 2){
-          logI('create button');
         }else{
           navigationShell.goBranch(index,initialLocation: index == navigationShell.currentIndex,); 
         } 
+        if(index == 0){
+          if(!(index == navigationShell.currentIndex)) return;
+          FeedPageController().scrollToTop();
+        }
       },
       iconSize: 28,
       showSelectedLabels: false,

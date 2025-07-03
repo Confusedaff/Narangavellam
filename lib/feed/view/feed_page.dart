@@ -1,6 +1,5 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:collection/collection.dart';
-import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:insta_blocks/insta_blocks.dart';
@@ -8,6 +7,7 @@ import 'package:inview_notifier_list/inview_notifier_list.dart';
 import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/feed/post/view/post_view.dart';
 import 'package:narangavellam/feed/widgets/divider_block.dart';
+import 'package:narangavellam/feed/widgets/feed_app_bar.dart';
 import 'package:narangavellam/feed/widgets/feed_item_loader.dart';
 import 'package:narangavellam/feed/widgets/feed_page_controller.dart';
 import 'package:narangavellam/l10n/l10n.dart';
@@ -31,6 +31,7 @@ class FeedView extends StatefulWidget {
 
 class _FeedViewState extends State<FeedView> {
   late ScrollController _nestedScrollController;
+
   @override
   void initState() {
     super.initState();
@@ -41,10 +42,29 @@ class _FeedViewState extends State<FeedView> {
       context: context,
       );
   }
+
+  @override
+  void dispose(){
+    _nestedScrollController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return const AppScaffold(
-                    body: FeedBody(),
+    return AppScaffold(
+    body: NestedScrollView(
+      controller: _nestedScrollController,
+      floatHeaderSlivers: true,
+      headerSliverBuilder: (conetxt,innerBoxIsScrolled){
+        return[
+          SliverOverlapAbsorber(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(conetxt),
+          sliver: FeedAppBar(innerBoxIsScrolled: innerBoxIsScrolled,)
+          ,),
+        ];
+      },
+      body: const FeedBody(),
+      ),
     );
   }
 }

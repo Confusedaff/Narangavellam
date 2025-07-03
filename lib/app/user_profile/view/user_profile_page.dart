@@ -332,7 +332,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
               'publish_post',
               extra: CreatePostProps(
               details: details,
-              isReel: true,
+              pickVideo: true,
             ),
           ),
         ),

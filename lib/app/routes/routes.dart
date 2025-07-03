@@ -179,10 +179,10 @@ GoRouter router(AppBloc appBloc) {
                       name: 'create_post',
                       parentNavigatorKey: _rootNavigatorKey,
                       pageBuilder: (context, state) {
-                        //final pickVideo = state.extra as bool? ?? false;
+                        final pickVideo = state.extra as bool? ?? false;
                         return CustomTransitionPage(
                           key: state.pageKey,
-                          child: const UserProfileCreatePost(),//pickVideo: pickVideo),
+                          child:UserProfileCreatePost(pickVideo: pickVideo,),//pickVideo: pickVideo),
                           transitionsBuilder: (
                             context,
                             animation,

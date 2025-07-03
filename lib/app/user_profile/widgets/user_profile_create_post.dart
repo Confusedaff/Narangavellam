@@ -20,11 +20,13 @@ class UserProfileCreatePost extends StatelessWidget {
     this.imagePickerKey,
     this.onPopInvoked,
     this.onBackButtonTap,
+    this.pickVideo = false,
     super.key,
   });
 
   final bool canPop;
   final Key? imagePickerKey;
+  final bool pickVideo;
   final VoidCallback? onBackButtonTap;
   final VoidCallback? onPopInvoked;
 
@@ -45,7 +47,7 @@ class UserProfileCreatePost extends StatelessWidget {
         pickerSource: PickerSource.both,
         onMediaPicked: (details) => context.pushNamed(
           'publish_post',
-          extra: CreatePostProps(details: details),
+          extra: CreatePostProps(details: details,pickVideo: pickVideo),
         ),
         onBackButtonTap:
             onBackButtonTap != null ? () => onBackButtonTap?.call() : null,
@@ -57,12 +59,12 @@ class UserProfileCreatePost extends StatelessWidget {
 class CreatePostProps {
   const CreatePostProps({
     required this.details,
-    this.isReel = false,
+    this.pickVideo = false,
     this.context,
   });
 
   final SelectedImagesDetails details;
-  final bool isReel;
+  final bool pickVideo;
   final BuildContext? context;
 }
 
@@ -103,13 +105,13 @@ class _CreatePostPageState extends State<CreatePostPage> {
   Future<void> _onShareTap(String caption) async{
     void goHome(){
       context.go('/user');
-    if (widget.props.isReel) {
-    logI('Navigating home...');
-    context.go('/user');
-    } else {
-    // handle non-reel case
-    }
-
+    if (!widget.props.pickVideo) {
+    //context.go('/user');
+      // context
+      //       ..pop()
+      //       ..pop();
+      FeedPageController().scrollToTop();
+    } 
     }
 
     try{
@@ -121,14 +123,14 @@ class _CreatePostPageState extends State<CreatePostPage> {
         selectedFiles: selectedFiles, 
         postId: postId, 
         caption: caption, 
-        pickVideo: widget.props.isReel
+        pickVideo: widget.props.pickVideo
         ,)
         ,);
 
       void uploadPost({required List<Map<String,dynamic>>media,}) =>
         context.read<PostsRepository>().createPost(id: postId, caption: caption, media: jsonEncode(media));
 
-     if(widget.props.isReel){
+     if(widget.props.pickVideo){
       try{
         late final postId = uuid.v4();
         late final storage = Supabase.instance.client.storage.from('posts');
@@ -395,7 +397,7 @@ class CaptionInputField extends StatefulWidget {
     required this.captionController,
     required this.caption,
     required this.onSubmitted,
-    super.key,
+    super.key, 
   });
 
   final TextEditingController captionController;
@@ -435,7 +437,7 @@ class _CaptionInputFieldState extends State<CaptionInputField> {
     textController: widget.captionController,
     contentPadding: EdgeInsets.zero,
     textInputType: TextInputType.text,
-    textInputAction: TextInputAction.newline,
+    textInputAction: TextInputAction.done, // might  want to change here
     textCapitalization: TextCapitalization.sentences,
     hintText: context.l10n.writeCaptionText,
     onFieldSubmitted: (value) =>

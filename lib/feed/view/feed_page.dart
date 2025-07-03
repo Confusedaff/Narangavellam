@@ -35,10 +35,16 @@ class FeedView extends StatefulWidget {
 }
 
 class _FeedViewState extends State<FeedView> {
+  late ScrollController _nestedScrollController;
   @override
   void initState() {
     super.initState();
     context.read<FeedBloc>().add(const FeedPageRequested(page: 0));
+    _nestedScrollController = ScrollController();
+    FeedPageController().init(
+      nestedScrollController: _nestedScrollController, 
+      context: context,
+      );
   }
   @override
   Widget build(BuildContext context) {

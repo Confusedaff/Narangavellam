@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:typed_data';
 
@@ -7,6 +8,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/view/app.dart';
+import 'package:narangavellam/feed/feed.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:powersync_repository/powersync_repository.dart';
@@ -110,17 +112,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     }
 
-    final navigateToReelPage = widget.props.isReel ||
-          (selectedFiles.length == 1 &&
-                 selectedFiles.every((e) => !e.isThatImage));
-
-    StatefulNavigationShell.maybeOf(context)
-            ?.goBranch(navigateToReelPage ? 3 : 0, initialLocation: true);
-
     try{
       toggleLoadingIndeterminate();
 
       final postId = uuid.v4();
+
+      unawaited(FeedPageController().processPostMedia(
+        selectedFiles: selectedFiles, 
+        postId: postId, 
+        caption: caption, 
+        pickVideo: widget.props.isReel
+        ,)
+        ,);
 
       void uploadPost({required List<Map<String,dynamic>>media,}) =>
         context.read<PostsRepository>().createPost(id: postId, caption: caption, media: jsonEncode(media));

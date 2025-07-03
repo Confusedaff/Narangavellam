@@ -2,12 +2,14 @@ import 'dart:convert';
 import 'dart:isolate';
 import 'dart:math';
 
+import 'package:app_ui/app_ui.dart';
 import 'package:bloc/bloc.dart';
 import 'package:collection/collection.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_blocks/insta_blocks.dart';
+import 'package:narangavellam/app/view/app.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 
@@ -29,6 +31,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
       transformer: throttleDroppable(),
     );
     on<FeedUpdateRequested>(_onFeedUpdateRequested);
+    on<FeedPostCreateRequested>(_onFeedPostCreateRequested);
   }
 
   @override
@@ -159,6 +162,38 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
       );
 
       emit(state.populated(feed: feed));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
+  Future<void> _onFeedPostCreateRequested(
+    FeedPostCreateRequested event,
+    Emitter<FeedState> emit,
+  ) async {
+    emit(state.loading());
+    try {
+      final newPost = await _postsRepository.createPost(
+        id: event.postId,
+        caption: event.caption,
+        media: json.encode(event.media),
+      );
+      if (newPost != null) {
+        add(
+          FeedUpdateRequested(
+            update:
+                FeedPageUpdate(newPost: newPost, type: PageUpdateType.create),
+          ),
+        );
+      }
+      emit(state.populated());
+      toggleLoadingIndeterminate(enable: false);
+      openSnackbar(
+        const SnackbarMessage.success(
+          title: 'Successfully created post!',
+        ),
+      );
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(state.failure());

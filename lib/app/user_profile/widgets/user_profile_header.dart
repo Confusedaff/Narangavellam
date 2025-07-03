@@ -9,11 +9,13 @@ import 'package:narangavellam/app/user_profile/user_profile_avatar.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_button.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:shared/shared.dart';
+import 'package:user_repository/user_repository.dart';
 
 class UserProfileHeader extends StatelessWidget {
-  const UserProfileHeader({required this.userId,super.key});
+  const UserProfileHeader({required this.userId,required this.sponsoredPost,super.key});
 
    final String userId;
+   final PostSponsoredBlock? sponsoredPost;
 
   void _pushToUserStatisticInfo(
   BuildContext context, {
@@ -27,8 +29,14 @@ class UserProfileHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final isOwner = context.select((UserProfileBloc bloc) => bloc.isOwner);
-    final user = context.select((UserProfileBloc bloc) => bloc.state.user);
+   final isOwner = context.select((UserProfileBloc bloc) => bloc.isOwner);
+    final user$ = context.select((UserProfileBloc b) => b.state.user);
+    final user = sponsoredPost == null
+    ? user$
+    : user$.isAnonymous
+        ? sponsoredPost!.author.toUser
+        : user$;
+
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(

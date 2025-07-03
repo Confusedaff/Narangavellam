@@ -104,9 +104,9 @@ class _UserProfileViewState extends State<UserProfileView> {
                 sliver: MultiSliver(
                   children: [
                     UserProfileAppBar(sponsoredPost: props.sponsoredPost,),
-                    if (!user.isAnonymous) ...[
+                    if (!user.isAnonymous || props.sponsoredPost != null) ...[
                       UserProfileHeader(
-                        userId: widget.userId,
+                        userId: widget.userId, sponsoredPost: props.sponsoredPost,
                       ),
                       SliverPersistentHeader(
                         pinned: !ModalRoute.of(context)!.isFirst,

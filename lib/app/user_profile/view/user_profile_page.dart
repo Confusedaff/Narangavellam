@@ -2,6 +2,8 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:insta_blocks/insta_blocks.dart';
+import 'package:instagram_blocks_ui/widget/floating_action_bar.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_create_post.dart';
@@ -61,6 +63,8 @@ class UserProfileView extends StatefulWidget {
 class _UserProfileViewState extends State<UserProfileView> {
   late ScrollController _nestedScrollController;
 
+  UserProfileProps get props => widget.props;
+
   @override
   void initState() {
     _nestedScrollController = ScrollController();
@@ -75,9 +79,19 @@ class _UserProfileViewState extends State<UserProfileView> {
 
   @override
   Widget build(BuildContext context) {
+    final promoAction = 
+    props.promoBlockAction as NavigateToSponsoredPostAuthorProfileAction?;
     final user = context.select((UserProfileBloc bloc) => bloc.state.user);
 
     return AppScaffold(
+      floatingActionButton: !props.isSponsored
+    ? null
+    : PromoFloatingAction(
+        url: promoAction!.promoUrl,
+        promoImageUrl: promoAction.promoPreviewImageUrl,
+        title: context.l10n.learnMoreAboutUserPromoText,
+        subtitle: context.l10n.visitUserPromoWebsiteText,
+      ),
       body: DefaultTabController(
         length: 2,
         child: NestedScrollView(
@@ -89,7 +103,7 @@ class _UserProfileViewState extends State<UserProfileView> {
                     NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: MultiSliver(
                   children: [
-                    const UserProfileAppBar(),
+                    UserProfileAppBar(sponsoredPost: props.sponsoredPost,),
                     if (!user.isAnonymous) ...[
                       UserProfileHeader(
                         userId: widget.userId,
@@ -160,12 +174,19 @@ class _UserProfileTabBarDelegate extends SliverPersistentHeaderDelegate{
 }
 
 class UserProfileAppBar extends StatelessWidget {
-  const UserProfileAppBar({super.key});
+  const UserProfileAppBar({required this.sponsoredPost,super.key});
+
+    final PostSponsoredBlock? sponsoredPost;
 
   @override
   Widget build(BuildContext context) {
     final isOwner = context.select((UserProfileBloc bloc) => bloc.isOwner);
-    final user = context.select((UserProfileBloc bloc) => bloc.state.user);
+    final user$ = context.select((UserProfileBloc b) => b.state.user);
+    final user = sponsoredPost == null
+    ? user$
+    : user$.isAnonymous
+        ? sponsoredPost!.author.toUser
+        : user$;
 
     return SliverPadding(
       padding: const EdgeInsets.only(right: AppSpacing.md),

@@ -18,7 +18,12 @@ class _FeedLoaderItemState extends State<FeedLoaderItem> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(350.ms, () => widget.onPresented?.call());
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if(mounted){
+         widget.onPresented?.call();
+      }
+    });
+    //Future.delayed(350.ms, () => widget.onPresented?.call());
   }
 
   @override

@@ -2,6 +2,7 @@ export '../src/like_button.dart';
 export 'animated_visibility.dart';
 export 'better_stream_builder.dart';
 export 'block_settings.dart';
+export 'floating_action_bar.dart';
 export 'follow_button.dart';
 export 'inline_video.dart';
 export 'popping_icon_overlay.dart';

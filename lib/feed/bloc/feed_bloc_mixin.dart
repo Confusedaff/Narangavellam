@@ -92,7 +92,7 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
     var tempBlocks = [...blocks];
     var tempDataLength = tempBlocks.length;
 
-    const skipRange = [1, 2, 3,];
+    const skipRange = [1, 2, 3, 10];
     var previousSkipRangeIs1 = false;
 
     final sponsored =
@@ -100,7 +100,7 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
 
     while (tempDataLength > 1) {
       final allowedSkipRange = switch ((previousSkipRangeIs1, tempDataLength)) {
-        (true, > 3) => skipRange.sublist(1),
+        (true, > 10) => skipRange.sublist(1),
         (_, == 2) => [1],
         (_, == 3) => [1, 2],
         _ => skipRange,

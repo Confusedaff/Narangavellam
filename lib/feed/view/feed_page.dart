@@ -12,18 +12,13 @@ import 'package:narangavellam/feed/widgets/feed_item_loader.dart';
 import 'package:narangavellam/feed/widgets/feed_page_controller.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:narangavellam/network_error/view/network_error.dart';
-import 'package:posts_repository/posts_repository.dart';
 
 class FeedPage extends StatelessWidget {
   const FeedPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create:(context) => FeedBloc(postsRepository: context.read<PostsRepository>(), 
-                                  firebaseRemoteConfigRepository: context.read<FirebaseRemoteConfigRepository>(),
-                                  ),
-      child: const FeedView(),);
+    return const FeedView();
   }
 }
 

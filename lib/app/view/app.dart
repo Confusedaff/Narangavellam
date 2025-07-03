@@ -4,6 +4,7 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/view/app_view.dart';
+import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/selector/locale/bloc/locale_bloc.dart';
 import 'package:narangavellam/selector/theme/view/bloc/theme_mode_bloc.dart';
 import 'package:posts_repository/posts_repository.dart';
@@ -50,9 +51,16 @@ class App extends StatelessWidget {
             ),
           ),
           BlocProvider(
-            create: (context) => LocaleBloc(),
+            create: (_) => LocaleBloc(),
           ),
-          BlocProvider(create: (context) => ThemeModeBloc()),
+          BlocProvider(create: (_) => ThemeModeBloc()),
+          BlocProvider(
+          create: (context) => FeedBloc(
+            firebaseRemoteConfigRepository:
+                context.read<FirebaseRemoteConfigRepository>(),
+            postsRepository: context.read<PostsRepository>(),
+            ),
+          ),
         ],
         child: const AppView(),
       ),

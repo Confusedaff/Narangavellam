@@ -256,4 +256,8 @@ class PostsRepository extends PostsBaseRepository{
   Future<String?> deletePost({required String id}) => 
   _databaseClient.deletePost(id: id);
   
+  @override
+  Future<Post?> updatePost({required String id, String? caption}) =>
+  _databaseClient.updatePost(id: id,caption: caption);
+  
 }

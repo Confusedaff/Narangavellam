@@ -98,7 +98,8 @@ abstract class PostsBaseRepository {
   /// Returns the optional `id` of the deleted post.
   Future<String?> deletePost({required String id});
 
-
+  /// Updates the post with provided [id] and optional parameters to update.
+  Future<Post?> updatePost({required String id, String? caption});
 }
 
 abstract class DatabaseClient implements UserBaseRepository, PostsBaseRepository
@@ -476,5 +477,21 @@ class PowerSyncDatabaseClient extends DatabaseClient{
     return result.first['id'] as String;
   }
 
-
+    @override
+  Future<Post?> updatePost({required String id, String? caption}) async {
+    final row = await _powerSyncRepository.db().execute(
+      '''
+      UPDATE posts
+      SET
+        caption = ?2,
+        updated_at = ?3
+      WHERE id = ?1
+      RETURNING *
+      ''',
+      [id, caption, DateTime.timestamp().toIso8601String()],
+    );
+    if (row.isEmpty) return null;
+    final json = Map<String, dynamic>.from(row.first);
+    return Post.fromJson(json);
+  }
 }

@@ -38,6 +38,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       _onPostLikersInFollowingsFetchRequested,
     );
     on<PostDeleteRequested>(_onPostDeleteRequested);
+     on<PostUpdateRequested>(_onPostUpdateRequested);
   }
 
 
@@ -152,6 +153,24 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
   ) async {
     try {
       await _postsRepository.deletePost(id: id);
+      emit(state.copyWith(status: PostStatus.success));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.copyWith(status: PostStatus.failure));
+    }
+  }
+
+  Future<void> _onPostUpdateRequested(
+    PostUpdateRequested event,
+    Emitter<PostState> emit,
+  ) async {
+    try {
+      final post =
+          await _postsRepository.updatePost(id: id, caption: event.caption);
+
+      if (post != null) {
+        event.onPostUpdated?.call(post.toPostLargeBlock);
+      }
       emit(state.copyWith(status: PostStatus.success));
     } catch (error, stackTrace) {
       addError(error, stackTrace);

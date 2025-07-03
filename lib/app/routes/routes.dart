@@ -5,10 +5,12 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:insta_blocks/insta_blocks.dart' hide FeedPage;
 import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/app/home/home.dart';
 import 'package:narangavellam/auth/view/auth_page.dart';
 import 'package:narangavellam/feed/feed.dart';
+import 'package:narangavellam/feed/post/widgets/widgets.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -59,6 +61,16 @@ GoRouter router(AppBloc appBloc) {
             );
           },
         ),
+        GoRoute(
+        path: '/posts/:post_id/edit',
+        name: 'post_edit',
+        parentNavigatorKey: _rootNavigatorKey,
+        pageBuilder: (context, state) {
+          final post = state.extra! as PostBlock;
+
+          return NoTransitionPage(child: PostEditPage(post: post));
+        },
+      ), // GoRoute
       StatefulShellRoute.indexedStack(
         parentNavigatorKey: _rootNavigatorKey, 
         builder: (context, state, navigationShell) {

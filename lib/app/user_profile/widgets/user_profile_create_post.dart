@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:narangavellam/app/home/provider/home_provider.dart';
 import 'package:narangavellam/app/view/app.dart';
 import 'package:narangavellam/feed/feed.dart';
 import 'package:narangavellam/l10n/l10n.dart';
@@ -103,19 +104,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
   }
 
   Future<void> _onShareTap(String caption) async{
+    toggleLoadingIndeterminate();
+    await Future<void>.delayed(const Duration(milliseconds: 100));
     void goHome(){
-      context.go('/user');
     if (!widget.props.pickVideo) {
     //context.go('/user');
       // context
       //       ..pop()
       //       ..pop();
+      HomeProvider().animateToPage(1);
       FeedPageController().scrollToTop();
     } 
     }
 
     try{
-      toggleLoadingIndeterminate();
+      //toggleLoadingIndeterminate();
 
       final postId = uuid.v4();
 
@@ -126,6 +129,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         pickVideo: widget.props.pickVideo
         ,)
         ,);
+        if (!mounted) return;
 
       void uploadPost({required List<Map<String,dynamic>>media,}) =>
         context.read<PostsRepository>().createPost(id: postId, caption: caption, media: jsonEncode(media));
@@ -141,6 +145,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         final firstFrame = await VideoPlus.getVideoThumbnail(
         selectedFile.selectedFile,
         );
+        if (!mounted) return;
         final blurHash = firstFrame == null
           ? ''
           : await BlurHashPlus.blurHashEncode(firstFrame);
@@ -152,6 +157,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         final compressedVideoBytes = await PickImage().imageBytes(
         file: compressedVideo,
         );
+        if (!mounted) return;
         final attachment = AttachmentFile(
         size: compressedVideoBytes.length,
         bytes: compressedVideoBytes,
@@ -166,7 +172,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         cacheControl: '9000000',
         ),
       );
-
+        if (!mounted) return;
         final mediaUrl = storage.getPublicUrl(mediaPath);
         String? firstFrameUrl;
         if (firstFrame != null) {
@@ -179,6 +185,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
         cacheControl: '9000000',
      ),
     );
+    if (!mounted) return;
         firstFrameUrl = storage.getPublicUrl(firstFramePath);
     }
     final media = [
@@ -211,15 +218,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
         convertedBytes = await VideoPlus.getVideoThumbnail(
           selectedFile,
         );
+        if (!mounted) return;
         blurHash = convertedBytes == null
         ? ''
         : await BlurHashPlus.blurHashEncode(
           convertedBytes,
         );
+        if (!mounted) return;
         } else {
         blurHash = await BlurHashPlus.blurHashEncode(
         selectedByte,
       );
+      if (!mounted) return;
       }
       late final mediaExtension =
           selectedFile.path.split('.').last.toLowerCase();
@@ -232,9 +242,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
               final compressedVideo = await VideoPlus.compressVideo(
               selectedFile,
              );
+             if (!mounted) return;
         bytes = await PickImage().imageBytes(
               file: compressedVideo!.file!,
         );
+        if (!mounted) return;
         } catch (error, stackTrace) {
         logE(
             'Error compressing video',
@@ -254,6 +266,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
           cacheControl: '900000',
         ),
       );
+      if (!mounted) return;
     final mediaUrl = storage.getPublicUrl(mediaPath);
     String? firstFrameUrl;
     if (convertedBytes != null) {
@@ -266,6 +279,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       cacheControl: '900000',
     ),
     );
+    if (!mounted) return;
     firstFrameUrl = storage.getPublicUrl(firstFramePath);
     }
 

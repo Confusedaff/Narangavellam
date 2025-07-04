@@ -1,5 +1,6 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:narangavellam/app/home/provider/home_provider.dart';
 
 class FeedAppBar extends StatelessWidget {
   const FeedAppBar({required this.innerBoxIsScrolled, super.key});
@@ -18,7 +19,7 @@ class FeedAppBar extends StatelessWidget {
         snap: true,
         actions: [
           Tappable(
-            onTap: () {},
+            onTap: () => HomeProvider().animateToPage(2),
             animationEffect: TappableAnimationEffect.scale,
             child: Assets.icons.chatCircle.svg(
               height: AppSize.iconSize,

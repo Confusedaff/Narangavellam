@@ -29,6 +29,9 @@ class BottomNavBar extends StatelessWidget {
       onTap: (index) {
         
         HomeProvider().togglePageView(enable: index == 0);
+
+        //videoPlayerState.stopAll();
+
         if ([0, 1, 2, 3].contains(index)) {
           if (index case 0) videoPlayerState.playFeed();
           if (index case 1) videoPlayerState.playTimeline();

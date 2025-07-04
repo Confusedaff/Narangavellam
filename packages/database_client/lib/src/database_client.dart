@@ -51,6 +51,7 @@ abstract class PostsBaseRepository {
 
   const PostsBaseRepository();
 
+  Stream<List<Post>> postsOf({String? userId});
   Stream<int> postsAmountof({required String userId});
 
   Future<Post?>createPost({
@@ -518,5 +519,51 @@ class PowerSyncDatabaseClient extends DatabaseClient{
     if (row.isEmpty) return null;
     final json = Map<String, dynamic>.from(row.first);
     return Post.fromJson(json);
+  }
+  
+   @override
+  Stream<List<Post>> postsOf({String? userId}) {
+    if (currentUserId == null && userId == null) return const Stream.empty();
+    if (userId == null) {
+      return _powerSyncRepository.db().watch(
+        '''
+SELECT
+  posts.*,
+  p.id as user_id,
+  p.avatar_url as avatar_url,
+  p.username as username,
+  p.full_name as full_name
+FROM
+  posts
+  left join profiles p on posts.user_id = p.id 
+WHERE user_id = ?1
+ORDER BY created_at DESC
+      ''',
+        parameters: [currentUserId],
+      ).map(
+        (event) => event
+            .safeMap((row) => Post.fromJson(Map<String, dynamic>.from(row)))
+            .toList(growable: false),
+      );
+    }
+    return _powerSyncRepository.db().watch(
+      '''
+SELECT
+  posts.*,
+  p.avatar_url as avatar_url,
+  p.username as username,
+  p.full_name as full_name
+FROM
+  posts
+  left join profiles p on posts.user_id = p.id 
+WHERE user_id = ?
+ORDER BY created_at DESC
+      ''',
+      parameters: [userId],
+    ).map(
+      (event) => event
+          .safeMap((row) => Post.fromJson(Map<String, dynamic>.from(row)))
+          .toList(growable: false),
+    );
   }
 }

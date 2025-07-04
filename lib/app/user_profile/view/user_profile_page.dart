@@ -1,8 +1,11 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insta_blocks/insta_blocks.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:instagram_blocks_ui/widget/better_stream_builder.dart';
 import 'package:instagram_blocks_ui/widget/floating_action_bar.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
@@ -134,9 +137,9 @@ class _UserProfileViewState extends State<UserProfileView> {
               ),
             ];
           },
-          body: const TabBarView(children: [
-            UserPostPage(),
-            UserProfileMentionedPostPage(),
+          body:TabBarView(children: [
+            UserPostPage(sponsoredPost: props.sponsoredPost,),
+            //UserProfileMentionedPostPage(),
           ],),
         ),
       ),
@@ -350,12 +353,67 @@ class UserProfileAddMediaButton extends StatelessWidget {
   }
 }
 
-class UserPostPage extends StatelessWidget {
-  const UserPostPage({super.key});
+class UserPostPage extends StatefulWidget {
+  const UserPostPage({this.sponsoredPost,super.key});
+
+  final PostSponsoredBlock? sponsoredPost;
 
   @override
-  Widget build(BuildContext context) {
-    return Container();
+  State<UserPostPage> createState() => _UserPostPageState();
+}
+
+class _UserPostPageState extends State<UserPostPage> with AutomaticKeepAliveClientMixin{
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+ Widget build(BuildContext context) {
+  super.build(context);
+
+  return CustomScrollView(
+    cacheExtent: 2760,
+    slivers: [
+      SliverOverlapInjector(
+        handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+      ),
+      BetterStreamBuilder<List<PostBlock>>(
+        initialData: const <PostBlock>[],
+        stream: context.read<UserProfileBloc>().userPosts(),
+        comparator: const ListEquality<PostBlock>().equals,
+        builder: (context, blocks) {
+          if (blocks.isEmpty && widget.sponsoredPost == null) {
+            return const EmptyPosts();
+          }
+          return SliverGrid.builder(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 3,
+              mainAxisExtent: 120,
+              mainAxisSpacing: 2,
+              crossAxisSpacing: 2,
+            ),
+            itemCount: widget.sponsoredPost != null ? 1 : blocks.length,
+            itemBuilder: (context, index) {
+              final block = widget.sponsoredPost ?? blocks[index];
+              final multiMedia = block.media.length > 1;
+
+              return PostSmall(
+                key: ValueKey(block.id),
+                pinned: false,
+                isReel: block.isReel,
+                multiMedia: multiMedia,
+                mediaUrl: block.firstMediaUrl!,
+                imageThumbnailBuilder: (_, url) => ImageAttachmentThumbnail(
+                  image: Attachment(imageUrl: url),
+                  fit: BoxFit.cover,
+                  ),
+                );
+              },
+            );
+          },
+        ),
+      ],
+    );
   }
 }
 

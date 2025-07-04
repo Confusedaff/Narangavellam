@@ -8,6 +8,8 @@ environment:
   flutter: ^3.24.0
 
 dependencies:
+  instagram_blocks_ui:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/instagram_blocks_ui
   user_repository:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/user_repository
   app_ui: 

@@ -260,4 +260,8 @@ class PostsRepository extends PostsBaseRepository{
   Future<Post?> updatePost({required String id, String? caption}) =>
   _databaseClient.updatePost(id: id,caption: caption);
   
+  @override
+  Stream<List<Post>> postsOf({String? userId}) => 
+  _databaseClient.postsOf(userId: userId);
+  
 }

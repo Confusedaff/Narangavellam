@@ -121,6 +121,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
 
       emit(state.populated(feed: feed));
       
+      
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(state.failure());
@@ -165,6 +166,7 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
       );
 
       emit(state.populated(feed: feed));
+      
     } catch (error, stackTrace) {
       addError(error, stackTrace);
       emit(state.failure());
@@ -220,5 +222,19 @@ extension PostX on Post {
         caption: caption,
         //likersInFollowings: likersInFollowings,
         action: NavigateToPostAuthorProfileAction(authorId: author.id),
-      ); // PostLargeBlock
+      ); 
+
+      PostSmallBlock get toPostSmallBlock => PostSmallBlock(
+      id: id,
+      author: PostAuthor.confirmed(
+        id: author.id,
+        avatarUrl: author.avatarUrl,
+        username: author.displayUsername,
+      ),
+      createdAt: createdAt,
+      media: media,
+      caption: caption,
+      action: NavigateToPostAuthorProfileAction(authorId: author.id),
+    ); 
+
 }

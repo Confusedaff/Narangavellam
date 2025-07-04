@@ -203,10 +203,15 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
       blocks,
       sponsoredBlocksStringJson,
     ]);
-    isolate.kill(priority: Isolate.immediate);
-
-    final insertedBlocks = await receivePort.first as List<InstaBlock>;
-    return insertedBlocks;
+    try {
+  final insertedBlocks = await receivePort.first.timeout(3.seconds) as List<InstaBlock>;
+  isolate.kill(priority: Isolate.immediate);
+  return insertedBlocks;
+} catch (e) {
+  isolate.kill(priority: Isolate.immediate);
+  logE('Isolate for sponsored blocks failed', error: e);
+  return blocks; 
+}
   }
 
      static Future<void> _computeSponsoredBlocks(List<dynamic> args) async {

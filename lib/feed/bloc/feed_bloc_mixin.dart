@@ -174,10 +174,9 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
   final newPage = currentPage + 1;
   final hasMore = posts.length >= feedPageLimit;
 
-  //final postLikers = await _fetchPostLikersInFollowings(posts);
-
   final instaBlocks =
-      mapper?.call(posts) ?? postsToLargeBlocksMapper(posts);//postLikers);
+      mapper?.call(posts) ?? postsToLargeBlocksMapper(posts);
+
   if(!withSponsoredBlocks){
     return (newPage: newPage, hasMore: hasMore, blocks: instaBlocks);
   }
@@ -185,27 +184,10 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
    return (newPage: newPage, hasMore: hasMore, blocks: blocks);
 }
 
-  //   Future<List<List<User>>> _fetchPostLikersInFollowings(List<Post> posts) =>
-  // Stream.fromIterable(posts)
-  //   .asyncMap(
-  //     (post) =>
-  //       postsRepository.getPostLikersInFollowings(postId: post.id),
-  //   )
-  //   .toList();
+  List<InstaBlock> postsToLargeBlocksMapper(List<Post> posts) =>
+    posts.map<InstaBlock>(
+      (post) => post.topostlargeblock,).toList();
 
-  List<InstaBlock> postsToLargeBlocksMapper(
-    List<Post> posts,
-    //List<List<User>> postLikers,
-  ) =>
-  // posts.map<InstaBlock>((post) {
-  //   final likersInFollowings = postLikers[posts.indexOf(post)];
-  //   return post.toPostLargeBlock(likersInFollowings: likersInFollowings);
-  // }).toList();
-
-   posts.map<InstaBlock>((post) =>
-    //final likersInFollowings = postLikers[posts.indexOf(post)];return
-     post.topostlargeblock,//likersInFollowings: likersInFollowings);
-  ).toList();
 
     Future<List<InstaBlock>> insertSponsoredBlocks({
     required bool hasMore,

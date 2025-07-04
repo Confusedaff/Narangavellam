@@ -133,7 +133,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
     }
   }
 
-  Future<void> _onPostLikersInFollowingsFetchRequested(
+   Future<void> _onPostLikersInFollowingsFetchRequested(
     PostLikersInFollowingsFetchRequested event,
     Emitter<PostState> emit,
   ) async {
@@ -146,6 +146,7 @@ class PostBloc extends HydratedBloc<PostEvent, PostState> {
       emit(state.copyWith(status: PostStatus.failure));
     }
   }
+
 
   Future<void> _onPostDeleteRequested(
     PostDeleteRequested event,

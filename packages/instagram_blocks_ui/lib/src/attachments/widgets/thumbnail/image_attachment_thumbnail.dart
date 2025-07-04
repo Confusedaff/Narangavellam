@@ -141,8 +141,6 @@ class ImageAttachmentThumbnail extends StatelessWidget {
         filterQuality: filterQuality,
       );
     }
-
-    // Return error widget if no image is found.
     return errorBuilder(
       context,
       'Image attachment is not valid',

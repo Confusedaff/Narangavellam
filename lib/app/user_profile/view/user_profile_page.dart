@@ -51,7 +51,7 @@ class UserProfileView extends StatefulWidget {
   const UserProfileView({
     required this.userId,
     required this.props,
-    super.key});
+    super.key,});
 
   final String userId;
   final UserProfileProps props;
@@ -136,7 +136,7 @@ class _UserProfileViewState extends State<UserProfileView> {
           },
           body: const TabBarView(children: [
             UserPostPage(),
-             UserProfileMentionedPostPage(),
+            UserProfileMentionedPostPage(),
           ],),
         ),
       ),
@@ -312,7 +312,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-    //final user = context.select((AppBloc bloc) => bloc.state.user);
+    final user = context.select((AppBloc bloc) => bloc.state.user);
     // final enableStory =
     //     context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
     return Tappable(

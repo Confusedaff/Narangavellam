@@ -47,7 +47,7 @@ class BottomNavBar extends StatelessWidget {
         }
         if(index == 0){
           if(!(index == navigationShell.currentIndex)) return;
-          FeedPageController().scrollToTop();
+          //FeedPageController().scrollToTop();
         }
       },
       iconSize: 28,

@@ -1,6 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:narangavellam/app/home/provider/home_provider.dart';
+import 'package:narangavellam/feed/post/video/widgets/video_player_inherited_widget.dart';
 import 'package:narangavellam/feed/widgets/feed_page_controller.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 
@@ -11,7 +13,10 @@ class BottomNavBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     final l10n = context.l10n;
+    final videoPlayerState = VideoPlayerInheritedWidget.of(context).videoPlayerState;
+    
     final navigationBarItems = mainNavigationBarItems(
       homeLabel:l10n.homeNavBarItemLabel, 
       searchLabel: l10n.searchNavBarItemLabel, 
@@ -22,9 +27,24 @@ class BottomNavBar extends StatelessWidget {
     return BottomNavigationBar(
       currentIndex: navigationShell.currentIndex,
       onTap: (index) {
-        if(index == 2){
-        }else{
-            navigationShell.goBranch(index,initialLocation: index == navigationShell.currentIndex);
+        
+        HomeProvider().togglePageView(enable: index == 0);
+        if ([0, 1, 2, 3].contains(index)) {
+          if (index case 0) videoPlayerState.playFeed();
+          if (index case 1) videoPlayerState.playTimeline();
+          if (index case 2) {
+            HomeProvider().animateToPage(0);
+            HomeProvider().togglePageView();
+          }
+          if (index case 3) videoPlayerState.playReels();
+        } else {
+          videoPlayerState.stopAll();
+        }
+        if (index != 2) {
+          navigationShell.goBranch(
+            index,
+            initialLocation: index == navigationShell.currentIndex,
+          );
         }
         if(index == 0){
           if(!(index == navigationShell.currentIndex)) return;

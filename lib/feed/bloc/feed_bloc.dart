@@ -24,8 +24,8 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
   })  : _postsRepository = postsRepository,
         _firebaseRemoteConfigRepository = firebaseRemoteConfigRepository,
         super(const FeedState.initial()) {
-    on<FeedPageRequested>(_onFeedPageRequested);
-    on<FeedRefreshRequested>(_onFeedRefreshRequested,transformer: throttleDroppable(duration:550.ms));
+    on<FeedPageRequested>(_onFeedPageRequested,transformer: throttleDroppable(duration:550.ms));
+    on<FeedRefreshRequested>(_onFeedRefreshRequested);
     on<FeedRecommendedPostsPageRequested>(
       _onFeedRecommendedPostsPageRequested,
       transformer: throttleDroppable(),

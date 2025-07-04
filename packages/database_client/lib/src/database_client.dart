@@ -32,6 +32,9 @@ abstract class UserBaseRepository{
    /// Returns a list of followings of the user identified by [userId].
   Future<List<User>> getFollowings({String? userId});
 
+   /// Returns a list of followers of the user identified by [userId].
+  Future<List<User>> getFollowers({String? userId});
+
   /// Broadcasts a list of followers of the user identified by [userId].
   Stream<List<User>> followers({required String userId});
 
@@ -220,6 +223,28 @@ class PowerSyncDatabaseClient extends DatabaseClient{
       parameters: [followerId ?? currentUserId, userId],
     ).map((event) => event.isNotEmpty);
   }
+
+   @override
+  Future<List<User>> getFollowers({String? userId}) async {
+    final followersId = await _powerSyncRepository.db().getAll(
+      'SELECT subscriber_id FROM subscriptions WHERE subscribed_to_id = ? ',
+      [userId ?? currentUserId],
+    );
+    if (followersId.isEmpty) return [];
+
+    final followers = <User>[];
+    for (final followerId in followersId) {
+      final result = await _powerSyncRepository.db().execute(
+        'SELECT * FROM profiles WHERE id = ?',
+        [followerId['subscriber_id']],
+      );
+      if (result.isEmpty) continue;
+      final follower = User.fromJson(result.first);
+      followers.add(follower);
+    }
+    return followers;
+  }
+
   
   @override
   Future<Post?> createPost({

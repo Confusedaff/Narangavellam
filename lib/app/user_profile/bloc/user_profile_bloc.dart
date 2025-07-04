@@ -20,10 +20,9 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
           on<UserProfileFollowersCountSubscriptionRequested>(_onUserProfileFollowersCountSubscriptionRequested);
           on<UserProfileFollowingsCountSubscriptionRequested>(_onUserProfileFollowingsCountSubscriptionRequested);
           on<UserProfileFollowUserRequested>(_onUserProfileFollowUserRequested);
+          on<UserProfileFetchFollowersRequested>(_onFollowersFetch);
           on<UserProfileFetchFollowingsRequested>(_onUserProfileFetchFollowingsRequested);
-           on<UserProfileFollowersSubscriptionRequested>(
-                        _onFollowersSubscriptionRequested,);
-                        //transformer: throttleDroppable(),
+          on<UserProfileFollowersSubscriptionRequested>(_onFollowersSubscriptionRequested);
           on<UserProfileRemoveFollowerRequested>(_onUserProfileRemoveFollowerRequested);
           on<UserProfileUpdateRequested>(_onUserProfileUpdateRequested);
         }
@@ -89,15 +88,30 @@ class UserProfileBloc extends Bloc<UserProfileEvent, UserProfileState> {
     }
   }
 
- Future<void> _onFollowersSubscriptionRequested(
-    UserProfileFollowersSubscriptionRequested event,
+    Future<void> _onFollowersSubscriptionRequested(
+      UserProfileFollowersSubscriptionRequested event,
+      Emitter<UserProfileState> emit,
+    ) async {
+      try {
+        final followers = await _userRepository.getFollowers(userId: event.userId);
+        emit(state.copyWith(followers: followers));
+      } catch (error, stackTrace) {
+        addError(error, stackTrace);
+      }
+    }
+
+    Future<void> _onFollowersFetch(
+    UserProfileFetchFollowersRequested event,
     Emitter<UserProfileState> emit,
   ) async {
-    await emit.forEach(
-      _userRepository.followers(userId: _userId),
-      onData: (followers) => state.copyWith(followers: followers),
-    );
+    try {
+      final followers = await _userRepository.getFollowers(userId: _userId);
+      emit(state.copyWith(followers: followers));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+    }
   }
+
 
     Future<void> _onUserProfileFetchFollowingsRequested(
     UserProfileFetchFollowingsRequested event,

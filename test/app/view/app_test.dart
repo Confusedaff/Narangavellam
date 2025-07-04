@@ -1,3 +1,4 @@
+import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mocktail/mocktail.dart';
@@ -8,6 +9,7 @@ import 'package:user_repository/user_repository.dart';
 class MockUserRepository extends Mock implements UserRepository{}
 class MockUser extends Mock implements User{}
 class MockPostsRepository extends Mock implements PostsRepository{}
+class MockFirebaseRemoteConfigRepository extends Mock implements FirebaseRemoteConfigRepository{}
 
 void main() {
   group('App', () {
@@ -16,7 +18,8 @@ void main() {
         App(
           user: MockUser(),
           userRepository: MockUserRepository(), 
-          postsRepository: MockPostsRepository(),),
+          postsRepository: MockPostsRepository(), 
+          firebaseRemoteConfigRepository: MockFirebaseRemoteConfigRepository(),),
       );
       expect(find.byType(Scaffold), findsOneWidget);
     });

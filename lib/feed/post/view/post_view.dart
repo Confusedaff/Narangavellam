@@ -8,6 +8,7 @@ import 'package:narangavellam/app/user_profile/widgets/user_profile_props.dart';
 import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/feed/post/bloc/post_bloc.dart';
 import 'package:narangavellam/feed/post/video/view/video_player.dart';
+import 'package:narangavellam/feed/post/video/widgets/video_player_inherited_widget.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -201,22 +202,55 @@ class PostLargeView extends StatelessWidget {
           onUserTap: (userId) => context.pushNamed(
             'user_profile',
             pathParameters: {'user_id': userId},
-          ),
+          ),videoPlayerBuilder: withCustomVideoPlayer
+  ? null
+  : (_, media, aspectRatio, isInView) {
+      final videoPlayerState =
+          VideoPlayerInheritedWidget.of(context).videoPlayerState;
+
+      return VideoPlayerInViewNotifierWidget(
+        type: videoPlayerType,
+        builder: (context, shouldPlay, child) {
+          final play = shouldPlay && isInView;
+          return ValueListenableBuilder(
+            valueListenable: videoPlayerState.withSound,
+            builder: (context, withSound, child) {
+              return InlineVideo(
+                key: ValueKey(media.id),
+                videoSettings: VideoSettings.build(
+                  videoUrl: media.url,
+                  shouldPlay: play,
+                  aspectRatio: aspectRatio,
+                  blurHash: media.blurHash,
+                  withSound: withSound,
+                ),
+                // onSoundToggled: ({required enable}) {},
+              );
+            },
+          );
+        },
+      );
+    },
+
 
           onPressed: (action) => action?.when(
             navigateToPostAuthor: (action) => context.pushNamed(
               'user_profile',
               pathParameters: {'user_id': action.authorId},
             ),
-            navigateToSponsoredPostAuthor: (NavigateToSponsoredPostAuthorProfileAction action) {  },
+            navigateToSponsoredPostAuthor:(action) => context.pushNamed(
+              'user_profile',
+              pathParameters: {'user_id': action.authorId},
+              extra: UserProfileProps.build(
+                isSponsored: true,
+                promoBlockAction: action,
+                sponsoredPost: block as PostSponsoredBlock,
+              ),
+            ),
           ),
 
           onPostShareTap: (postId, author) {
-            // TODO(post): show share post modal
+            // TODO(post): show share post modal  videoPlayerState.withSound.value = enable;
           },
-        );
-
-       
-
-  }
+  );}
 }

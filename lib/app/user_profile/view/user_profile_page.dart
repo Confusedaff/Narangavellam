@@ -12,6 +12,7 @@ import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_create_post.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_header.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_props.dart';
+import 'package:narangavellam/feed/post/widgets/widgets.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:narangavellam/selector/locale/view/locale_selector.dart';
 import 'package:narangavellam/selector/theme/view/theme_selector.dart';
@@ -397,15 +398,10 @@ class _UserPostPageState extends State<UserPostPage> with AutomaticKeepAliveClie
               final block = widget.sponsoredPost ?? blocks[index];
               final multiMedia = block.media.length > 1;
 
-              return Tappable(
-                onTap: () => context.pushNamed(
-                    'user_posts',
-                    queryParameters: {
-                      'user_id': block.author.id,
-                      'index': index.toString(),
-                    },
-                  ),
-                child: PostSmall(
+              return PostPopup(
+                block: block,
+                index: index,
+                builder: (_) => PostSmall(
                   key: ValueKey(block.id),
                   pinned: false,
                   isReel: block.isReel,

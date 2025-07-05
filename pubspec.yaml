@@ -68,6 +68,7 @@ dependencies:
   slang: ^4.7.2
   slang_flutter: ^4.7.0
   sliver_tools: ^0.2.12
+  sprung: ^3.0.1
   supabase: ^2.8.0
   supabase_authentication_client:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/supabase_authentication_client

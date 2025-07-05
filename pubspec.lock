@@ -1742,7 +1742,7 @@ packages:
     source: hosted
     version: "7.0.0"
   sprung:
-    dependency: transitive
+    dependency: "direct main"
     description:
       name: sprung
       sha256: "54322638f5e393d2b808175f7eadbaa4836a4425456e98d93c3d676dc56ebdf1"

@@ -422,13 +422,29 @@ class _UserPostPageState extends State<UserPostPage> with AutomaticKeepAliveClie
   }
 }
 
-class UserProfileMentionedPostPage extends StatelessWidget {
+class UserProfileMentionedPostPage extends StatefulWidget {
   const UserProfileMentionedPostPage({super.key});
 
   @override
+  State<UserProfileMentionedPostPage> createState() => _UserProfileMentionedPostPageState();
+}
+
+class _UserProfileMentionedPostPageState extends State<UserProfileMentionedPostPage> with AutomaticKeepAliveClientMixin{
+
+  @override
+  bool get wantKeepAlive => true;
+
   Widget build(BuildContext context) {
-    return Container();
-  }
+    super.build(context);
+    return CustomScrollView(
+      slivers: [
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+        ),
+        const EmptyPosts(icon: Icons.person_pin_outlined),
+        ],
+      ); 
+    }
 }
 
 class LogoutModalOption extends StatelessWidget {

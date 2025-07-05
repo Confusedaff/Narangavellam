@@ -188,14 +188,14 @@ class _PostPopupState extends State<PopupModal>
           animationEffect: TappableAnimationEffect.fade,
           fadeStrength: FadeStrength.medium,
           key: ValueKey(widget.block.id + widget.block.createdAt.toString()),
-          // enableFeedback: false,
-          // onTap: () => context.pushNamed(
-          //   AppRoutes.userPosts.name,
-          //   queryParameters: {
-          //     'user_id': widget.block.author.id,
-          //     'index': widget.index.toString(),
-          //   },
-          // ),
+          //enableFeedback: false,
+          onTap: () => context.pushNamed(
+            'user_posts',
+            queryParameters: {
+              'user_id': widget.block.author.id,
+              'index': widget.index.toString(),
+            },
+          ),
           onLongPressMoveUpdate: (details) => onLongPressMoveUpdate(
             details,
             l10n: context.l10n,
@@ -267,8 +267,8 @@ class _PostPopupState extends State<PopupModal>
       _messageVisibility.value = false;
     }
 
-    // _popupEmptyDialog = _createPopupEmptyDialog();
-    // Overlay.of(context).insert(_popupEmptyDialog!);
+    _popupEmptyDialog = _createPopupEmptyDialog();
+    Overlay.of(context).insert(_popupEmptyDialog!);
   }
 
   void onLongPress(PostBloc bloc) {
@@ -310,11 +310,11 @@ class _PostPopupState extends State<PopupModal>
         //   draggableScrollController: draggableScrollController,
         // ),
       );
-    // } else {
-    //   await context.pushNamed(
-    //     AppRoutes.userProfile.name,
-    //     pathParameters: {'user_id': widget.block.author.id},
-    //   );
+    } else {
+      await context.pushNamed(
+        'user_profile',
+        pathParameters: {'user_id': widget.block.author.id},
+      );
     }
   }
 

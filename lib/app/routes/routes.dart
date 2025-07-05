@@ -12,6 +12,7 @@ import 'package:narangavellam/auth/view/auth_page.dart';
 import 'package:narangavellam/feed/feed.dart';
 import 'package:narangavellam/feed/post/widgets/widgets.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
 final _rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root'); 
@@ -314,6 +315,47 @@ GoRouter router(AppBloc appBloc) {
                         ),
                       ],
                     ),
+                    GoRoute(
+                        path: 'posts',
+                        name: 'user_posts',
+                        parentNavigatorKey: _rootNavigatorKey,
+                        pageBuilder: (context, state) {
+                          final userId = state.uri.queryParameters['user_id']!;
+                          final index = (state.uri.queryParameters['index']!)
+                              .parse
+                              .toInt();
+
+                          return CustomTransitionPage(
+                            key: state.pageKey,
+                            child: BlocProvider(
+                              create: (context) => UserProfileBloc(
+                                userId: userId,
+                                userRepository: context.read<UserRepository>(),
+                                postsRepository:
+                                    context.read<PostsRepository>(),
+                              ),
+                              child: UserProfilePosts(
+                                userId: userId,
+                                index: index,
+                              ),
+                            ),
+                            transitionsBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                              child,
+                            ) {
+                              return SharedAxisTransition(
+                                animation: animation,
+                                secondaryAnimation: secondaryAnimation,
+                                transitionType:
+                                    SharedAxisTransitionType.horizontal,
+                                child: child,
+                              );
+                            },
+                          );
+                        },
+                      ),
                   ],
                 ),
             ],

@@ -61,6 +61,7 @@ dependencies:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/posts_repository
   powersync_repository:
     path: packages/powersync_repository
+  scrollable_positioned_list: ^0.3.8
   shared:
     path: packages/shared
   shimmer: ^3.0.0

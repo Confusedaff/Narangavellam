@@ -139,7 +139,7 @@ class _UserProfileViewState extends State<UserProfileView> {
           },
           body:TabBarView(children: [
             UserPostPage(sponsoredPost: props.sponsoredPost,),
-            //UserProfileMentionedPostPage(),
+            const UserProfileMentionedPostPage(),
           ],),
         ),
       ),
@@ -397,17 +397,26 @@ class _UserPostPageState extends State<UserPostPage> with AutomaticKeepAliveClie
               final block = widget.sponsoredPost ?? blocks[index];
               final multiMedia = block.media.length > 1;
 
-              return PostSmall(
-                key: ValueKey(block.id),
-                pinned: false,
-                isReel: block.isReel,
-                multiMedia: multiMedia,
-                mediaUrl: block.firstMediaUrl!,
-                imageThumbnailBuilder: (_, url) => ImageAttachmentThumbnail(
-                  image: Attachment(imageUrl: url),
-                  fit: BoxFit.cover,
+              return Tappable(
+                onTap: () => context.pushNamed(
+                    'user_posts',
+                    queryParameters: {
+                      'user_id': block.author.id,
+                      'index': index.toString(),
+                    },
                   ),
-                );
+                child: PostSmall(
+                  key: ValueKey(block.id),
+                  pinned: false,
+                  isReel: block.isReel,
+                  multiMedia: multiMedia,
+                  mediaUrl: block.firstMediaUrl!,
+                  imageThumbnailBuilder: (_, url) => ImageAttachmentThumbnail(
+                    image: Attachment(imageUrl: url),
+                    fit: BoxFit.cover,
+                    ),
+                  ),
+              );
               },
             );
           },

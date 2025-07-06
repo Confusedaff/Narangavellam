@@ -5,6 +5,7 @@ import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/bootstrap.dart';
 import 'package:narangavellam/firebase_options_prod.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:search_repository/search_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:supabase_authentication_client/supabase_authentication_client.dart';
 import 'package:token_storage/token_storage.dart';
@@ -32,12 +33,14 @@ void main() {
         databaseClient: powerSyncDatabaseClient,
         authenticationClient: supabaseAuthenticationClient,);
       final postsRepository = PostsRepository(databaseClient: powerSyncDatabaseClient);
+      final searchRepository = SearchRepository(databaseClient: powerSyncDatabaseClient);
       
       return App(
         user: await userRepository.user.first, 
         userRepository: userRepository,
         postsRepository: postsRepository,
         firebaseRemoteConfigRepository: firebaseRemoteConfigRepository,
+        searchRepository: searchRepository,
         );
     },
     options: DefaultFirebaseOptions.currentPlatform,

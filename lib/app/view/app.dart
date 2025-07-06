@@ -8,6 +8,7 @@ import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/selector/locale/bloc/locale_bloc.dart';
 import 'package:narangavellam/selector/theme/view/bloc/theme_mode_bloc.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:search_repository/search_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 final snackbarKey = GlobalKey<AppSnackbarState>();
@@ -19,6 +20,7 @@ class App extends StatelessWidget {
     required this.userRepository,
     required this.postsRepository,
     required this.firebaseRemoteConfigRepository,
+    required this.searchRepository,
     super.key,
   });
 
@@ -26,6 +28,7 @@ class App extends StatelessWidget {
   final UserRepository userRepository;
   final PostsRepository postsRepository;
   final FirebaseRemoteConfigRepository firebaseRemoteConfigRepository;
+  final SearchRepository searchRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +42,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider.value(
           value: firebaseRemoteConfigRepository,
+        ),
+        RepositoryProvider.value(
+          value: searchRepository,
         ),
       ],
       child: MultiBlocProvider(

@@ -12,6 +12,8 @@ import 'package:narangavellam/auth/view/auth_page.dart';
 import 'package:narangavellam/feed/feed.dart';
 import 'package:narangavellam/feed/post/widgets/widgets.dart';
 import 'package:narangavellam/reels/reels.dart';
+import 'package:narangavellam/search/view/search_page.dart';
+import 'package:narangavellam/timeline/timeline.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -102,16 +104,7 @@ GoRouter router(AppBloc appBloc) {
               path: '/timeline',
               pageBuilder: (context, state) {
                 return CustomTransitionPage(
-                  child: AppScaffold(
-                    body: Center(
-                      child: Text(
-                        'TimeLine',
-                        style: context.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: const TimelinePage(),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return FadeTransition(
                       opacity: CurveTween(curve: Curves.easeInOut).animate(animation),
@@ -120,8 +113,23 @@ GoRouter router(AppBloc appBloc) {
                   },
                 );
               },
+              routes: [
+                        GoRoute(
+                          name: 'search',
+                          path: 'search',
+                          parentNavigatorKey: _rootNavigatorKey,
+                          pageBuilder: (context, state) {
+                            final withResult = state.extra as bool?;
+
+                            return NoTransitionPage(
+                              key: state.pageKey,
+                              child: SearchPage(withResult: withResult),
+                            );
+                          },
+                        ),
+                      ],
             ),
-          ]),
+          ],),
           StatefulShellBranch(routes: [
             GoRoute(
               path: '/create_media',

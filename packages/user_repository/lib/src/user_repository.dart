@@ -252,24 +252,19 @@ class UserRepository extends UserBaseRepository{
         pushToken: pushToken,
       );
 
-//   @override
-//   Future<List<User>> searchUsers({
-//     required int limit,
-//     required int offset,
-//     required String? query,
-//     String? userId,
-//     String? excludeUserIds,
-//   }) =>
-//       _databaseClient.searchUsers(
-//         userId: userId,
-//         limit: limit,
-//         offset: offset,
-//         query: query,
-//         excludeUserIds: excludeUserIds,
-//       );
-
-//   @override
-//   Stream<List<User>> followers({required String userId}) =>
-//       _databaseClient.followers(userId: userId);
-// }
+  @override
+  Future<List<User>> searchUsers({
+    required int limit,
+    required int offset,
+    required String? query,
+    String? userId,
+    String? excludeUserIds,
+  }) =>
+      _databaseClient.searchUsers(
+        userId: userId,
+        limit: limit,
+        offset: offset,
+        query: query,
+        excludeUserIds: excludeUserIds,
+      );
 }

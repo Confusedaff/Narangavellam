@@ -45,6 +45,16 @@ abstract class UserBaseRepository{
 
   Future<void> unfollow({required String unfollowId, String? unfollowerId});
 
+  /// Looks up into a database a returns users associated with the provided
+  /// [query].
+  Future<List<User>> searchUsers({
+    required int limit,
+    required int offset,
+    required String? query,
+    String? userId,
+    String? excludeUserIds,
+  });
+
 }
 
 abstract class PostsBaseRepository {
@@ -566,4 +576,32 @@ ORDER BY created_at DESC
           .toList(growable: false),
     );
   }
+
+   @override
+  Future<List<User>> searchUsers({
+    required int limit,
+    required int offset,
+    required String? query,
+    String? userId,
+    String? excludeUserIds,
+  }) async {
+    if (query == null || query.trim().isEmpty) return <User>[];
+    query = query.removeSpecialCharacters();
+    final excludeUserIdsStatement =
+        excludeUserIds == null ? '' : 'AND id NOT IN ($excludeUserIds)';
+
+    final result = await _powerSyncRepository.db().getAll(
+      '''
+SELECT id, avatar_url, full_name, username
+  FROM profiles
+WHERE (LOWER(username) LIKE LOWER('%$query%') OR LOWER(full_name) LIKE LOWER('%$query%'))
+  AND id <> ?1 $excludeUserIdsStatement 
+LIMIT ?2 OFFSET ?3
+''',
+      [currentUserId, limit, offset],
+    );
+
+    return result.safeMap(User.fromJson).toList(growable: false);
+  }
+
 }

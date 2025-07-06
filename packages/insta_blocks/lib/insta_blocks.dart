@@ -8,6 +8,7 @@ export 'src/insta_blocks_converter.dart';
 export 'src/models/models.dart';
 export 'src/post_block.dart';
 export 'src/post_large_block.dart';
+export 'src/post_reel_block.dart';
 export 'src/post_small_block.dart';
 export 'src/post_sponsored_block.dart';
 export 'src/section_header_block.dart';

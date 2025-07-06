@@ -30,6 +30,14 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
       _onFeedRecommendedPostsPageRequested,
       transformer: throttleDroppable(),
     );
+    on<FeedReelsPageRequested>(
+      _onFeedReelsPageRequested,
+      //transformer: sequential(),
+    );
+    on<FeedReelsRefreshRequested>(
+      _onFeedReelsRefreshRequested,
+      transformer: throttleDroppable(duration: 550.ms),
+    );
     on<FeedUpdateRequested>(_onFeedUpdateRequested);
     on<FeedPostCreateRequested>(_onFeedPostCreateRequested);
   }
@@ -140,12 +148,12 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
       final feedBlock = oldFeed.feedPage.blocks.findPostBlock(
         test: (block) => block.id == update.newPost.id,
       );
-      // final reel = oldFeed.reelsPage.blocks.findPostBlock(
-      //   test: (block) =>
-      //       block.id == update.newPost.id,//&&
-      //       block.type == PostReelBlock.identifier,
-      // );
-      if (feedBlock == null && !update.isCreate) {
+      final reel = oldFeed.reelsPage.blocks.findPostBlock(
+        test: (block) =>
+            block.id == update.newPost.id &&
+            block.type == PostReelBlock.identifier,
+      );
+      if (feedBlock == null && reel == null && !update.isCreate) {
         return emit(state.populated());
       }
       final updatedFeedBlocks = oldFeed.updateFeedPage(update: update);
@@ -205,6 +213,60 @@ class FeedBloc extends Bloc<FeedEvent, FeedState> with FeedBlocMixin{
     }
   }
 
+   Future<void> _onFeedReelsPageRequested(
+    FeedReelsPageRequested event,
+    Emitter<FeedState> emit,
+  ) async {
+    emit(state.loading());
+    try {
+      final currentPage = event.page ?? state.feed.reelsPage.page;
+      final (:newPage, :hasMore, :blocks) = await fetchFeedPage(
+        page: currentPage,
+        withSponsoredBlocks: false,
+        mapper: postsToReelBlockMapper,
+      );
+
+      final feed = state.feed.copyWith(
+        reelsPage: state.feed.reelsPage.copyWith(
+          page: newPage,
+          hasMore: hasMore,
+          blocks: [...state.feed.reelsPage.blocks, ...blocks],
+          totalBlocks: state.feed.reelsPage.totalBlocks + blocks.length,
+        ),
+      );
+      emit(state.populated(feed: feed));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
+    Future<void> _onFeedReelsRefreshRequested(
+    FeedReelsRefreshRequested event,
+    Emitter<FeedState> emit,
+  ) async {
+    emit(state.loading());
+    try {
+      final (:newPage, :hasMore, :blocks) = await fetchFeedPage(
+        withSponsoredBlocks: false,
+        mapper: postsToReelBlockMapper,
+      );
+
+      final feed = state.feed.copyWith(
+        reelsPage: ReelsPage(
+          page: newPage,
+          hasMore: hasMore,
+          blocks: blocks,
+          totalBlocks: blocks.length,
+        ),
+      );
+      emit(state.populated(feed: feed));
+    } catch (error, stackTrace) {
+      addError(error, stackTrace);
+      emit(state.failure());
+    }
+  }
+
 }
 
 extension PostX on Post {
@@ -235,6 +297,18 @@ extension PostX on Post {
       media: media,
       caption: caption,
       action: NavigateToPostAuthorProfileAction(authorId: author.id),
+    ); 
+
+    PostReelBlock get toPostReelBlock => PostReelBlock(
+      id: id,
+      author: PostAuthor.confirmed(
+        id: author.id,
+        avatarUrl: author.avatarUrl,
+        username: author.displayUsername,
+      ),
+      createdAt: createdAt,
+      media: media,
+      caption: caption,
     ); 
 
 }

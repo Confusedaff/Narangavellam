@@ -1,6 +1,8 @@
 /// A Very Good Project created by Very Good CLI.
 library;
 
+export 'package:video_player/video_player.dart' hide VideoScrubber;
+
 export 'src/attachments/thumbnail.dart';
 export 'src/blur_hash_image_placeholder.dart';
 export 'src/instagram_blocks_ui.dart';

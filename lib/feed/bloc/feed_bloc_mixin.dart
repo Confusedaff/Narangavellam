@@ -188,6 +188,15 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
     posts.map<InstaBlock>(
       (post) => post.topostlargeblock,).toList();
 
+  
+  List<InstaBlock> postsToReelBlockMapper(List<Post> posts) {
+  final instaBlocks = <InstaBlock>[];
+  for (final post in posts.where((post) => post.media.isReel)) {
+    final reel = post.toPostReelBlock;
+    instaBlocks.add(reel);
+  }
+  return instaBlocks;
+  }
 
     Future<List<InstaBlock>> insertSponsoredBlocks({
     required bool hasMore,

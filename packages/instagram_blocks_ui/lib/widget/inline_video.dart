@@ -6,7 +6,6 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:shared/shared.dart';
-import 'package:video_player/video_player.dart';
 
 class InlineVideo extends StatefulWidget {
   const InlineVideo({required this.videoSettings, super.key});
@@ -233,16 +232,30 @@ class InlineVideoStack extends StatelessWidget {
       child: VideoPlayer(controller),
     );
     if (stackedWidget != null) {
-      videoPlayer = AspectRatio(
-        aspectRatio: aspectRatio,
+       videoPlayer = FittedBox(
+      fit: BoxFit.cover,
+      clipBehavior: Clip.hardEdge,
+      child: SizedBox(
+        width: controller.value.size.width,
+        height: controller.value.size.height,
         child: Stack(
-          children: [
-            VideoPlayer(controller),
-            stackedWidget!,
-          ],
-        ),
-      );
-    }
+        children: [
+                VideoPlayer(controller),
+                if (stackedWidget != null) stackedWidget!,
+              ],
+            ),
+          ),
+        );
+      //AspectRatio(
+          //   aspectRatio: aspectRatio, *change made here
+          //   child: Stack(
+          //     children: [
+          //       VideoPlayer(controller),
+          //       stackedWidget!,
+          //     ],
+          //   ),
+          // );
+        }
     late final videoWithProgressIndicator = Stack(
       alignment: Alignment.bottomCenter,
       children: [
@@ -420,6 +433,7 @@ class VideoSettings {
     required this.loadingBuilder,
     required this.stackedWidget,
     required this.videoPlayerOptions,
+
   });
 
   final String? id;

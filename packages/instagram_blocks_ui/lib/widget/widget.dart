@@ -7,5 +7,6 @@ export 'follow_button.dart';
 export 'inline_video.dart';
 export 'popping_icon_overlay.dart';
 export 'post_sponsored.dart';
+export 'running_text.dart';
 export 'time_ago.dart';
 export 'viewable.dart';

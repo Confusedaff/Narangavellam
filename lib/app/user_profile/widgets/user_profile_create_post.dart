@@ -34,6 +34,7 @@ class UserProfileCreatePost extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+  final pickerSource = pickVideo ? PickerSource.video : PickerSource.both;
   return PopScope(
       canPop: canPop,
       // ignore: deprecated_member_use
@@ -45,7 +46,7 @@ class UserProfileCreatePost extends StatelessWidget {
         key: imagePickerKey,
         context: context,
         source: ImageSource.both,
-        pickerSource: PickerSource.both,
+        pickerSource: pickerSource,
         onMediaPicked: (details) => context.pushNamed(
           'publish_post',
           extra: CreatePostProps(details: details,pickVideo: pickVideo),

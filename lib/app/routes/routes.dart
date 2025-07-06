@@ -5,12 +5,13 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:insta_blocks/insta_blocks.dart' hide FeedPage;
+import 'package:insta_blocks/insta_blocks.dart' hide FeedPage,ReelsPage;
 import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/app/home/home.dart';
 import 'package:narangavellam/auth/view/auth_page.dart';
 import 'package:narangavellam/feed/feed.dart';
 import 'package:narangavellam/feed/post/widgets/widgets.dart';
+import 'package:narangavellam/reels/reels.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -132,16 +133,7 @@ GoRouter router(AppBloc appBloc) {
               path: '/reels',
               pageBuilder: (context, state) {
                 return CustomTransitionPage(
-                  child: AppScaffold(
-                    body: Center(
-                      child: Text(
-                        'Reels',
-                        style: context.headlineSmall?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ),
+                  child: const ReelsView(),
                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                     return FadeTransition(
                       opacity: CurveTween(curve: Curves.easeInOut).animate(animation),

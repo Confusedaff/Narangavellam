@@ -26,8 +26,10 @@ abstract class InstaBlock {
     switch (type) {
       case PostLargeBlock.identifier:
         return PostLargeBlock.fromJson(json);
-      // case PostSmallBlock.identifier:
-      //   return PostSmallBlock.fromJson(json);
+      case PostSmallBlock.identifier:
+        return PostSmallBlock.fromJson(json);
+      case PostReelBlock.identifier:
+        return PostReelBlock.fromJson(json);
       case PostSponsoredBlock.identifier:
         return PostSponsoredBlock.fromJson(json);
       case DividerHorizontalBlock.identifier:

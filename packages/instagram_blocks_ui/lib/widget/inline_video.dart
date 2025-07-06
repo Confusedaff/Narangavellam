@@ -232,30 +232,30 @@ class InlineVideoStack extends StatelessWidget {
       child: VideoPlayer(controller),
     );
     if (stackedWidget != null) {
-       videoPlayer = FittedBox(
-      fit: BoxFit.cover,
-      clipBehavior: Clip.hardEdge,
-      child: SizedBox(
-        width: controller.value.size.width,
-        height: controller.value.size.height,
-        child: Stack(
-        children: [
-                VideoPlayer(controller),
-                if (stackedWidget != null) stackedWidget!,
-              ],
-            ),
+       videoPlayer = //FittedBox(
+  //   fit: BoxFit.cover,
+  //   clipBehavior: Clip.hardEdge,
+  //   child: SizedBox(
+  //     width: controller.value.size.width,
+  //     height: controller.value.size.height,
+  //     child: Stack(
+  //       children: [
+  //         VideoPlayer(controller),
+  //         if (stackedWidget != null) stackedWidget!,
+  //       ],
+  //     ),
+  //   ),
+  // );
+    AspectRatio(
+          aspectRatio: aspectRatio,
+          child: Stack(
+            children: [
+              VideoPlayer(controller),
+              stackedWidget!,
+            ],
           ),
         );
-      //AspectRatio(
-          //   aspectRatio: aspectRatio, *change made here
-          //   child: Stack(
-          //     children: [
-          //       VideoPlayer(controller),
-          //       stackedWidget!,
-          //     ],
-          //   ),
-          // );
-        }
+      }
     late final videoWithProgressIndicator = Stack(
       alignment: Alignment.bottomCenter,
       children: [

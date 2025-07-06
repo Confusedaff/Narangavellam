@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:narangavellam/feed/bloc/feed_bloc.dart';
+import 'package:narangavellam/feed/post/video/widgets/video_player_inherited_widget.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
 
@@ -64,9 +65,9 @@ class FeedPageController extends ChangeNotifier {
     final navigateToReelPage = isReel;
     StatefulNavigationShell.of(_context)
         .goBranch(navigateToReelPage ? 3 : 0, initialLocation: true);
-    // if (pickVideo) {
-    //   VideoPlayerInheritedWidget.of(_context).videoPlayerState.playReels();
-    // }
+    if (pickVideo) {
+      VideoPlayerInheritedWidget.of(_context).videoPlayerState.playReels();
+    }
 
     late final postId = uuid.v4();
 

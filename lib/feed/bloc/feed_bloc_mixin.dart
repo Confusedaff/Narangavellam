@@ -64,6 +64,7 @@ sealed class PageUpdate {
   /// Returns the new large block derived from the `newPost` by calling the
   /// `toPostLargeBlock()` method.
   PostLargeBlock get newLargeBlock => newPost.toPostLargeBlock;
+  PostReelBlock get newReelBlock => newPost.toPostReelBlock;
 
   /// Returns the new reel block derived from the `newPost` by calling the
   /// `toPostReelBlock()` method.
@@ -321,13 +322,18 @@ extension on List<PostBlock> {
     required PageUpdate update,
     bool isReels = false,
   }) =>
-      switch (update) {
-        final FeedPageUpdate update => 
-        _update<PostLargeBlock>(
-                update: update,
-                isReels: isReels,
-              ),
-      };
+    switch ('') {
+      _ when update is FeedPageUpdate => isReels
+        ? _update<PostReelBlock>(
+            update: update,
+            isReels: isReels,
+          )
+        : _update<PostLargeBlock>(
+            update: update,
+            isReels: isReels,
+          ),
+      _ => this,
+    };
 
   List<PostBlock> _update<T extends PostBlock>({
     required PageUpdate update,
@@ -335,7 +341,7 @@ extension on List<PostBlock> {
   }) {
     try {
       return updateWith<T>(
-        newItem: update.newLargeBlock,
+        newItem: isReels ? update.newReelBlock : update.newLargeBlock,
         onUpdate: update.onUpdate,
         isDelete: update.type.isDelete,
         findItemCallback: (block, newBlock) => block.id == newBlock.id,

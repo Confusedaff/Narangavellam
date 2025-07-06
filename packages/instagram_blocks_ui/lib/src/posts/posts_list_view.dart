@@ -1,8 +1,9 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 import 'package:shared/shared.dart';
 
 typedef IndexedPostBuilder = Widget Function(

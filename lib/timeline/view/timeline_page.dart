@@ -191,7 +191,7 @@ class _TimelineGridViewState extends State<TimelineGridView> {
           block: _block,
           index: index,
           showComments: false,
-          builder: (_) => PostSmall(
+          builder: (context) => PostSmall(
             pinned: false,
             isReel: _block.isReel,
             multiMedia: multiMedia,

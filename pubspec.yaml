@@ -62,6 +62,7 @@ dependencies:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/posts_repository
   powersync_repository:
     path: packages/powersync_repository
+  screen_protector: ^1.4.2+1
   scrollable_positioned_list: ^0.3.8
   search_repository:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/search_repository

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'dart:io';
 import 'package:app_ui/app_ui.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
@@ -10,6 +11,7 @@ import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:powersync_repository/powersync_repository.dart';
+import 'package:screen_protector/screen_protector.dart';
 import 'package:shared/shared.dart';
 
 typedef AppBuilder = FutureOr<Widget> Function(
@@ -47,6 +49,14 @@ Future<void> bootstrap(
  await runZonedGuarded(
   () async {
     WidgetsFlutterBinding.ensureInitialized();
+
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) async {
+  if (Platform.isAndroid) {
+    await ScreenProtector.preventScreenshotOn();
+    }
+  });
+    
+
 
     setupDi(appFlavor: appFlavor);
 

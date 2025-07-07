@@ -190,7 +190,8 @@ extension DialogExtension on BuildContext {
                     (option) =>
                         option.child ??
                         Tappable(
-                          animationEffect: TappableAnimationEffect.none,
+                          animationEffect: TappableAnimationEffect.fade,
+                          fadeStrength: FadeStrength.medium,
                           onTap: () => pop<ModalOption>(option),
                           child: ListTile(
                             title: option.name == null

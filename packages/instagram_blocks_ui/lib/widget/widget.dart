@@ -9,4 +9,5 @@ export 'popping_icon_overlay.dart';
 export 'post_sponsored.dart';
 export 'running_text.dart';
 export 'time_ago.dart';
+export 'user_comment.dart';
 export 'viewable.dart';

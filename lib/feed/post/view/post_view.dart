@@ -1,3 +1,4 @@
+import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -5,6 +6,7 @@ import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_props.dart';
+import 'package:narangavellam/comments/comments.dart';
 import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/feed/post/bloc/post_bloc.dart';
 import 'package:narangavellam/feed/post/video/view/video_player.dart';
@@ -130,8 +132,17 @@ class PostLargeView extends StatelessWidget {
     follow: () => bloc.add(PostAuthorFollowRequested(authorId: block.author.id)),
     enableFollowButton: true,
     onCommentsTap: (showFullSized) {
-      // TODO(post): show comments modal sheet
-    },
+    context.showScrollableModal(
+    showFullSized: showFullSized,
+    pageBuilder: (scrollController, draggableScrollController) =>
+      CommentsPage(
+        post: block,
+        scrollController: scrollController,
+        draggableScrollController: draggableScrollController,
+        ),
+    );
+  },
+
     postIndex: postIndex,
     withInViewNotifier: withInViewNotifier,
     commentsCount: commentsCount,
@@ -196,9 +207,18 @@ class PostLargeView extends StatelessWidget {
               },
             )
           : const PostOptionsSettings.viewer(),
-          onCommentsTap: (showFullSized){
+          onCommentsTap: (showFullSized) {
+          context.showScrollableModal(
+            showFullSized: showFullSized,
+            pageBuilder: (scrollController, draggableScrollController) =>
+              CommentsPage(
+                post: block,
+                scrollController: scrollController,
+                draggableScrollController: draggableScrollController,
+              ),
+          );
+        },
 
-          },
           onUserTap: (userId) => context.pushNamed(
             'user_profile',
             pathParameters: {'user_id': userId},

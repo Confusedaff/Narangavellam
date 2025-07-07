@@ -264,4 +264,24 @@ class PostsRepository extends PostsBaseRepository{
   Stream<List<Post>> postsOf({String? userId}) => 
   _databaseClient.postsOf(userId: userId);
   
+  @override
+  Stream<List<Comment>> commentsOf({required String postId}) => 
+  _databaseClient.commentsOf(postId: postId);
+  
+  @override
+  // ignore: lines_longer_than_80_chars
+  Future<void> createComment({required String content, required String postId, required String userId, String? repliedToCommentId}) =>
+  // ignore: lines_longer_than_80_chars
+  _databaseClient.createComment(content: content, postId: postId, userId: userId,repliedToCommentId: repliedToCommentId);
+  
+  @override
+  Future<void> deleteComment({required String id}) => 
+  _databaseClient.deleteComment(id: id);
+  
+  @override
+  Stream<List<Comment>> repliedCommentsOf({required String commentId}) => 
+  _databaseClient.repliedCommentsOf(commentId: commentId);
+
+  
+  
 }

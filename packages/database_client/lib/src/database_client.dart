@@ -114,6 +114,24 @@ abstract class PostsBaseRepository {
 
   /// Updates the post with provided [id] and optional parameters to update.
   Future<Post?> updatePost({required String id, String? caption});
+
+   /// Returns a stream of comments of the post identified by [postId].
+  Stream<List<Comment>> commentsOf({required String postId});
+
+  /// Created a comment with provided details.
+  Future<void> createComment({
+    required String content,
+    required String postId,
+    required String userId,
+    String? repliedToCommentId,
+  });
+
+  /// Delete the comment by associated [id].
+  Future<void> deleteComment({required String id});
+
+  /// Returns a stream of replied comments of the comment identified by
+  /// [commentId].
+  Stream<List<Comment>> repliedCommentsOf({required String commentId});
 }
 
 abstract class DatabaseClient implements UserBaseRepository, PostsBaseRepository
@@ -604,4 +622,86 @@ LIMIT ?2 OFFSET ?3
     return result.safeMap(User.fromJson).toList(growable: false);
   }
 
+  @override
+  Stream<List<Comment>> commentsOf({required String postId}) =>
+      _powerSyncRepository.db().watch(
+        '''
+SELECT 
+  c1.*,
+  p.avatar_url as avatar_url,
+  p.username as username,
+  p.full_name as full_name,
+  COUNT(c2.id) AS replies
+FROM 
+  comments c1
+  INNER JOIN
+    profiles p ON p.id = c1.user_id
+  LEFT JOIN
+    comments c2 ON c1.id = c2.replied_to_comment_id
+WHERE
+  c1.post_id = ? AND c1.replied_to_comment_id IS NULL
+GROUP BY
+    c1.id, p.avatar_url, p.username, p.full_name
+ORDER BY created_at ASC
+''',
+        parameters: [postId],
+      ).map(
+        (result) => result.safeMap(Comment.fromRow).toList(growable: false),
+      );
+
+  @override
+  Future<void> createComment({
+    required String postId,
+    required String userId,
+    required String content,
+    String? repliedToCommentId,
+  }) =>
+      _powerSyncRepository.db().execute(
+        '''
+INSERT INTO
+  comments(id, post_id, user_id, content, created_at, replied_to_comment_id)
+VALUES(uuid(), ?, ?, ?, ?, ?)
+''',
+        [
+          postId,
+          userId,
+          content,
+          DateTime.timestamp().toIso8601String(),
+          repliedToCommentId,
+        ],
+      );
+
+  @override
+  Future<void> deleteComment({required String id}) =>
+      _powerSyncRepository.db().execute(
+        '''
+DELETE FROM comments
+WHERE id = ?
+''',
+        [id],
+      );
+
+   @override
+  Stream<List<Comment>> repliedCommentsOf({required String commentId}) =>
+      _powerSyncRepository.db().watch(
+        '''
+SELECT 
+  c1.*,
+  p.avatar_url as avatar_url,
+  p.username as username,
+  p.full_name as full_name
+FROM 
+  comments c1
+  INNER JOIN
+    profiles p ON p.id = c1.user_id
+WHERE
+  c1.replied_to_comment_id = ? 
+GROUP BY
+    c1.id, p.avatar_url, p.username, p.full_name
+ORDER BY created_at ASC
+''',
+        parameters: [commentId],
+      ).map(
+        (result) => result.safeMap(Comment.fromRow).toList(growable: false),
+      );
 }

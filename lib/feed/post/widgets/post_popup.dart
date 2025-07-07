@@ -8,8 +8,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:narangavellam/feed/post/bloc/post_bloc.dart';
-import 'package:narangavellam/feed/post/widgets/post_popup_dialog.dart';
+import 'package:narangavellam/comments/view/comments_page.dart';
+import 'package:narangavellam/feed/post/post.dart';
+import 'package:narangavellam/feed/post/widgets/widgets.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart' hide NumDurationExtension;
@@ -190,7 +191,7 @@ class _PostPopupState extends State<PopupModal>
           key: ValueKey(widget.block.id + widget.block.createdAt.toString()),
           //enableFeedback: false,
           onTap: () => context.pushNamed(
-            'user_posts',
+            'userPosts',
             queryParameters: {
               'user_id': widget.block.author.id,
               'index': widget.index.toString(),
@@ -267,8 +268,8 @@ class _PostPopupState extends State<PopupModal>
       _messageVisibility.value = false;
     }
 
-    _popupEmptyDialog = _createPopupEmptyDialog();
-    Overlay.of(context).insert(_popupEmptyDialog!);
+    // _popupEmptyDialog = _createPopupEmptyDialog();
+    // Overlay.of(context).insert(_popupEmptyDialog!);
   }
 
   void onLongPress(PostBloc bloc) {
@@ -303,16 +304,16 @@ class _PostPopupState extends State<PopupModal>
     if (widget.showComments) {
       await context.showScrollableModal(
         showFullSized: true,
-        pageBuilder: (scrollController, draggableScrollController) {return const SizedBox(child: Text('Comments Page'),);}
-        //     CommentsPage(
-        //   post: widget.block,
-        //   scrollController: scrollController,
-        //   draggableScrollController: draggableScrollController,
-        // ),
+        pageBuilder: (scrollController, draggableScrollController) =>
+            CommentsPage(
+          post: widget.block,
+          scrollController: scrollController,
+          draggableScrollController: draggableScrollController,
+        ),
       );
     } else {
       await context.pushNamed(
-        'user_profile',
+        'userProfile',
         pathParameters: {'user_id': widget.block.author.id},
       );
     }

@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:developer';
+import 'package:app_ui/app_ui.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/foundation.dart';
@@ -66,6 +67,8 @@ Future<void> bootstrap(
 
     final firebaseRemoteConfig = FirebaseRemoteConfig.instance;
     final firebaseRemoteConfigRepository = FirebaseRemoteConfigRepository(firebaseRemoteConfig: firebaseRemoteConfig);
+
+    SystemUiOverlayTheme.setPortraitOrientation();
 
     runApp(TranslationProvider(child: await builder(powerSyncRepository,firebaseRemoteConfigRepository)));
   },

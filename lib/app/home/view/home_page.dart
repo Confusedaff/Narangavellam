@@ -1,6 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/home/provider/home_provider.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_create_post.dart';
 import 'package:narangavellam/feed/post/video/widgets/video_player_inherited_widget.dart';
@@ -89,40 +91,41 @@ class _HomeViewState extends State<HomeView> {
 
   @override
   Widget build(BuildContext context) {
+    final isZoomOpen = context.watch<ZoomStateProvider>().isZoomOpen;
+
     return VideoPlayerInheritedWidget(
       videoPlayerState: _videoPlayerState,
       child: ListenableBuilder(
-  listenable: HomeProvider(),
-  builder: (context, child) {
-    return PageView.builder(
-      itemCount: 3,
-      controller: _pageController,
-      physics: HomeProvider().enablePageView
-          ? null
-          : const NeverScrollableScrollPhysics(),
-      onPageChanged: (page) {
-        if (page == 1 && widget.navigationShell.currentIndex != 0) {
-          HomeProvider().togglePageView(enable: false);
-        }
-      },
-      itemBuilder: (context, index) {
-        return switch (index) {
-          0 => UserProfileCreatePost(
-              canPop: false,
-              onPopInvoked: () => HomeProvider().animateToPage(1),
-              onBackButtonTap: () => HomeProvider().animateToPage(1),
+        listenable: HomeProvider(),
+        builder: (context, child) {
+          return PageView.builder(
+            itemCount: 3,
+            controller: _pageController,
+            physics: isZoomOpen || !HomeProvider().enablePageView
+                ? const NeverScrollableScrollPhysics()
+                : null,
+            onPageChanged: (page) {
+              if (page == 1 && widget.navigationShell.currentIndex != 0) {
+                HomeProvider().togglePageView(enable: false);
+              }
+            },
+            itemBuilder: (context, index) {
+              return switch (index) {
+                0 => UserProfileCreatePost(
+                    canPop: false,
+                    onPopInvoked: () => HomeProvider().animateToPage(1),
+                    onBackButtonTap: () => HomeProvider().animateToPage(1),
                   ),
-               2 => AppScaffold(
+                2 => AppScaffold(
                     body: Center(
                       child: Text('Chats page', style: context.headlineSmall),
-                    ), 
-                  ), 
-
-                  _ => AppScaffold(
+                    ),
+                  ),
+                _ => AppScaffold(
                     body: widget.navigationShell,
                     bottomNavigationBar:
                         BottomNavBar(navigationShell: widget.navigationShell),
-                ), 
+                  ),
               };
             },
           );

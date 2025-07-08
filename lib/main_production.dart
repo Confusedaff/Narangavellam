@@ -1,10 +1,12 @@
 import 'package:database_client/database_client.dart';
 import 'package:env/env.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/bootstrap.dart';
 import 'package:narangavellam/firebase_options_prod.dart';
 import 'package:posts_repository/posts_repository.dart';
+import 'package:provider/provider.dart';
 import 'package:search_repository/search_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:supabase_authentication_client/supabase_authentication_client.dart';
@@ -35,17 +37,18 @@ void main() {
       final postsRepository = PostsRepository(databaseClient: powerSyncDatabaseClient);
       final searchRepository = SearchRepository(databaseClient: powerSyncDatabaseClient);
       
-      return App(
-        user: await userRepository.user.first, 
-        userRepository: userRepository,
-        postsRepository: postsRepository,
-        firebaseRemoteConfigRepository: firebaseRemoteConfigRepository,
-        searchRepository: searchRepository,
-        );
+      return ChangeNotifierProvider(
+        create: (_) => ZoomStateProvider(),
+        child: App(
+          user: await userRepository.user.first, 
+          userRepository: userRepository,
+          postsRepository: postsRepository,
+          firebaseRemoteConfigRepository: firebaseRemoteConfigRepository,
+          searchRepository: searchRepository,
+          ),
+      );
     },
     options: DefaultFirebaseOptions.currentPlatform,
     appFlavor: AppFlavor.production(),
   );
 }
-
-  

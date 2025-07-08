@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:instagram_blocks_ui/src/post_large/fullscreen.dart';
 import 'package:instagram_blocks_ui/widget/media_carousel.dart';
+import 'package:provider/provider.dart';
 import 'package:shared/shared.dart';
 
 class PostMedia extends StatefulWidget {
@@ -111,23 +112,27 @@ Widget build(BuildContext context) {
 }
 
 void _openZoomViewer(BuildContext context) {
+
   final currentMedia = widget.media[_currentIndex.value];
+  if (currentMedia.isVideo) return;
+  
+  final zoomStateProvider = context.read<ZoomStateProvider>();
+  zoomStateProvider.setZoomOpen(true);
 
-  if (currentMedia.isVideo) {
-    // Do not open zoom viewer for videos
-    return;
-  }
-
-  Navigator.of(context).push(
-    PageRouteBuilder(
-      opaque: false,
-      barrierColor: Colors.black.withOpacity(0.95),
-      pageBuilder: (_, __, ___) => FullScreenZoomableMediaViewer(
-        media: widget.media,
-        initialIndex: _currentIndex.value,
-      ),
-    ),
-  );
+  Navigator.of(context)
+      .push(
+        PageRouteBuilder(
+          opaque: false,
+          barrierColor: Colors.black.withOpacity(0.95),
+          pageBuilder: (_, __, ___) => FullScreenZoomableMediaViewer(
+            media: widget.media,
+            initialIndex: _currentIndex.value,
+          ),
+        ),
+      )
+      .then((_) {
+        zoomStateProvider.setZoomOpen(false);
+      });
 }
 
 }

@@ -111,6 +111,13 @@ Widget build(BuildContext context) {
 }
 
 void _openZoomViewer(BuildContext context) {
+  final currentMedia = widget.media[_currentIndex.value];
+
+  if (currentMedia.isVideo) {
+    // Do not open zoom viewer for videos
+    return;
+  }
+
   Navigator.of(context).push(
     PageRouteBuilder(
       opaque: false,

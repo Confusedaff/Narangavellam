@@ -8,6 +8,7 @@ import 'package:go_router/go_router.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/user_profile/user_profile.dart';
+import 'package:narangavellam/comments/comments.dart';
 import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/feed/post/bloc/post_bloc.dart';
 import 'package:narangavellam/feed/post/video/video.dart';
@@ -114,6 +115,7 @@ class _ReelState extends State<Reel> {
       child: GestureDetector(
         onLongPressStart: (_) => _isPaused.value = true,
         onLongPressEnd: (_) => _isPaused.value = false,
+        //onTap: () => _isPaused.value = true,
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -273,15 +275,15 @@ class VerticalButtons extends StatelessWidget {
         context.select((PostBloc bloc) => bloc.state.commentsCount);
     final isOwner = context.select((PostBloc bloc) => bloc.state.isOwner);
 
-    // Future<void> onCommentsTap(PostReelBlock block) =>
-    //     context.showScrollableModal(
-    //       pageBuilder: (scrollController, draggableScrollController) =>
-    //           CommentsPage(
-    //         post: block,
-    //         scrollController: scrollController,
-    //         draggableScrollController: draggableScrollController,
-    //       ),
-    //     );
+    Future<void> onCommentsTap(PostReelBlock block) =>
+        context.showScrollableModal(
+          pageBuilder: (scrollController, draggableScrollController) =>
+              CommentsPage(
+            post: block,
+            scrollController: scrollController,
+            draggableScrollController: draggableScrollController,
+          ),
+        );
 
     return Padding(
       padding:
@@ -300,7 +302,7 @@ class VerticalButtons extends StatelessWidget {
               statisticCount: likes,
             ),
             VerticalGroup(
-              onButtonTap: () {},//=> onCommentsTap.call(block),
+              onButtonTap: () => onCommentsTap.call(block),
               statisticCount: commentsCount,
               child: Assets.icons.chatCircle.svg(
                 height: AppSize.iconSize,

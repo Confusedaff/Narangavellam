@@ -77,6 +77,8 @@ abstract class Media extends Equatable {
 
   @override
   List<Object?> get props => [id, url, blurHash, type];
+
+  bool get isVideo => this is VideoMedia || this is MemoryVideoMedia;
 }
 
 /// The extension on `List<Media>` which provides methods to check if the list
@@ -88,4 +90,5 @@ extension HasVideoMedia on List<Media> {
   /// Whether the list of media is reel, meaning there is only one video.
   bool get isReel =>
       length == 1 && every((e) => e is VideoMedia || e is MemoryVideoMedia);
+
 }

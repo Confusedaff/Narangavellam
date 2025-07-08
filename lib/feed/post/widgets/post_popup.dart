@@ -191,7 +191,7 @@ class _PostPopupState extends State<PopupModal>
           key: ValueKey(widget.block.id + widget.block.createdAt.toString()),
           //enableFeedback: false,
           onTap: () => context.pushNamed(
-            'userPosts',
+            'user_posts',
             queryParameters: {
               'user_id': widget.block.author.id,
               'index': widget.index.toString(),

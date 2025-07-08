@@ -3,6 +3,7 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
+import 'package:instagram_blocks_ui/src/post_large/fullscreen.dart';
 import 'package:instagram_blocks_ui/widget/media_carousel.dart';
 import 'package:shared/shared.dart';
 
@@ -13,7 +14,7 @@ class PostMedia extends StatefulWidget {
     this.isLiked = false,
     this.likePost,
     this.onPageChanged,
-    //this.videoPlayerBuilder,
+    this.videoPlayerBuilder,
     this.mediaCarouselSettings,
     this.postIndex,
     this.withLikeOverlay = true,
@@ -26,7 +27,7 @@ class PostMedia extends StatefulWidget {
   final VoidCallback? likePost;
   final bool isLiked;
   final ValueSetter<int>? onPageChanged;
-  //final VideoPlayerBuilder? videoPlayerBuilder;
+  final VideoPlayerBuilder? videoPlayerBuilder;
   final MediaCarouselSettings? mediaCarouselSettings;
   final bool withLikeOverlay;
   final bool withInViewNotifier;
@@ -42,7 +43,7 @@ class _PostMediaState extends State<PostMedia> {
     ValueNotifier<int> currentIndex,
   ) =>
       MediaCarouselSettings.create(
-        //videoPlayerBuilder: widget.videoPlayerBuilder,
+        videoPlayerBuilder: widget.videoPlayerBuilder,
         aspectRatio: widget.media.isReel ? kDefaultVideoAspectRatio : null,
         fit: widget.media.hasVideo ? kDefaultVideoMediaBoxFit : null,
         withInViewNotifier: widget.withInViewNotifier,
@@ -73,16 +74,19 @@ class _PostMediaState extends State<PostMedia> {
     super.dispose();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final carousel = MediaCarousel(
-      media: widget.media,
-      postIndex: widget.postIndex,
-      settings: _defaultSettings(_showMediaCount, _currentIndex)
-          .merge(other: widget.mediaCarouselSettings),
-    );
+ @override
+Widget build(BuildContext context) {
+  final carousel = MediaCarousel(
+    media: widget.media,
+    postIndex: widget.postIndex,
+    settings: _defaultSettings(_showMediaCount, _currentIndex)
+        .merge(other: widget.mediaCarouselSettings),
+  );
 
-    return Stack(
+  return GestureDetector(
+    onLongPress: () => _openZoomViewer(context),
+    onDoubleTap: () => _openZoomViewer(context),
+    child: Stack(
       children: [
         if (!widget.withLikeOverlay)
           carousel
@@ -102,8 +106,23 @@ class _PostMediaState extends State<PostMedia> {
             media: widget.media,
           ),
       ],
-    );
-  }
+    ),
+  );
+}
+
+void _openZoomViewer(BuildContext context) {
+  Navigator.of(context).push(
+    PageRouteBuilder(
+      opaque: false,
+      barrierColor: Colors.black.withOpacity(0.95),
+      pageBuilder: (_, __, ___) => FullScreenZoomableMediaViewer(
+        media: widget.media,
+        initialIndex: _currentIndex.value,
+      ),
+    ),
+  );
+}
+
 }
 
 class _MediaCount extends StatefulWidget {

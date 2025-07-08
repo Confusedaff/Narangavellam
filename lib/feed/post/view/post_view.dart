@@ -81,31 +81,31 @@ class PostLargeView extends StatelessWidget {
   final bool withCustomVideoPlayer;
   final VideoPlayerType videoPlayerType;
 
-  // void _navigateToPostAuthor(
-  //   BuildContext context, {
-  //   required String id,
-  //   UserProfileProps? props,
-  // }) =>
-  //     context.pushNamed(
-  //       AppRoutes.userProfile.name,
-  //       pathParameters: {'user_id': id},
-  //       extra: props,
-  //     );
+  void _navigateToPostAuthor(
+    BuildContext context, {
+    required String id,
+    UserProfileProps? props,
+  }) =>
+      context.pushNamed(
+        'userProfile',
+        pathParameters: {'user_id': id},
+        extra: props,
+      );
 
-  // void _handleOnPostTap(BuildContext context, {required BlockAction action}) =>
-  //     action.when(
-  //       navigateToPostAuthor: (action) =>
-  //           _navigateToPostAuthor(context, id: action.authorId),
-  //       navigateToSponsoredPostAuthor: (action) => _navigateToPostAuthor(
-  //         context,
-  //         id: action.authorId,
-  //         props: UserProfileProps.build(
-  //           isSponsored: true,
-  //           promoBlockAction: action,
-  //           sponsoredPost: block as PostSponsoredBlock,
-  //         ),
-  //       ),
-  //     );
+  void _handleOnPostTap(BuildContext context, {required BlockAction action}) =>
+      action.when(
+        navigateToPostAuthor: (action) =>
+            _navigateToPostAuthor(context, id: action.authorId),
+        navigateToSponsoredPostAuthor: (action) => _navigateToPostAuthor(
+          context,
+          id: action.authorId,
+          props: UserProfileProps.build(
+            isSponsored: true,
+            promoBlockAction: action,
+            sponsoredPost: block as PostSponsoredBlock,
+          ),
+        ),
+      );
 
   @override
   Widget build(BuildContext context) {

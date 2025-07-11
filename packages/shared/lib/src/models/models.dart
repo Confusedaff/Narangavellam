@@ -6,6 +6,7 @@ export 'modal_option.dart';
 export 'post.dart';
 export 'post_options_settings.dart';
 export 'schema.dart';
+export 'story.dart';
 export 'submission_status_message.dart';
 export 'user_converter.dart';
 export 'video.dart';

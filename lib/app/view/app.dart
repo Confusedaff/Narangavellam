@@ -1,4 +1,5 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:database_client/database_client.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,6 +10,7 @@ import 'package:narangavellam/selector/locale/bloc/locale_bloc.dart';
 import 'package:narangavellam/selector/theme/view/bloc/theme_mode_bloc.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:search_repository/search_repository.dart';
+import 'package:stories_repository/stories_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 final snackbarKey = GlobalKey<AppSnackbarState>();
@@ -21,6 +23,7 @@ class App extends StatelessWidget {
     required this.postsRepository,
     required this.firebaseRemoteConfigRepository,
     required this.searchRepository,
+    required this.storiesRepository,
     super.key,
   });
 
@@ -29,6 +32,7 @@ class App extends StatelessWidget {
   final PostsRepository postsRepository;
   final FirebaseRemoteConfigRepository firebaseRemoteConfigRepository;
   final SearchRepository searchRepository;
+  final StoriesRepository storiesRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +40,9 @@ class App extends StatelessWidget {
       providers: [
         RepositoryProvider.value(
           value: userRepository,
+        ),
+        RepositoryProvider.value(
+          value: storiesRepository,
         ),
         RepositoryProvider.value(
           value: postsRepository,

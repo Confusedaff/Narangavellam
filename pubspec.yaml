@@ -37,6 +37,8 @@ dependencies:
   flutter_staggered_grid_view: ^0.7.0
   form_fields:
     path: packages/form_fields
+  gallery_media_picker:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/gallery_media_picker
   gen_l10n_utils: ^1.7.8
   get: ^4.7.2
   get_it: ^8.0.3
@@ -74,6 +76,10 @@ dependencies:
   slang_flutter: ^4.7.0
   sliver_tools: ^0.2.12
   sprung: ^3.0.1
+  stories_editor:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/stories_editor
+  stories_repository:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/stories_repository
   supabase: ^2.8.0
   supabase_authentication_client:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/authentication_client/supabase_authentication_client

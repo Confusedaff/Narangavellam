@@ -474,3 +474,4 @@ class LogoutModalOption extends StatelessWidget {
     );
   }
 }
+

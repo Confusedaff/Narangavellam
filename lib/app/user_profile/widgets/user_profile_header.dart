@@ -4,10 +4,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/widget/better_stream_builder.dart';
+import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
 import 'package:narangavellam/app/user_profile/user_profile_avatar.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_button.dart';
 import 'package:narangavellam/l10n/l10n.dart';
+import 'package:narangavellam/stories/stories.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -56,9 +58,43 @@ class UserProfileHeader extends StatelessWidget {
                     onTap: (imageUrl) {
                       if (imageUrl == null) return;
                       if (!isOwner) context.showImagePreview(imageUrl);
+                      if (isOwner) {
+                        context.pushNamed(
+                                  'create_stories',
+                                  extra: (String path) {
+                                    context.read<CreateStoriesBloc>().add(
+                                      CreateStoriesStoryCreateRequested(
+                                        author: user,
+                                        contentType: StoryContentType.image,
+                                        filePath: path,
+                                        onError: (_, __) {
+                                          toggleLoadingIndeterminate(enable: false);
+                                          openSnackbar(
+                                            SnackbarMessage.error(
+                                              title: context.l10n.somethingWentWrongText,
+                                              description: context.l10n.failedToCreateStoryText,
+                                            ),
+                                          );
+                                        },
+                                    onLoading: toggleLoadingIndeterminate,
+                                    onStoryCreated: () {
+                                      toggleLoadingIndeterminate(enable: false);
+                                      openSnackbar(
+                                        SnackbarMessage.success(
+                                          title: context.l10n.successfullyCreatedStoryText,
+                                        ),
+                                        clearIfQueue: true,
+                                      );
+                                    },
+                                      ),
+                                    );
+                                      context.pop();
+                                    },
+                        );
+                      }
                     },
                     animationEffect: TappableAnimationEffect.scale,
-                    ), // UserProfileAvatar
+                    ), 
                 const Gap.h(AppSpacing.md),
                 Expanded(child: UserProfileStatisticsCounts(
                   onStatisticTap: (tabIndex) => _pushToUserStatisticInfo(context, tabIndex: tabIndex),

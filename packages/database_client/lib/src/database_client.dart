@@ -1,5 +1,8 @@
 // ignore_for_file: public_member_api_docs
 
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -134,7 +137,31 @@ abstract class PostsBaseRepository {
   Stream<List<Comment>> repliedCommentsOf({required String commentId});
 }
 
-abstract class DatabaseClient implements UserBaseRepository, PostsBaseRepository
+abstract class StoriesBaseRepository{
+  const StoriesBaseRepository();
+
+  /// Creates the [Story] with the provided data.
+Future<void> createStory({
+  required User author,
+  required StoryContentType contentType,
+  required String contentUrl,
+  String? id,
+  int? duration,
+});
+
+/// Uploads the story media into the Supabase storage.
+Future<String> uploadStoryMedia({
+  required String storyId,
+  required File imageFile,
+  required Uint8List imageBytes,
+});
+
+}
+
+abstract class DatabaseClient implements 
+UserBaseRepository, 
+PostsBaseRepository, 
+StoriesBaseRepository
 {
   const DatabaseClient();
 }
@@ -704,4 +731,52 @@ ORDER BY created_at ASC
       ).map(
         (result) => result.safeMap(Comment.fromRow).toList(growable: false),
       );
+  
+@override
+  Future<void> createStory({
+    required User author,
+    required StoryContentType contentType,
+    required String contentUrl,
+    String? id,
+    int? duration,
+  }) =>
+      _powerSyncRepository.db().execute(
+        '''
+        insert into stories (id, user_id, content_type, content_url, duration, created_at, expires_at)
+        values (?, ?, ?, ?, ?, ?, ?)
+        ''',
+        [
+          id ?? uuid.v4(),
+          author.id,
+          contentType.toJson(),
+          contentUrl,
+          duration,
+          DateTime.timestamp().toIso8601String(),
+          DateTime.timestamp().add(1.days).toIso8601String(),
+        ],
+      );
+
+      
+@override
+  Future<String> uploadStoryMedia({
+    required String storyId,
+    required File imageFile,
+    required Uint8List imageBytes,
+  }) async {
+    final stories = _powerSyncRepository.supabase.storage.from('stories');
+    final imageExtension = imageFile.path.split('.').last.toLowerCase();
+    final imagePath = '$storyId/image';
+
+    await stories.uploadBinary(
+      imagePath,
+      imageBytes,
+      fileOptions: FileOptions(
+        contentType: 'image/$imageExtension',
+        cacheControl: '9000000',
+      ),
+    );
+    return stories.getPublicUrl(imagePath);
+  }
+
+
 }

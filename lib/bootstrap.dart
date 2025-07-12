@@ -10,12 +10,14 @@ import 'package:hydrated_bloc/hydrated_bloc.dart';
 import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:persistent_storage/persistent_storage.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:screen_protector/screen_protector.dart';
 import 'package:shared/shared.dart';
 
 typedef AppBuilder = FutureOr<Widget> Function(
   PowerSyncRepository,
+  SharedPreferences,
   FirebaseRemoteConfigRepository,
 );
 
@@ -75,12 +77,14 @@ Future<void> bootstrap(
     final powerSyncRepository = PowerSyncRepository(env: appFlavor.getEnv);
       await powerSyncRepository.initialize();
 
+    final sharedPreferences = await SharedPreferences.getInstance();
+
     final firebaseRemoteConfig = FirebaseRemoteConfig.instance;
     final firebaseRemoteConfigRepository = FirebaseRemoteConfigRepository(firebaseRemoteConfig: firebaseRemoteConfig);
 
     SystemUiOverlayTheme.setPortraitOrientation();
 
-    runApp(TranslationProvider(child: await builder(powerSyncRepository,firebaseRemoteConfigRepository)));
+    runApp(TranslationProvider(child: await builder(powerSyncRepository,sharedPreferences,firebaseRemoteConfigRepository)));
   },
   (error, stack) {
     logE(error.toString(), stackTrace: stack);

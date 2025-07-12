@@ -287,15 +287,14 @@ class TimelineError extends StatelessWidget {
             style: context.headlineSmall,
           ),
           FittedBox(
-            child: Tappable(
+            child: Tappable.faded(
               onTap: () => context
                   .read<TimelineBloc>()
                   .add(const TimelinePageRequested()),
-              animationEffect: TappableAnimationEffect.fade,
-              fadeStrength: FadeStrength.medium,
+             
               throttle: true,
               throttleDuration: 880.ms,
-              borderRadius: 22,
+              borderRadius: BorderRadius.circular(22),
               // padding: const EdgeInsets.symmetric(
               //   horizontal: AppSpacing.lg,
               //   vertical: AppSpacing.sm,

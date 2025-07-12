@@ -156,6 +156,15 @@ Future<String> uploadStoryMedia({
   required Uint8List imageBytes,
 });
 
+ /// Broadcasts the stream of the stories from the database.
+  Stream<List<Story>> getStories({
+    required String userId,
+    bool includeAuthor = true,
+  });
+
+  /// Deletes the [Story] identified by [id].
+  Future<void> deleteStory({required String id});
+
 }
 
 abstract class DatabaseClient implements 
@@ -777,6 +786,32 @@ ORDER BY created_at ASC
     );
     return stories.getPublicUrl(imagePath);
   }
+  
+     @override
+  Future<void> deleteStory({required String id}) =>
+      _powerSyncRepository.db().execute(
+        '''
+DELETE FROM stories WHERE id = ?
+''',
+        [id],
+      );
+  
+  @override
+  Stream<List<Story>> getStories({
+    required String userId,
+    bool includeAuthor = true,
+  }) =>
+      _powerSyncRepository.db().watch(
+        '''
+SELECT 
+  s.*${includeAuthor ? ', p.id as user_id, p.username, p.full_name, p.avatar_url' : ''}
+FROM stories s
+  ${includeAuthor ? 'LEFT JOIN profiles p ON s.user_id = p.id' : ''}
+WHERE user_id = ? AND expires_at > current_timestamp
+''',
+        parameters: [userId],
+      ).map((event) => event.safeMap(Story.fromJson).toList(growable: false));
+
 
 
 }

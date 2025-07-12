@@ -74,8 +74,7 @@ class PostFooter extends StatelessWidget {
                         isLiked: isLiked,
                         onLikedTap: likePost,
                       ),
-                      Tappable(
-                        scaleStrength: ScaleStrength.md,
+                      Tappable.scaled(
                         onTap: () => onCommentsTap(true),
                         child: Transform.flip(
                           flipX: true,
@@ -89,8 +88,7 @@ class PostFooter extends StatelessWidget {
                           ),
                         ),
                       ),
-                      Tappable(
-                        scaleStrength: ScaleStrength.md,
+                      Tappable.scaled(
                         onTap: () => onPostShareTap(block.id, block.author),
                         child: const Icon(
                           Icons.near_me_outlined,
@@ -114,9 +112,8 @@ class PostFooter extends StatelessWidget {
               Expanded(
                 child: Align(
                   alignment: Alignment.centerRight,
-                  child: Tappable(
+                  child: Tappable.scaled(
                     onTap: () {},
-                    scaleStrength: ScaleStrength.md,
                     child: const Icon(
                       Icons.bookmark_outline_rounded,
                       size: AppSize.iconSize,
@@ -256,8 +253,7 @@ class LikersInFollowings extends StatelessWidget {
                 },
               ),
         ],
-        buildInfoWidget: (context,count) => const SizedBox.shrink(), 
-        //might want to look here
+        buildInfoWidget: (context, index) => const SizedBox.shrink(),
       ),
     );
   }
@@ -295,9 +291,9 @@ class _SponsoredPostActionState extends State<SponsoredPostAction>
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      color: Colors.transparent,
-      fadeStrength: FadeStrength.small,
+    return Tappable.faded(
+      backgroundColor: Colors.transparent,
+      fadeStrength: FadeStrength.sm,
       onTap: widget.onTap,
       child: AnimatedContainer(
         duration: 1700.ms,

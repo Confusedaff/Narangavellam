@@ -20,8 +20,7 @@ class VerticalButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      animationEffect: TappableAnimationEffect.scale,
+    return Tappable.scaled(
       onTap: onTap,
       child: child ??
           Icon(

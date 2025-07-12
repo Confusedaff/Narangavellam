@@ -8,10 +8,10 @@ import 'package:database_client/database_client.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:shared/shared.dart';
 import 'package:storage/storage.dart';
-import 'package:stories_repository/stories_repository.dart';
+import 'package:stories_repository/src/models/models.dart';
 import 'package:user_repository/user_repository.dart' show User;
 
-//part 'stories_storage.dart';
+part 'stories_storage.dart';
 
 /// {@template stories_repository}
 /// A repository that manages stories data flow.
@@ -20,12 +20,12 @@ class StoriesRepository extends StoriesBaseRepository {
   /// {@macro stories_repository}
   const StoriesRepository({
     required DatabaseClient databaseClient,
-    //required StoriesStorage storage,
-  })  : _databaseClient = databaseClient;
-       // _storage = storage;
+    required StoriesStorage storage,
+  })  : _databaseClient = databaseClient,
+        _storage = storage;
 
   final DatabaseClient _databaseClient;
-  //final StoriesStorage _storage;
+  final StoriesStorage _storage;
 
   @override
   Future<void> createStory({
@@ -55,39 +55,39 @@ class StoriesRepository extends StoriesBaseRepository {
         imageBytes: imageBytes,
       );
 
-  // @override
-  // Future<void> deleteStory({required String id}) =>
-  //     _databaseClient.deleteStory(id: id);
+  @override
+  Future<void> deleteStory({required String id}) =>
+      _databaseClient.deleteStory(id: id);
 
-  // @override
-  // Stream<List<Story>> getStories({
-  //   required String userId,
-  //   bool includeAuthor = true,
-  // }) =>
-  //     _databaseClient.getStories(userId: userId, includeAuthor: includeAuthor);
+  @override
+  Stream<List<Story>> getStories({
+    required String userId,
+    bool includeAuthor = true,
+  }) =>
+      _databaseClient.getStories(userId: userId, includeAuthor: includeAuthor);
 
   /// Broadcasts stories from database and local storage. Combines and merges
   /// into a single stories data flow.
-  // Stream<List<Story>> mergedStories({
-  //   required String authorId,
-  //   String? userId,
-  // }) =>
-  //     Rx.combineLatest2(
-  //       getStories(userId: authorId, includeAuthor: false),
-  //       _storage._seenStoriesStreamController,
-  //       (dbStories, localStories) => _storage.mergeStories(
-  //         dbStories,
-  //         userId: _databaseClient.currentUserId,
-  //         list2: localStories
-  //             .firstWhereOrNull((seenStories) => seenStories.userId == userId)
-  //             ?.stories,
-  //       ),
-  //     ).asBroadcastStream();
+  Stream<List<Story>> mergedStories({
+    required String authorId,
+    String? userId,
+  }) =>
+      Rx.combineLatest2(
+        getStories(userId: authorId, includeAuthor: false),
+        _storage._seenStoriesStreamController,
+        (dbStories, localStories) => _storage.mergeStories(
+          dbStories,
+          userId: _databaseClient.currentUserId,
+          list2: localStories
+              .firstWhereOrNull((seenStories) => seenStories.userId == userId)
+              ?.stories,
+        ),
+      ).asBroadcastStream();
 
   /// Updates in-memory [story] as seen.
-  // Future<void> setUserStorySeen({
-  //   required Story story,
-  //   required String userId,
-  // }) =>
-  //     _storage.setUserStorySeen(story, userId);
+  Future<void> setUserStorySeen({
+    required Story story,
+    required String userId,
+  }) =>
+      _storage.setUserStorySeen(story, userId);
 }

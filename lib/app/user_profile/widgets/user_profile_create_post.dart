@@ -384,10 +384,10 @@ class PublishPostButton extends StatelessWidget {
               horizontal: AppSpacing.md,
               vertical: AppSpacing.md,
             ),
-            child: Tappable(
+            child: Tappable.faded(
               onTap: onShareTap,
-              borderRadius: 6,
-              color: AppColors.blue,
+              borderRadius: BorderRadius.circular(6),
+              backgroundColor: AppColors.blue,
               child: Align(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(

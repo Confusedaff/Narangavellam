@@ -119,9 +119,7 @@ class _ReelsViewState extends State<ReelsView> {
         Positioned(
           right: AppSpacing.md,
           top: AppSpacing.md,
-          child: Tappable(
-            animationEffect: TappableAnimationEffect.fade,
-            fadeStrength: FadeStrength.medium,
+          child: Tappable.faded(
             onTap: () =>
                 context.pushNamed('create_post', extra: true),
             child: Icon(
@@ -148,30 +146,28 @@ class NoReelsFound extends StatelessWidget {
           text: context.l10n.noReelsFoundText,
           icon: Icons.video_collection_outlined,
           child: FittedBox(
-            child: Tappable(
-
-              fadeStrength: FadeStrength.medium,
+            child: Tappable.faded(
               onTap: () =>
                   context.read<FeedBloc>().add(const FeedReelsPageRequested()),
               throttle: true,
               throttleDuration: 550.ms,
-              color: context.customReversedAdaptiveColor(
+              backgroundColor: context.customReversedAdaptiveColor(
                 light: context.theme.focusColor,
                 dark: context.theme.focusColor,
               ),
-              borderRadius:22,
-              // padding: const EdgeInsets.symmetric(
-              //   horizontal: AppSpacing.lg,
-              //   vertical: AppSpacing.sm,
-              // ),
-                child: Row(
-                  children: <Widget>[
-                    const Icon(Icons.refresh),
-                    Text(
-                      context.l10n.refreshText,
-                      style: context.labelLarge,
-                    ),
-                  ].spacerBetween(width: AppSpacing.md),
+              borderRadius: BorderRadius.circular(22),
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.lg,
+                vertical: AppSpacing.sm,
+              ),
+              child: Row(
+                children: <Widget>[
+                  const Icon(Icons.refresh),
+                  Text(
+                    context.l10n.refreshText,
+                    style: context.labelLarge,
+                  ),
+                ].spacerBetween(width: AppSpacing.md),
               ),
             ),
           ),

@@ -12,6 +12,6 @@ dev_dependencies:
   very_good_analysis: ^6.0.0
 
 dependencies:
-  flutter_secure_storage: ^4.2.1
+  flutter_secure_storage: ^9.2.4
   storage:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/storage/storage

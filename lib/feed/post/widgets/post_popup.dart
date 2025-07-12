@@ -185,11 +185,9 @@ class _PostPopupState extends State<PopupModal>
         child: widget.builder.call(context),
       ),
       builder: (context, isLiked, child) {
-        return Tappable(
-          animationEffect: TappableAnimationEffect.fade,
-          fadeStrength: FadeStrength.medium,
+        return Tappable.faded(
           key: ValueKey(widget.block.id + widget.block.createdAt.toString()),
-          //enableFeedback: false,
+          enableFeedback: false,
           onTap: () => context.pushNamed(
             'user_posts',
             queryParameters: {
@@ -313,7 +311,7 @@ class _PostPopupState extends State<PopupModal>
       );
     } else {
       await context.pushNamed(
-        'userProfile',
+        'user_profile',
         pathParameters: {'user_id': widget.block.author.id},
       );
     }

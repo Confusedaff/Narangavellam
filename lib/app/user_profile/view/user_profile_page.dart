@@ -5,8 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:instagram_blocks_ui/widget/better_stream_builder.dart';
-import 'package:instagram_blocks_ui/widget/floating_action_bar.dart';
 import 'package:narangavellam/app/bloc/app_bloc.dart';
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_create_post.dart';
@@ -16,6 +14,7 @@ import 'package:narangavellam/feed/post/widgets/widgets.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:narangavellam/selector/locale/view/locale_selector.dart';
 import 'package:narangavellam/selector/theme/view/theme_selector.dart';
+import 'package:narangavellam/stories/bloc/create_stories_bloc.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:sliver_tools/sliver_tools.dart';
@@ -317,8 +316,8 @@ class UserProfileAddMediaButton extends StatelessWidget {
   Widget build(BuildContext context) {
     final l10n = context.l10n;
     final user = context.select((AppBloc bloc) => bloc.state.user);
-    // final enableStory =
-    //     context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
+    final enableStory =
+        context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
     return Tappable(
       onTap: () => context
           .showListOptionsModal(
@@ -328,7 +327,7 @@ class UserProfileAddMediaButton extends StatelessWidget {
           reelLabel: l10n.reelText,
           postLabel: l10n.postText,
           storyLabel: l10n.storyText,
-          enableStory: true,//enableStory,
+          enableStory: enableStory,
           goTo: (route, {extra}) => context.pushNamed(route, extra: extra),
           onCreateReelTap: () => PickImage().pickVideo(
              context,
@@ -452,8 +451,7 @@ class LogoutModalOption extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      animationEffect: TappableAnimationEffect.none,
+    return Tappable.faded(
       onTap: () => context.confirmAction(
         fn: () {
           context.pop();
@@ -474,4 +472,3 @@ class LogoutModalOption extends StatelessWidget {
     );
   }
 }
-

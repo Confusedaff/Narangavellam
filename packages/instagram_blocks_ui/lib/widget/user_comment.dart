@@ -1,11 +1,10 @@
-// ignore_for_file: parameter_assignments
+// ignore_for_file: parameter_assignments, public_member_api_docs
 
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:instagram_blocks_ui/src/like_button.dart';
 import 'package:instagram_blocks_ui/src/likes_count.dart';
 import 'package:instagram_blocks_ui/user_profile/user_profile_avatar.dart';
 import 'package:shared/shared.dart';
@@ -96,9 +95,7 @@ class UserComment extends StatelessWidget {
             padding: const EdgeInsets.symmetric(vertical: AppSpacing.xs),
             child: buildHighlightedText(comment, context),
           ),
-          Tappable(
-            animationEffect: TappableAnimationEffect.fade,
-            fadeStrength: FadeStrength.medium,
+          Tappable.faded(
             onTap: () => onReplyButtonTap?.call(comment.author.username),
             child: Text(
               BlockSettings().commentTextDelegate.replyText,

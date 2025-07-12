@@ -40,11 +40,11 @@ class AuthProviderSignInButton extends StatelessWidget {
         },
       ),
       margin: const EdgeInsets.only(bottom: AppSpacing.md),
-      child: Tappable(
+      child: Tappable.faded(
         throttle: true,
         throttleDuration: 650.ms,
-        color: context.theme.focusColor,
-        borderRadius: 4,
+        backgroundColor: context.theme.focusColor,
+        borderRadius: BorderRadius.circular(4),
         onTap: isInProgress ? null : onPressed,
         child: isInProgress
             ? Center(child: AppCircularProgress(context.adaptiveColor))
@@ -55,18 +55,14 @@ class AuthProviderSignInButton extends StatelessWidget {
                   children: [
                     Flexible(child: icon),
                     Flexible(
-                      child: Padding(
-                        padding:const EdgeInsetsGeometry.only(
-                          left: AppSpacing.md,),
-                        child: Text(
-                          context.l10n.signInWithText(provider.value),
-                          style: context.labelLarge?.copyWith(
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                      child: Text(
+                        context.l10n.signInWithText(provider.value),
+                        style: context.labelLarge?.copyWith(
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ),
                     ),
-                  ],//.spacerBetween(width: AppSpacing.sm),
+                  ].spacerBetween(width: AppSpacing.sm),
                 ),
               ),
       ),

@@ -11,6 +11,7 @@ import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/feed/post/bloc/post_bloc.dart';
 import 'package:narangavellam/feed/post/video/view/video_player.dart';
 import 'package:narangavellam/feed/post/video/widgets/video_player_inherited_widget.dart';
+import 'package:narangavellam/stories/stories.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -186,7 +187,14 @@ class PostLargeView extends StatelessWidget {
       postIndex: postIndex,
       likersInFollowings: likersInFollowings,
       withInViewNotifier: withInViewNotifier,
-      // TODO(post): implement custom post avatar widget with stories
+      postAuthorAvatarBuilder: (context, author, onAvatarTap) {
+          return UserStoriesAvatar(
+            author: author.toUser,
+            onAvatarTap: onAvatarTap,
+            enableInactiveBorder: false,
+            withAdaptiveBorder: false,
+          );
+        },
       postOptionsSettings: isOwner
           ? PostOptionsSettings.owner(
               onPostEdit: (block) => context.pushNamed(

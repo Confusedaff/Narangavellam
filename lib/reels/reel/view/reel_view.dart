@@ -7,16 +7,17 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
-import 'package:narangavellam/app/user_profile/user_profile.dart';
-import 'package:narangavellam/comments/comments.dart';
+import 'package:narangavellam/comments/view/comments_page.dart';
 import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/feed/post/bloc/post_bloc.dart';
-import 'package:narangavellam/feed/post/video/video.dart';
+import 'package:narangavellam/feed/post/video/view/video_player.dart';
 import 'package:narangavellam/feed/post/view/post_view.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:narangavellam/reels/reel/view/widgets/vertical_buttons.dart';
+import 'package:narangavellam/stories/widgets/user_stories_avatar.dart';
 import 'package:shared/shared.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:user_repository/user_repository.dart';
 
 class ReelView extends StatelessWidget {
   const ReelView({
@@ -115,7 +116,6 @@ class _ReelState extends State<Reel> {
       child: GestureDetector(
         onLongPressStart: (_) => _isPaused.value = true,
         onLongPressEnd: (_) => _isPaused.value = false,
-        //onTap: () => _isPaused.value = true,
         child: Stack(
           alignment: Alignment.center,
           children: [
@@ -125,7 +125,7 @@ class _ReelState extends State<Reel> {
                 shouldPlay: widget.play,
                 blurHash: block.reel.blurHash,
                 withSound: widget.withSound || true,
-                aspectRatio: 9 / 16,
+                aspectRatio: 9 / 15,
                 withSoundButton: false,
                 withPlayerController: false,
                 videoPlayerController: _videoController,
@@ -313,19 +313,19 @@ class VerticalButtons extends StatelessWidget {
                 ),
               ),
             ),
-            VerticalGroup(
-              icon: Icons.near_me_outlined,
-              onButtonTap: () {},//=> context.showScrollableModal(
-              //   pageBuilder: (scrollController, draggableScrollController) =>
-              //       SharePost(
-              //     block: block,
-              //     scrollController: scrollController,
-              //     draggableScrollController: draggableScrollController,
-              //   ),
-              // ),
-              size: AppSize.iconSize,
-              withStatistic: false,
-            ),
+            // VerticalGroup(
+            //   icon: Icons.near_me_outlined,
+            //   onButtonTap: () => context.showScrollableModal(
+            //     pageBuilder: (scrollController, draggableScrollController) =>
+            //         SharePost(
+            //       block: block,
+            //       scrollController: scrollController,
+            //       draggableScrollController: draggableScrollController,
+            //     ),
+            //   ),
+            //   size: AppSize.iconSize,
+            //   withStatistic: false,
+            // ),
             VerticalGroup(
               icon: Icons.more_vert_sharp,
               onButtonTap: !isOwner
@@ -368,9 +368,8 @@ class VerticalButtons extends StatelessWidget {
                       }),
               withStatistic: false,
             ),
-            Tappable(
+            Tappable.scaled(
               onTap: () {},
-              animationEffect: TappableAnimationEffect.scale,
               scaleStrength: ScaleStrength.xxs,
               child: ImageAttachmentThumbnail(
                 image: Attachment(
@@ -406,16 +405,11 @@ class ReelAuthorListTile extends StatelessWidget {
 
     return Row(
       children: <Widget>[
-        // UserStoriesAvatar(
-        //   resizeHeight: 108,
-        //   author: author.toUser,
-        //   withAdaptiveBorder: false,
-        //   enableInactiveBorder: false,
-        // ),
-        UserProfileAvatar(
-          userId: author.id,
-          avatarUrl: author.avatarUrl,
-          isLarge: false,
+        UserStoriesAvatar(
+          resizeHeight: 108,
+          author: author.toUser,
+          withAdaptiveBorder: false,
+          enableInactiveBorder: false,
         ),
         Flexible(
           flex: 4,

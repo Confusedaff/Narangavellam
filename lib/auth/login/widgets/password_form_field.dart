@@ -52,7 +52,7 @@ class _PasswordFromFieldState extends State<PasswordFromField> {
     return AppTextField(
       filled: true,
       obscureText: !showPassword,
-      suffixIcon: Tappable(color: AppColors.transparent,
+      suffixIcon: Tappable(backgroundColor: AppColors.transparent,
       onTap: context.read<LoginCubit>().changePasswordVisibility,
       child: Icon(
         !showPassword ? Icons.visibility : Icons.visibility_off,

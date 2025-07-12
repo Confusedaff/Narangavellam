@@ -8,6 +8,7 @@ import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/comments/comment/comment.dart';
 import 'package:narangavellam/comments/comments.dart';
 import 'package:narangavellam/l10n/l10n.dart';
+import 'package:narangavellam/stories/widgets/user_stories_avatar.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:shared/shared.dart';
 
@@ -75,11 +76,10 @@ class CommentGroup extends StatelessWidget {
             pathParameters: {'user_id': comment.author.id},
           ),
           avatarBuilder: (context, author, onAvatarTap, radius) =>
-              UserProfileAvatar(//UserStoriesAvatar(
+            UserStoriesAvatar(
             resizeHeight: 108,
-            // author: author,
-            // onAvatarTap: onAvatarTap,
-            avatarUrl: user.avatarUrl,
+            author: author,
+            onAvatarTap: onAvatarTap,
             radius: radius,
             enableInactiveBorder: false,
             withAdaptiveBorder: false,

@@ -1,5 +1,4 @@
 import 'package:app_ui/app_ui.dart';
-import 'package:database_client/database_client.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

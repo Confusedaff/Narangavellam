@@ -92,7 +92,29 @@ GoRouter router(AppBloc appBloc) {
 
           return NoTransitionPage(child: PostEditPage(post: post));
         },
-      ), // GoRoute
+      ),
+      GoRoute(
+            path: '/stories/:user_id',
+            name: 'stories',
+            parentNavigatorKey: _rootNavigatorKey,
+            pageBuilder: (context, state) {
+              final props = state.extra! as StoriesProps;
+
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: StoriesPage(props: props),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return SharedAxisTransition(
+                    animation: animation,
+                    secondaryAnimation: secondaryAnimation,
+                    transitionType: SharedAxisTransitionType.scaled,
+                    child: child,
+                  );
+                },
+              );
+            },
+          ),
       StatefulShellRoute.indexedStack(
         parentNavigatorKey: _rootNavigatorKey,
         builder: (context, state, navigationShell) {

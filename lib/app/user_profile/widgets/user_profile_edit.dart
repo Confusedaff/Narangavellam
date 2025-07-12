@@ -2,7 +2,7 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:narangavellam/app/bloc/app_bloc.dart';
+import 'package:narangavellam/app/bloc/app_bloc.dart' show AppBloc;
 import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
 import 'package:narangavellam/app/user_profile/user_profile_avatar.dart';
 import 'package:narangavellam/l10n/l10n.dart';
@@ -69,7 +69,7 @@ class _UserProfileEditViewState extends State<UserProfileEditView> {
               UserProfileAvatar(
                 avatarUrl: user.avatarUrl,
                 onTapPickImage: true,
-                animationEffect: TappableAnimationEffect.scale,
+                tappableVariant: TappableVariant.scaled,
                 scaleStrength: ScaleStrength.xxs,
                 onImagePick: (imageUrl) {
                   context.read<UserProfileBloc>().add(

@@ -3,42 +3,42 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:insta_blocks/insta_blocks.dart';
-import 'package:instagram_blocks_ui/widget/better_stream_builder.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/app.dart';
-import 'package:narangavellam/app/user_profile/bloc/user_profile_bloc.dart';
-import 'package:narangavellam/app/user_profile/user_profile_avatar.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_button.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 import 'package:narangavellam/stories/stories.dart';
-import 'package:shared/shared.dart';
+import 'package:shared/shared.dart' hide Switch;
 import 'package:user_repository/user_repository.dart';
 
 class UserProfileHeader extends StatelessWidget {
-  const UserProfileHeader({required this.userId,required this.sponsoredPost,super.key});
+  const UserProfileHeader({
+    required this.userId,
+    this.sponsoredPost,
+    super.key,
+  });
 
-   final String userId;
-   final PostSponsoredBlock? sponsoredPost;
+  final String userId;
+  final PostSponsoredBlock? sponsoredPost;
 
-  void _pushToUserStatisticInfo(
-  BuildContext context, {
-  required int tabIndex,
-}) =>
-    context.pushNamed(
-      'user_statistics',
-      queryParameters: {'user_id': userId},
-    );
+  void _pushToUserStatistics(BuildContext context, {required int tabIndex}) =>
+      context.pushNamed(
+        'user_statistics',
+        extra: tabIndex,
+        queryParameters: {'user_id': userId},
+      );
 
   @override
   Widget build(BuildContext context) {
-
-   final isOwner = context.select((UserProfileBloc bloc) => bloc.isOwner);
+    final isOwner = context.select((UserProfileBloc b) => b.isOwner);
     final user$ = context.select((UserProfileBloc b) => b.state.user);
     final user = sponsoredPost == null
-    ? user$
-    : user$.isAnonymous
-        ? sponsoredPost!.author.toUser
-        : user$;
-
+        ? user$
+        : user$.isAnonymous
+            ? sponsoredPost!.author.toUser
+            : user$;
+    final canCreateStories =
+        context.select((CreateStoriesBloc bloc) => bloc.state.isAvailable);
 
     return SliverPadding(
       padding: const EdgeInsets.symmetric(
@@ -50,55 +50,65 @@ class UserProfileHeader extends StatelessWidget {
           children: [
             Row(
               children: [
-                UserProfileAvatar(
-                  avatarUrl: user.avatarUrl,
-                    onLongPress: (avatarUrl) => avatarUrl == null
+                UserStoriesAvatar(
+                  resizeHeight: 252,
+                  author: user,
+                  onLongPress: (avatarUrl) => avatarUrl == null
                       ? null
                       : context.showImagePreview(avatarUrl),
-                    onTap: (imageUrl) {
-                      if (imageUrl == null) return;
-                      if (!isOwner) context.showImagePreview(imageUrl);
-                      if (isOwner) {
-                        context.pushNamed(
-                                  'create_stories',
-                                  extra: (String path) {
-                                    context.read<CreateStoriesBloc>().add(
-                                      CreateStoriesStoryCreateRequested(
-                                        author: user,
-                                        contentType: StoryContentType.image,
-                                        filePath: path,
-                                        onError: (_, __) {
-                                          toggleLoadingIndeterminate(enable: false);
-                                          openSnackbar(
-                                            SnackbarMessage.error(
-                                              title: context.l10n.somethingWentWrongText,
-                                              description: context.l10n.failedToCreateStoryText,
-                                            ),
-                                          );
-                                        },
-                                    onLoading: toggleLoadingIndeterminate,
-                                    onStoryCreated: () {
-                                      toggleLoadingIndeterminate(enable: false);
-                                      openSnackbar(
-                                        SnackbarMessage.success(
-                                          title: context.l10n.successfullyCreatedStoryText,
-                                        ),
-                                        clearIfQueue: true,
-                                      );
-                                    },
+                  onAvatarTap: (imageUrl) {
+                    if (imageUrl == null) return;
+                    if (!isOwner) context.showImagePreview(imageUrl);
+                    if (isOwner) {
+                      if (!canCreateStories) return;
+                      context.pushNamed(
+                        'create_stories',
+                        extra: (String path) {
+                          context.read<CreateStoriesBloc>().add(
+                                CreateStoriesStoryCreateRequested(
+                                  author: user,
+                                  contentType: StoryContentType.image,
+                                  filePath: path,
+                                  onError: (_, __) {
+                                    toggleLoadingIndeterminate(enable: false);
+                                    openSnackbar(
+                                      SnackbarMessage.error(
+                                        title:
+                                            context.l10n.somethingWentWrongText,
+                                        description: context
+                                            .l10n.failedToCreateStoryText,
                                       ),
                                     );
-                                      context.pop();
-                                    },
-                        );
-                      }
-                    },
-                    animationEffect: TappableAnimationEffect.scale,
-                    ), 
+                                  },
+                                  onLoading: toggleLoadingIndeterminate,
+                                  onStoryCreated: () {
+                                    toggleLoadingIndeterminate(enable: false);
+                                    openSnackbar(
+                                      SnackbarMessage.success(
+                                        title: context
+                                            .l10n.successfullyCreatedStoryText,
+                                      ),
+                                      clearIfQueue: true,
+                                    );
+                                  },
+                                ),
+                              );
+                          context.pop();
+                        },
+                      );
+                    }
+                  },
+                  isLarge: true,
+                  tappableVariant: TappableVariant.scaled,
+                  showWhenSeen: true,
+                ),
                 const Gap.h(AppSpacing.md),
-                Expanded(child: UserProfileStatisticsCounts(
-                  onStatisticTap: (tabIndex) => _pushToUserStatisticInfo(context, tabIndex: tabIndex),
-                ),),
+                Expanded(
+                  child: UserProfileStatisticsCounts(
+                    onStatisticTap: (tabIndex) =>
+                        _pushToUserStatistics(context, tabIndex: tabIndex),
+                  ),
+                ),
               ],
             ),
             const Gap.v(AppSpacing.md),
@@ -138,38 +148,44 @@ class UserProfileHeader extends StatelessWidget {
 }
 
 class UserProfileStatisticsCounts extends StatelessWidget {
-   const UserProfileStatisticsCounts({required this.onStatisticTap,super.key});
+  const UserProfileStatisticsCounts({required this.onStatisticTap, super.key});
 
   final ValueSetter<int> onStatisticTap;
 
   @override
   Widget build(BuildContext context) {
     final l10n = context.l10n;
-     final postsCount =
+
+    final postsCount =
         context.select((UserProfileBloc bloc) => bloc.state.postsCount);
     final followersCount =
         context.select((UserProfileBloc bloc) => bloc.state.followersCount);
     final followingsCount =
         context.select((UserProfileBloc bloc) => bloc.state.followingsCount);
+
     return Row(
-      children: [
+      children: <Widget>[
         Expanded(
           child: UserProfileStatistic(
             name: l10n.postsCount(postsCount),
-            value: postsCount,),),
-          Expanded(
+            value: postsCount,
+          ),
+        ),
+        Expanded(
           child: UserProfileStatistic(
             name: l10n.followersText,
             value: followersCount,
             onTap: () => onStatisticTap.call(0),
-            ),),
-          Expanded(
+          ),
+        ),
+        Expanded(
           child: UserProfileStatistic(
             name: l10n.followingsText,
             value: followingsCount,
             onTap: () => onStatisticTap.call(1),
-            ),),
-      ],
+          ),
+        ),
+      ].spacerBetween(width: AppSpacing.sm),
     );
   }
 }

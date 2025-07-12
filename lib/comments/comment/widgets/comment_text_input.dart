@@ -1,7 +1,8 @@
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:narangavellam/app/app.dart';
+import 'package:narangavellam/app/bloc/app_bloc.dart';
+import 'package:narangavellam/app/user_profile/user_profile_avatar.dart';
 import 'package:narangavellam/comments/comments.dart';
 import 'package:narangavellam/l10n/l10n.dart';
 
@@ -47,9 +48,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
                     ),
                     style: context.bodyMedium?.apply(color: AppColors.grey),
                   ),
-                  trailing: Tappable(
-                    fadeStrength: FadeStrength.medium,
-                    animationEffect: TappableAnimationEffect.fade,
+                  trailing: Tappable.faded(
                     onTap: commentInputController.clear,
                     child: const Icon(Icons.cancel, color: AppColors.grey),
                   ),
@@ -110,9 +109,7 @@ class _CommentTextFieldState extends State<CommentTextField> {
                             .isEmpty) {
                           return const SizedBox.shrink();
                         }
-                        return Tappable(
-                           fadeStrength: FadeStrength.medium,
-                    animationEffect: TappableAnimationEffect.fade,
+                        return Tappable.faded(
                           onTap: () {
                             if (commentInputController
                                 .commentTextController.value.text.isEmpty) {
@@ -160,8 +157,7 @@ class TextEmoji extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Tappable(
-      animationEffect: TappableAnimationEffect.scale,
+    return Tappable.scaled(
       onTap: () => onEmojiTap(emoji),
       child: Padding(
         padding: const EdgeInsets.only(right: AppSpacing.xlg),

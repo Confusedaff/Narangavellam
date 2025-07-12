@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'dart:io';
 
 import 'package:app_ui/app_ui.dart';
@@ -15,6 +17,7 @@ typedef UserProfilePlaceholderBuilder = Widget Function(
 
 class UserProfileAvatar extends StatefulWidget {
   const UserProfileAvatar({
+    this.stories = const [],
     this.userId,
     super.key,
     this.avatarUrl,
@@ -27,7 +30,7 @@ class UserProfileAvatar extends StatefulWidget {
     this.onTap,
     this.onLongPress,
     this.onImagePick,
-    this.animationEffect = TappableAnimationEffect.none,
+    this.tappableVariant = TappableVariant.normal,
     this.scaleStrength = ScaleStrength.xs,
     this.withAddButton = false,
     this.enableBorder = true,
@@ -39,6 +42,7 @@ class UserProfileAvatar extends StatefulWidget {
     this.withAdaptiveBorder = false,
   });
 
+  final List<Story> stories;
   final String? userId;
   final String? avatarUrl;
   final double? radius;
@@ -52,7 +56,7 @@ class UserProfileAvatar extends StatefulWidget {
   final ValueSetter<String?>? onLongPress;
   final VoidCallback? onAddButtonTap;
   final ValueSetter<String>? onImagePick;
-  final TappableAnimationEffect animationEffect;
+  final TappableVariant tappableVariant;
   final ScaleStrength scaleStrength;
   final bool withAddButton;
   final bool enableBorder;
@@ -107,7 +111,7 @@ class _UserProfileAvatarState extends State<UserProfileAvatar> {
         ),
       );
 
-  Future<void> _pickImage(BuildContext context) async {
+   Future<void> _pickImage(BuildContext context) async {
     final imageFile = await PickImage()
         .pickImage(context, source: ImageSource.both, pickAvatar: true);
     if (imageFile == null) return;
@@ -168,21 +172,23 @@ class _UserProfileAvatarState extends State<UserProfileAvatar> {
                 : 18.0);
     late final height = radius * 2;
     late final width = radius * 2;
-
+    final hasStories = widget.stories.isNotEmpty;
 
     BoxDecoration? border() {
+      if (!hasStories) return null;
       if (!widget.enableInactiveBorder && !widget.showStories) return null;
-      if (widget.showStories) return UserProfileAvatar._gradientBorderDecoration;
-      if (widget.enableInactiveBorder && !widget.showStories) {
+      if (widget.showStories && hasStories) return UserProfileAvatar._gradientBorderDecoration;
+      if (widget.enableInactiveBorder && !widget.showStories && hasStories) {
         return _greyBorderDecoration(context);
       }
       return null;
     }
 
     Gradient? gradient() {
+      if (!hasStories) return null;
       if (!widget.enableInactiveBorder && !widget.showStories) return null;
-      if (widget.showStories) return UserProfileAvatar._defaultGradient;
-      if (widget.enableInactiveBorder && !widget.showStories) {
+      if (widget.showStories && hasStories) return UserProfileAvatar._defaultGradient;
+      if (widget.enableInactiveBorder && !widget.showStories && hasStories) {
         return LinearGradient(
           colors: [Colors.grey.shade600, Colors.grey.shade600],
         );
@@ -299,9 +305,8 @@ class _UserProfileAvatarState extends State<UserProfileAvatar> {
       final plusCircularIcon = Positioned(
         bottom: 0,
         right: 0,
-        child: Tappable(
+        child: Tappable.scaled(
           onTap: widget.onAddButtonTap,
-          animationEffect: TappableAnimationEffect.scale,
           child: Container(
             width: widget.isLarge ? 32 : 18,
             height: widget.isLarge ? 32 : 18,
@@ -323,7 +328,8 @@ class _UserProfileAvatarState extends State<UserProfileAvatar> {
       avatar = Stack(children: [avatar, plusCircularIcon]);
     }
 
-    return Tappable(
+    return Tappable.raw(
+      variant: widget.tappableVariant,
       onTap: widget.onTap == null
           ? !widget.onTapPickImage
               ? null
@@ -331,7 +337,6 @@ class _UserProfileAvatarState extends State<UserProfileAvatar> {
           : () => widget.onTap?.call(widget.avatarUrl),
       onLongPress:
           widget.onLongPress == null ? null : () => widget.onLongPress?.call(widget.avatarUrl),
-      animationEffect: widget.animationEffect,
       scaleStrength: widget.scaleStrength,
       child: avatar,
     );

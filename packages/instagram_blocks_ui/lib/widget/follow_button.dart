@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
@@ -27,12 +29,10 @@ class FollowButton extends StatelessWidget {
             light: AppColors.brightGrey,
             dark: AppColors.emphasizeDarkGrey,
           );
-    Widget button(String data) => Tappable(
-          animationEffect: TappableAnimationEffect.fade,
-          fadeStrength: FadeStrength.medium,
+    Widget button(String data) => Tappable.faded(
           onTap: follow,
-          borderRadius: 6,
-          color: effectiveBackgroundColor,
+          borderRadius: BorderRadius.circular(6),
+          backgroundColor: effectiveBackgroundColor,
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: AppSpacing.md,
@@ -48,12 +48,10 @@ class FollowButton extends StatelessWidget {
 
     return switch (_followingStatus) {
       null => const SizedBox.shrink(),
-      final String data => Tappable(
-          animationEffect: TappableAnimationEffect.fade,
-          fadeStrength: FadeStrength.medium,
+      final String data => Tappable.faded(
           onTap: follow,
-          borderRadius: 6,
-          color: effectiveBackgroundColor,
+          borderRadius: BorderRadius.circular(6),
+          backgroundColor: effectiveBackgroundColor,
           child: switch (isOutlined) {
             true => DecoratedBox(
                 decoration: BoxDecoration(

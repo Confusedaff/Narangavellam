@@ -3,10 +3,11 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:instagram_blocks_ui/widget/better_stream_builder.dart';
+import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_button.dart';
 import 'package:narangavellam/l10n/l10n.dart';
+import 'package:narangavellam/stories/widgets/user_stories_avatar.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
 
@@ -32,10 +33,7 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
     super.initState();
     if (widget.follower) {
       _isFollowed =
-          context.read<UserRepository>().isFollowed(
-            followerId: context.read<AppBloc>().state.user.id,
-            userId: widget.user.id, 
-            );
+          context.read<UserRepository>().isFollowed(userId: widget.user.id, followerId: context.read<AppBloc>().state.user.id,);
     }
   }
 
@@ -62,106 +60,98 @@ class _UserProfileListTileState extends State<UserProfileListTile> {
     final isMe = widget.user.id == me.id;
     final isMine = me.id == profile.id;
 
-    return Tappable(
+    return Tappable.faded(
       onTap: () => context.pushNamed(
         'user_profile',
         pathParameters: {'user_id': widget.user.id},
       ),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppSpacing.md,
-          vertical: AppSpacing.sm,
-        ),
-        child: Row(
-          children: [
-            UserProfileAvatar(
-              avatarUrl: widget.user.avatarUrl,
-              radius: 26,
-            ),
-            // UserStoriesAvatar(
-            //   resizeHeight: 156,
-            //   author: widget.user,
-            //   withAdaptiveBorder: false,
-            //   enableInactiveBorder: false,
-            //   radius: 26,
-            // ),
-            Expanded(
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        DefaultTextStyle(
-                          style: context.bodyLarge!.copyWith(
-                            fontWeight: AppFontWeight.semiBold,
-                          ),
-                          child: Row(
-                            children: [
-                              Flexible(
-                                child: Text(
-                                  widget.user.displayUsername,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppSpacing.md,
+        vertical: AppSpacing.sm,
+      ),
+      child: Row(
+        children: [
+          UserStoriesAvatar(
+            resizeHeight: 156,
+            author: widget.user,
+            withAdaptiveBorder: false,
+            enableInactiveBorder: false,
+            radius: 26,
+          ),
+          Expanded(
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Flexible(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      DefaultTextStyle(
+                        style: context.bodyLarge!.copyWith(
+                          fontWeight: AppFontWeight.semiBold,
+                        ),
+                        child: Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                widget.user.displayUsername,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              if (widget.follower && isMine)
-                                FollowTextButton(
-                                  wasFollowed: _isFollowed,
-                                  user: widget.user,
-                                ),
-                            ],
-                          ),
-                        ),
-                        Text(
-                          widget.user.displayFullName,
-                          style: context.labelLarge?.copyWith(
-                            fontWeight: AppFontWeight.medium,
-                            color: AppColors.grey,
-                          ),
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ],
-                    ),
-                  ),
-                  const Gap.h(AppSpacing.md),
-                  Expanded(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if (!(isMe && !isMine))
-                          UserActionButton(
-                            user: widget.user,
-                            follower: widget.follower,
-                            isMine: isMine,
-                            isMe: isMe,
-                            onTap: () => widget.follower
-                                ? !isMine
-                                    ? _follow(context)
-                                    : _removeFollower(context)
-                                : _follow(context),
-                          ),
-                        if (isMine) ...[
-                          const Gap.h(AppSpacing.md),
-                          Flexible(
-                            child: Tappable(
-                              onTap: !widget.follower
-                                  ? () {}
-                                  : () => _removeFollower(context),
-                              child: const Icon(Icons.more_vert),
                             ),
-                          ),
-                        ],
-                      ],
-                    ),
+                            if (widget.follower && isMine)
+                              FollowTextButton(
+                                wasFollowed: _isFollowed,
+                                user: widget.user,
+                              ),
+                          ],
+                        ),
+                      ),
+                      Text(
+                        widget.user.displayFullName,
+                        style: context.labelLarge?.copyWith(
+                          fontWeight: AppFontWeight.medium,
+                          color: AppColors.grey,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+                const Gap.h(AppSpacing.md),
+                Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (!(isMe && !isMine))
+                        UserActionButton(
+                          user: widget.user,
+                          follower: widget.follower,
+                          isMine: isMine,
+                          isMe: isMe,
+                          onTap: () => widget.follower
+                              ? !isMine
+                                  ? _follow(context)
+                                  : _removeFollower(context)
+                              : _follow(context),
+                        ),
+                      if (isMine && widget.follower) ...[
+                        const Gap.h(AppSpacing.md),
+                        Flexible(
+                          child: Tappable.faded(
+                            onTap: () => _removeFollower(context),
+                            child: const Icon(Icons.more_vert),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                ),
+              ],
             ),
-          ].spacerBetween(width: AppSpacing.md),
-        ),
+          ),
+        ].spacerBetween(width: AppSpacing.md),
       ),
     );
   }
@@ -192,7 +182,7 @@ class UserActionButton extends StatelessWidget {
     );
     final textStyle =
         context.bodyLarge?.copyWith(fontWeight: AppFontWeight.semiBold);
-    const fadeStrength = FadeStrength.medium;
+    const fadeStrength = FadeStrength.md;
 
     late final Widget followerRemoveButton = UserProfileButton(
       onTap: onTap,

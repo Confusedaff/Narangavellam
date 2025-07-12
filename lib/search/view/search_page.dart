@@ -2,8 +2,8 @@ import 'package:app_ui/app_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:narangavellam/app/user_profile/user_profile_avatar.dart';
 import 'package:narangavellam/l10n/l10n.dart';
+import 'package:narangavellam/stories/widgets/user_stories_avatar.dart';
 import 'package:search_repository/search_repository.dart';
 import 'package:shared/shared.dart';
 import 'package:user_repository/user_repository.dart';
@@ -70,19 +70,12 @@ class UserListTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      // leading: UserStoriesAvatar(
-      //   resizeHeight: 156,
-      //   author: user,
-      //   withAdaptiveBorder: false,
-      //   enableInactiveBorder: false,
-      //   radius: 26,
-      // ),
-      leading: UserProfileAvatar(
+      leading: UserStoriesAvatar(
         resizeHeight: 156,
-        avatarUrl: user.avatarUrl,
-        radius: 26,
+        author: user,
         withAdaptiveBorder: false,
         enableInactiveBorder: false,
+        radius: 26,
       ),
       title: Text(user.displayUsername),
       subtitle: Text(

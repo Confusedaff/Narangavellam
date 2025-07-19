@@ -281,7 +281,10 @@ class PostsRepository extends PostsBaseRepository{
   @override
   Stream<List<Comment>> repliedCommentsOf({required String commentId}) => 
   _databaseClient.repliedCommentsOf(commentId: commentId);
-
+  
+  @override
+  Future<Post?> getPostBy({required String id}) => 
+  _databaseClient.getPostBy(id: id);
   
   
 }

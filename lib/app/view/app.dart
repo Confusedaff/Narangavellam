@@ -1,4 +1,5 @@
 import 'package:app_ui/app_ui.dart';
+import 'package:chats_repository/chats_repository.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,6 +24,7 @@ class App extends StatelessWidget {
     required this.firebaseRemoteConfigRepository,
     required this.searchRepository,
     required this.storiesRepository,
+    required this.chatsRepository,
     super.key,
   });
 
@@ -32,6 +34,7 @@ class App extends StatelessWidget {
   final FirebaseRemoteConfigRepository firebaseRemoteConfigRepository;
   final SearchRepository searchRepository;
   final StoriesRepository storiesRepository;
+  final ChatsRepository chatsRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -51,6 +54,9 @@ class App extends StatelessWidget {
         ),
         RepositoryProvider.value(
           value: searchRepository,
+        ),
+        RepositoryProvider.value(
+          value: chatsRepository,
         ),
       ],
       child: MultiBlocProvider(

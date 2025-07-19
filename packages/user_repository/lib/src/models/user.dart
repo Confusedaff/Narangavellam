@@ -81,7 +81,7 @@ class User extends AuthenticationUser {
 }
 
 /// Extension that converts [PostAuthor] into [User] instance.
-extension UserToPostAuthorConverter on PostAuthor {
+extension UserX on PostAuthor {
   /// Converts a [PostAuthor] into a [User] instance.
   User get toUser => User(
         id: id,

@@ -8,14 +8,19 @@ environment:
   flutter: ^3.24.0
 
 dependencies:
+  chats_repository:
+    path: ../chats_repository
   flutter:
     sdk: flutter
+  jiffy: ^6.4.3
   powersync_repository:
     path: ../powersync_repository
   shared:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/shared
   user_repository:
     path: ../user_repository
+  insta_blocks:
+    path: ../insta_blocks
 
 dev_dependencies:
   flutter_test:

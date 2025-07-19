@@ -6,6 +6,7 @@ import 'package:go_router/go_router.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/home/provider/home_provider.dart';
 import 'package:narangavellam/app/user_profile/widgets/user_profile_create_post.dart';
+import 'package:narangavellam/chats/view/chats_page.dart';
 import 'package:narangavellam/feed/post/video/widgets/video_player_inherited_widget.dart';
 import 'package:narangavellam/navigation/navigation.dart';
 import 'package:narangavellam/stories/stories.dart';
@@ -125,11 +126,7 @@ class _HomeViewState extends State<HomeView> {
                       onPopInvoked: () => HomeProvider().animateToPage(1),
                       onBackButtonTap: () => HomeProvider().animateToPage(1),
                     ),
-                  2 => AppScaffold(
-                      body: Center(
-                        child: Text('Chats page', style: context.headlineSmall),
-                      ),
-                    ),
+                  2 => const ChatsPage(),
                   _ => AppScaffold(
                       body: widget.navigationShell,
                       bottomNavigationBar:

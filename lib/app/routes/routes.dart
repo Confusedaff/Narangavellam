@@ -11,6 +11,8 @@ import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/app/home/home.dart';
 import 'package:narangavellam/app/view/app_init_utilities.dart';
 import 'package:narangavellam/auth/view/auth_page.dart';
+import 'package:narangavellam/chats/chat/view/chat_page.dart';
+import 'package:narangavellam/chats/chat/widgets/chat_props.dart';
 import 'package:narangavellam/feed/feed.dart';
 import 'package:narangavellam/feed/post/widgets/widgets.dart';
 import 'package:narangavellam/reels/reels.dart';
@@ -83,6 +85,51 @@ GoRouter router(AppBloc appBloc) {
           );
         },
       ),
+      GoRoute(
+            path: '/chat/:chat_id',
+            name: 'chat',
+            parentNavigatorKey: _rootNavigatorKey,
+            pageBuilder: (context, state) {
+              final chatId = state.pathParameters['chat_id']!;
+              final props = state.extra! as ChatProps;
+
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: ChatPage(chatId: chatId, chat: props.chat),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return SharedAxisTransition(
+                    animation: animation,
+                    secondaryAnimation: secondaryAnimation,
+                    transitionType: SharedAxisTransitionType.horizontal,
+                    child: child,
+                  );
+                },
+              );
+            },
+          ),
+          GoRoute(
+            path: '/posts/:id',
+            name: 'post',
+            parentNavigatorKey: _rootNavigatorKey,
+            pageBuilder: (context, state) {
+              final id = state.pathParameters['id'];
+
+              return CustomTransitionPage(
+                key: state.pageKey,
+                child: PostPreviewPage(id: id ?? ''),
+                transitionsBuilder:
+                    (context, animation, secondaryAnimation, child) {
+                  return SharedAxisTransition(
+                    animation: animation,
+                    secondaryAnimation: secondaryAnimation,
+                    transitionType: SharedAxisTransitionType.vertical,
+                    child: child,
+                  );
+                },
+              );
+            },
+          ),
       GoRoute(
         path: '/posts/:post_id/edit',
         name: 'post_edit',

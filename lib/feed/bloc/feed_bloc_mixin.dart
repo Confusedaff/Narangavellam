@@ -161,6 +161,12 @@ mixin FeedBlocMixin on Bloc<FeedEvent,FeedState>{
   PostsRepository get postsRepository;
   FirebaseRemoteConfigRepository get firebaseRemoteConfigRepository;
 
+  Future<PostBlock?> getPostBy(String id) async {
+    final post = await postsRepository.getPostBy(id: id);
+    return post?.toPostLargeBlock;
+  }
+
+
   PaginatedFeedResult fetchFeedPage({
   int page = 0,
   ListPostMapper? mapper,

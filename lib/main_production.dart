@@ -1,3 +1,4 @@
+import 'package:chats_repository/chats_repository.dart';
 import 'package:database_client/database_client.dart';
 import 'package:env/env.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -47,6 +48,7 @@ void main() {
       final postsRepository = PostsRepository(databaseClient: powerSyncDatabaseClient);
       final searchRepository = SearchRepository(databaseClient: powerSyncDatabaseClient);
        final storiesRepository = StoriesRepository(databaseClient: powerSyncDatabaseClient,storage: storiesStorage);
+       final chatsRepository = ChatsRepository(databaseClient: powerSyncDatabaseClient);
       
       return ChangeNotifierProvider(
         create: (_) => ZoomStateProvider(),
@@ -57,6 +59,7 @@ void main() {
           firebaseRemoteConfigRepository: firebaseRemoteConfigRepository,
           searchRepository: searchRepository,
           storiesRepository: storiesRepository,
+          chatsRepository: chatsRepository,
           ),
       );
     },

@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 import 'package:app_ui/app_ui.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:firebase_remote_config_repository/firebase_remote_config_repository.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/widgets.dart';
@@ -19,6 +20,7 @@ typedef AppBuilder = FutureOr<Widget> Function(
   PowerSyncRepository,
   SharedPreferences,
   FirebaseRemoteConfigRepository,
+  FirebaseMessaging,
 );
 
 class AppBlocObserver extends BlocObserver {
@@ -81,10 +83,11 @@ Future<void> bootstrap(
 
     final firebaseRemoteConfig = FirebaseRemoteConfig.instance;
     final firebaseRemoteConfigRepository = FirebaseRemoteConfigRepository(firebaseRemoteConfig: firebaseRemoteConfig);
+    final firebaseMessaging = FirebaseMessaging.instance;
 
     SystemUiOverlayTheme.setPortraitOrientation();
 
-    runApp(TranslationProvider(child: await builder(powerSyncRepository,sharedPreferences,firebaseRemoteConfigRepository)));
+    runApp(TranslationProvider(child: await builder(powerSyncRepository,sharedPreferences,firebaseRemoteConfigRepository,firebaseMessaging)));
   },
   (error, stack) {
     logE(error.toString(), stackTrace: stack);

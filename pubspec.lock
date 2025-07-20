@@ -13,10 +13,10 @@ packages:
     dependency: transitive
     description:
       name: _flutterfire_internals
-      sha256: "50e24b769bd1e725732f0aff18b806b8731c1fbcf4e8018ab98e7c4805a2a52f"
+      sha256: a5788040810bd84400bc209913fbc40f388cded7cdf95ee2f5d2bff7e38d5241
       url: "https://pub.dev"
     source: hosted
-    version: "1.3.57"
+    version: "1.3.58"
   align_positioned:
     dependency: transitive
     description:
@@ -111,6 +111,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.7.0"
+  asn1lib:
+    dependency: transitive
+    description:
+      name: asn1lib
+      sha256: "9a8f69025044eb466b9b60ef3bc3ac99b4dc6c158ae9c56d25eeccf5bc56d024"
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.6.5"
   async:
     dependency: "direct main"
     description:
@@ -421,6 +429,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "3.0.6"
+  crypto_keys:
+    dependency: transitive
+    description:
+      name: crypto_keys
+      sha256: "2ed305a11a3e5d16dd7f489121c956fd19b9816938bb68bc7ed3a379827a304e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.0+2"
   csslib:
     dependency: transitive
     description:
@@ -607,42 +623,73 @@ packages:
     dependency: "direct main"
     description:
       name: firebase_core
-      sha256: "5bba5924139e91d26446fd2601c18a6aa62c1161c768a989bb5e245dcdc20644"
+      sha256: c6e8a6bf883d8ddd0dec39be90872daca65beaa6f4cff0051ed3b16c56b82e9f
       url: "https://pub.dev"
     source: hosted
-    version: "3.15.0"
+    version: "3.15.1"
   firebase_core_platform_interface:
     dependency: transitive
     description:
       name: firebase_core_platform_interface
-      sha256: "5d2ab45779d91af2aa0252dec9fe4ee1caa015d83377de255454dcaa1526a0e0"
+      sha256: "5dbc900677dcbe5873d22ad7fbd64b047750124f1f9b7ebe2a33b9ddccc838eb"
       url: "https://pub.dev"
     source: hosted
-    version: "5.4.1"
+    version: "6.0.0"
   firebase_core_web:
     dependency: transitive
     description:
       name: firebase_core_web
-      sha256: eb3afccfc452b2b2075acbe0c4b27de62dd596802b4e5e19869c1e926cbb20b3
+      sha256: "0ed0dc292e8f9ac50992e2394e9d336a0275b6ae400d64163fdf0a8a8b556c37"
       url: "https://pub.dev"
     source: hosted
-    version: "2.24.0"
+    version: "2.24.1"
+  firebase_messaging:
+    dependency: transitive
+    description:
+      name: firebase_messaging
+      sha256: "0f3363f97672eb9f65609fa00ed2f62cc8ec93e7e2d4def99726f9165d3d8a73"
+      url: "https://pub.dev"
+    source: hosted
+    version: "15.2.9"
+  firebase_messaging_platform_interface:
+    dependency: transitive
+    description:
+      name: firebase_messaging_platform_interface
+      sha256: "7a05ef119a14c5f6a9440d1e0223bcba20c8daf555450e119c4c477bf2c3baa9"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.6.9"
+  firebase_messaging_web:
+    dependency: transitive
+    description:
+      name: firebase_messaging_web
+      sha256: a4547f76da2a905190f899eb4d0150e1d0fd52206fce469d9f05ae15bb68b2c5
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.10.9"
+  firebase_notifications_client:
+    dependency: "direct main"
+    description:
+      path: "C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/notifications_client/firebase_notifications_client"
+      relative: false
+    source: path
+    version: "0.1.0+1"
   firebase_remote_config:
     dependency: transitive
     description:
       name: firebase_remote_config
-      sha256: "01b213e70d3830b9b3a250ef0c9391cbbf1a18ddd8637368e8a7a5ee3ac9fa94"
+      sha256: acd93f72cbfc49b43ccf5eb114aecfe8be0720a0f2e7a1d8d4bd5b206ffdf8ac
       url: "https://pub.dev"
     source: hosted
-    version: "5.4.6"
+    version: "5.4.7"
   firebase_remote_config_platform_interface:
     dependency: transitive
     description:
       name: firebase_remote_config_platform_interface
-      sha256: df56b065a32366517a134bb96a23e893aec40ad9bb469099b2d23f8f2d16ed33
+      sha256: "8c21aa8723e605f4a35805b105145c7edf50df391b3d05a4dadc3b921aa6aec2"
       url: "https://pub.dev"
     source: hosted
-    version: "1.5.6"
+    version: "1.5.7"
   firebase_remote_config_repository:
     dependency: "direct main"
     description:
@@ -654,10 +701,10 @@ packages:
     dependency: transitive
     description:
       name: firebase_remote_config_web
-      sha256: f6927df411a3f347201f64b47eb4f520f965e5c73a218957adc20ce33a3f3944
+      sha256: b2400ed56197ac43493a19c0468a325bded97f0bd5b064042c189c4a658f6674
       url: "https://pub.dev"
     source: hosted
-    version: "1.8.6"
+    version: "1.8.7"
   fixnum:
     dependency: transitive
     description:
@@ -1044,6 +1091,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.12.4+4"
+  googleapis_auth:
+    dependency: transitive
+    description:
+      name: googleapis_auth
+      sha256: b81fe352cc4a330b3710d2b7ad258d9bcef6f909bb759b306bf42973a7d046db
+      url: "https://pub.dev"
+    source: hosted
+    version: "2.0.0"
   gotrue:
     dependency: transitive
     description:
@@ -1305,6 +1360,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "6.4.3"
+  jose:
+    dependency: transitive
+    description:
+      name: jose
+      sha256: "7955ec5d131960104e81fbf151abacb9d835c16c9e793ed394b2809f28b2198d"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.3.4"
   js:
     dependency: transitive
     description:
@@ -1481,6 +1544,20 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.2"
+  notifications_client:
+    dependency: "direct main"
+    description:
+      path: "C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/notifications_client/notifications_client"
+      relative: false
+    source: path
+    version: "0.1.0+1"
+  notifications_repository:
+    dependency: "direct main"
+    description:
+      path: "C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/notifications_repository"
+      relative: false
+    source: path
+    version: "0.1.0+1"
   octo_image:
     dependency: transitive
     description:
@@ -1648,6 +1725,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  pointycastle:
+    dependency: transitive
+    description:
+      name: pointycastle
+      sha256: "92aa3841d083cc4b0f4709b5c74fd6409a3e6ba833ffc7dc6a8fee096366acf5"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.0.0"
   pool:
     dependency: transitive
     description:
@@ -2490,6 +2575,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.14.0"
+  x509:
+    dependency: transitive
+    description:
+      name: x509
+      sha256: cbd1a63846884afd273cda247b0365284c8d85a365ca98e110413f93d105b935
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.2.4+3"
   xdg_directories:
     dependency: transitive
     description:

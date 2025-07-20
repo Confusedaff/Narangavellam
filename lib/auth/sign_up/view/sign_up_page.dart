@@ -6,6 +6,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:narangavellam/app/user_profile/widgets/avatar_image_picker.dart';
 import 'package:narangavellam/auth/sign_up/signup.dart';
 import 'package:narangavellam/auth/sign_up/widgets/sign_up_button.dart';
+import 'package:notifications_repository/notifications_repository.dart';
 import 'package:user_repository/user_repository.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -16,6 +17,7 @@ class SignUpPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => SignUpCubit(
         userRepository: context.read<UserRepository>(),
+        notificationRepository: context.read<NotificationsRepository>(),
       ),
       child: const SignUpView(),
     );

@@ -8,6 +8,7 @@ import 'package:narangavellam/app/view/app_view.dart';
 import 'package:narangavellam/feed/bloc/feed_bloc.dart';
 import 'package:narangavellam/selector/locale/bloc/locale_bloc.dart';
 import 'package:narangavellam/selector/theme/view/bloc/theme_mode_bloc.dart';
+import 'package:notifications_repository/notifications_repository.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:search_repository/search_repository.dart';
 import 'package:stories_repository/stories_repository.dart';
@@ -25,6 +26,7 @@ class App extends StatelessWidget {
     required this.searchRepository,
     required this.storiesRepository,
     required this.chatsRepository,
+    required this.notificationsRepository,
     super.key,
   });
 
@@ -35,6 +37,7 @@ class App extends StatelessWidget {
   final SearchRepository searchRepository;
   final StoriesRepository storiesRepository;
   final ChatsRepository chatsRepository;
+  final NotificationsRepository notificationsRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +61,9 @@ class App extends StatelessWidget {
         RepositoryProvider.value(
           value: chatsRepository,
         ),
+        RepositoryProvider.value(
+          value: notificationsRepository,
+        ),
       ],
       child: MultiBlocProvider(
         providers: [
@@ -65,7 +71,8 @@ class App extends StatelessWidget {
             create: (context) => AppBloc(
               user: user,
               userRepository: userRepository,
-              postsRepository: postsRepository,
+              postsRepository: postsRepository, 
+              notificationRepository: notificationsRepository,
             ),
           ),
           BlocProvider(

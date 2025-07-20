@@ -1,11 +1,13 @@
 import 'package:chats_repository/chats_repository.dart';
 import 'package:database_client/database_client.dart';
 import 'package:env/env.dart';
+import 'package:firebase_notifications_client/firebase_notifications_client.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:instagram_blocks_ui/instagram_blocks_ui.dart';
 import 'package:narangavellam/app/app.dart';
 import 'package:narangavellam/bootstrap.dart';
 import 'package:narangavellam/firebase_options_prod.dart';
+import 'package:notifications_repository/notifications_repository.dart';
 import 'package:persistent_storage/persistent_storage.dart';
 import 'package:posts_repository/posts_repository.dart';
 import 'package:provider/provider.dart';
@@ -20,7 +22,16 @@ void main() {
   bootstrap(
     (powersyncRepository,
     sharedPreferences,
-    firebaseRemoteConfigRepository,) async{
+    firebaseRemoteConfigRepository,
+    firebaseMessaging,
+    ) async{
+
+      final firebaseNotificationsClient = 
+        FirebaseNotificationsClient(firebaseMessaging: firebaseMessaging);
+
+      final notificationsRepository = NotificationsRepository(
+        notificationsClient: firebaseNotificationsClient,
+      );
 
       final androidClientId = getIt<AppFlavor>().getEnv(Env.androidClientId);
       final webClientId = getIt<AppFlavor>().getEnv(Env.webClientId);
@@ -56,6 +67,7 @@ void main() {
           user: await userRepository.user.first, 
           userRepository: userRepository,
           postsRepository: postsRepository,
+          notificationsRepository: notificationsRepository,
           firebaseRemoteConfigRepository: firebaseRemoteConfigRepository,
           searchRepository: searchRepository,
           storiesRepository: storiesRepository,

@@ -38,11 +38,11 @@ class AppFlavor extends AppEnv {
             Flavor.production => EnvProd.supabaseAnonKey,
             Flavor.staging => EnvProd.supabaseAnonKey,
           },
-        // Env.fcmServerKey => switch (flavor) {
-        //     Flavor.development => EnvDev.fcmServerKey,
-        //     Flavor.production => EnvProd.fcmServerKey,
-        //     Flavor.staging => EnvProd.fcmServerKey,
-        //   },
+        Env.fcmServerKey => switch (flavor) {
+            Flavor.development => EnvDev.fcmServerKey,
+            Flavor.production => EnvProd.fcmServerKey,
+            Flavor.staging => EnvProd.fcmServerKey,
+          },
         Env.androidClientId => switch (flavor) {
             Flavor.development => EnvDev.androidClientId,
             Flavor.production => EnvProd.androidClientId,

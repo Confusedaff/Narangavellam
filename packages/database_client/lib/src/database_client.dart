@@ -1,9 +1,12 @@
 // ignore_for_file: public_member_api_docs
 
+import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:typed_data';
 
+import 'package:dio/dio.dart';
+import 'package:env/env.dart';
 import 'package:insta_blocks/insta_blocks.dart';
 import 'package:powersync_repository/powersync_repository.dart';
 import 'package:shared/shared.dart';
@@ -1109,8 +1112,62 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
       );
     }
   }
-      
-         @override
+
+  /// Sends notification in a background isolate.
+  Future<void> sendBackgroundNotification(List<dynamic> args) async {
+    await sendNotification(
+      reciever: args[1] as User,
+      sender: args[2] as User,
+      message: args[3] as Message,
+      postAuthor: args[4] as PostAuthor?,
+      chatId: args[5] as String,
+    );
+    Isolate.exit(args[0] as SendPort, args);
+  }
+
+  /// Sends notification using Google APIs to user.
+  Future<void> sendNotification({
+    required User reciever,
+    required User sender,
+    String? chatId,
+    Message? message,
+    PostAuthor? postAuthor,
+  }) async {
+    final notificationMessage = postAuthor != null
+        ? 'Sent post by ${postAuthor.username}'
+        : message?.message;
+    final notificationBody =
+        '(${reciever.displayUsername}): ${sender.displayUsername}: '
+        '$notificationMessage';
+
+    final data = {
+      'to': reciever.pushToken,
+      'content_available': true,
+      'priority': 10,
+      'notification': {
+        'title': 'Instagram',
+        'body': notificationBody,
+        'click_action': 'FLUTTER_NOTIFICATION_CLICK',
+      },
+      'data': {
+        if (chatId != null) 'chat_id': chatId,
+      },
+    };
+
+    final headers = {
+      HttpHeaders.contentTypeHeader: 'application/json',
+      HttpHeaders.authorizationHeader: 'key=${EnvProd.fcmServerKey}',
+    };
+
+    final res = await Dio().post<String>(
+      'https://fcm.googleapis.com/fcm/send',
+      data: jsonEncode(data),
+      options: Options(headers: headers),
+    );
+    logD('Response: $res, \n status code: ${res.statusCode}');
+  }
+
+  @override
   Stream<List<Message>> messagesOf({required String chatId}) =>
       _powerSyncRepository.db().watch(
         '''
@@ -1169,7 +1226,7 @@ WHERE
     );
   }
 
-       @override
+   @override
   Future<void> sendMessage({
     required String chatId,
     required User sender,
@@ -1236,14 +1293,14 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         try {
           final receivePort = ReceivePort();
 
-          // await Isolate.spawn(sendBackgroundNotification, [
-          //   receivePort.sendPort,
-          //   receiver,
-          //   sender,
-          //   message,
-          //   postAuthor,
-          //   chatId,
-          // ]);
+          await Isolate.spawn(sendBackgroundNotification, [
+            receivePort.sendPort,
+            receiver.toJson(),
+            sender.toJson(),
+            message.toJson(),
+            postAuthor?.toJson(),
+            chatId,
+          ]);
         } catch (error, stackTrace) {
           logE(
             'Error send notification.',
@@ -1253,7 +1310,7 @@ values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
         }
       });
       
-         @override
+   @override
   Future<Post?> getPostBy({required String id}) async {
     final row = await _powerSyncRepository.db().getOptional(
       '''

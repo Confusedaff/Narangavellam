@@ -28,6 +28,8 @@ dependencies:
   equatable: ^2.0.7
   fast_immutable_collections: ^11.0.4
   firebase_core: ^3.14.0
+  firebase_notifications_client:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/notifications_client/firebase_notifications_client
   firebase_remote_config_repository:
     path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/firebase_remote_config_repository
   flutter:
@@ -67,6 +69,10 @@ dependencies:
   lottie: ^3.3.0
   maths: ^0.0.2
   mocktail: ^1.0.4
+  notifications_client:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/notifications_client/notifications_client
+  notifications_repository:
+    path: C:/Users/sandi/OneDrive/Desktop/VSCode/Flutter/Apps/narangavellam/packages/notifications_repository
   ogp_data_extract: ^0.2.1
   palette_generator: ^0.3.3+7
   path_provider: ^2.1.5
